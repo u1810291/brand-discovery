@@ -1,19 +1,23 @@
 {
   "hosting": {
     "public": "public",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
     "rewrites": [
       {
         "source": "**",
-        "function": "nextjsFunc"
+        "destination": "/index.html"
       }
     ]
   },
   "functions": {
     "source": ".",
     "predeploy": [
-      "npm --prefix \"$PROJECT_DIR\" install",
-      "npm --prefix \"$PROJECT_DIR\" run build"
+      "pnpm install",
+      "pnpm build"
     ],
     "runtime": "nodejs14"
   }
