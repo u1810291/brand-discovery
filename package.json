@@ -11,6 +11,11 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/icons-material": "^5.11.11",
+    "@mui/material": "^5.11.15",
+    "@mui/styles": "^5.11.13",
     "firebase-admin": "^9.4.2",
     "firebase-functions": "^3.13.1",
     "next": "13.2.4",
