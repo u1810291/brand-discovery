@@ -1,11 +1,7 @@
 {
   "hosting": {
     "public": "public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "**",
@@ -15,10 +11,7 @@
   },
   "functions": {
     "source": ".",
-    "predeploy": [
-      "pnpm install",
-      "pnpm build"
-    ],
+    "predeploy": ["pnpm install", "pnpm build"],
     "runtime": "nodejs14"
   }
 }

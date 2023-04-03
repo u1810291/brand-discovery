@@ -1,9 +1,20 @@
-import App from '../components/App'
+import withAuth from '../services/auth/withAuth'
+import { useUser } from '../services/auth/useUser'
 
-export default function Home() {
+const Home = () => {
+  const { user, logout } = useUser()
+
   return (
-    <App>
-      <p>Index Page</p>
-    </App>
+    <div>
+      <div>Private</div>
+      {user?.email && (
+        <div>
+          <div>Email: {user.email}</div>
+          <button onClick={() => logout()}>Logout</button>
+        </div>
+      )}
+    </div>
   )
 }
+
+export default withAuth(Home)
