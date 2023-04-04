@@ -5,3 +5,15 @@ body {
 button {
   text-transform: none !important;
 }
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-transform: none !important;
+}
+
+a:hover {
+  cursor: pointer;
+}
