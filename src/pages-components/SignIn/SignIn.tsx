@@ -1,7 +1,9 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Divider, Stack, Typography, useTheme } from '@mui/material'
+import Image from 'next/image'
 import { useForm } from 'react-hook-form'
 import { SpacewiseSVG } from 'src/assets/svg/components'
+import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { InputField } from 'src/UI/InputField'
 import { PasswordInput } from 'src/UI/PasswordInput'
@@ -32,10 +34,6 @@ export const SignIn = () => {
     console.log(data)
   }
 
-  const createAccount = () => {
-    return
-  }
-
   const forgotPassword = () => {
     return
   }
@@ -43,7 +41,7 @@ export const SignIn = () => {
   const { palette } = useTheme()
   return (
     <MainLayout>
-      <Stack paddingX={{ xs: 3, sm: 8 }} paddingY={{ xs: 8, sm: 15 }} marginY="auto">
+      <Stack marginY="auto">
         <Stack alignSelf="center">
           <SpacewiseSVG />
         </Stack>
@@ -65,6 +63,7 @@ export const SignIn = () => {
               label="Password"
               placeholder="Enter your password"
               control={control}
+              autoComplete="new-password"
             />
             <Button type="button" variant="text" sx={{ width: 'fit-content' }} onClick={forgotPassword}>
               Forgot Password?
@@ -76,10 +75,17 @@ export const SignIn = () => {
         </Stack>
         <Divider sx={{ marginBlock: { xs: 4, sm: 6 } }}>OR</Divider>
         <Stack spacing={{ xs: 2, sm: 4 }}>
+          <Button
+            variant="outlined"
+            sx={{ height: 48 }}
+            startIcon={<Image src="/images/Google.png" width={41} height={39} alt="Google" />}
+          >
+            Continue with Google
+          </Button>
           <Typography fontWeight={500} fontSize={14} color={palette.grey[600]} alignSelf="center">
             Are you new to Spacewise?
           </Typography>
-          <Button fullWidth variant="outlined" onClick={createAccount}>
+          <Button fullWidth variant="outlined" href={ROUTES.signUp}>
             Create new account
           </Button>
         </Stack>

@@ -1,8 +1,28 @@
-import { Stack, StackProps, styled } from '@mui/material'
+import { ArrowBack } from '@mui/icons-material'
+import { IconButton, Stack, StackProps, styled } from '@mui/material'
+import { useRouter } from 'next/router'
 import { FC, PropsWithChildren } from 'react'
 
-export const MainLayout: FC<PropsWithChildren & StackProps> = ({ children, ...props }) => {
-  return <Root {...props}>{children}</Root>
+type MainLayoutProps = {
+  showBackButton?: boolean
+} & PropsWithChildren &
+  StackProps
+
+export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, ...props }) => {
+  const router = useRouter()
+
+  return (
+    <Root {...props}>
+      {showBackButton && (
+        <Stack alignItems="start" marginBottom={5}>
+          <IconButton onClick={() => router.back()}>
+            <ArrowBack />
+          </IconButton>
+        </Stack>
+      )}
+      {children}
+    </Root>
+  )
 }
 
 const Root = styled(Stack)`
@@ -11,4 +31,5 @@ const Root = styled(Stack)`
   width: 100%;
   max-width: 900px;
   margin-inline: auto;
+  padding: ${({ theme: { spacing } }) => spacing(3)};
 `

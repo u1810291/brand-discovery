@@ -1,5 +1,5 @@
-import { TextField, TextFieldProps } from '@mui/material';
-import { FieldValues, useController, UseControllerProps } from 'react-hook-form';
+import { TextField, TextFieldProps } from '@mui/material'
+import { FieldValues, useController, UseControllerProps } from 'react-hook-form'
 
 export function InputField<T extends FieldValues>({
   name,
@@ -14,7 +14,7 @@ export function InputField<T extends FieldValues>({
   } = useController<T>({
     name,
     control,
-  });
+  })
 
   return (
     <TextField
@@ -26,5 +26,5 @@ export function InputField<T extends FieldValues>({
       {...props}
       {...field}
     />
-  );
+  )
 }
