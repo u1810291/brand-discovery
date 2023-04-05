@@ -6,4 +6,6 @@ export const ROUTES = {
   signUpWithEmail: '/sign-up-with-email',
   verify: '/verify',
   reset: 'reset',
+  resetPassword: '/reset-password',
+  newPassword: '/new-password',
 }

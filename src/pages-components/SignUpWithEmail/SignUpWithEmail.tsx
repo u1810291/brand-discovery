@@ -74,8 +74,8 @@ export const SignUpWithEmail = () => {
 
   return (
     <MainLayout showBackButton>
-      <Stack marginY="auto" spacing={3}>
-        <Typography fontWeight={700} fontSize={28} alignSelf="center">
+      <Stack marginY="auto" marginTop={{ xs: 0, sm: 'auto' }} spacing={3}>
+        <Typography component="h3" fontWeight={700} fontSize={28} alignSelf="center">
           Sign Up with Email
         </Typography>
         <Stack spacing={2} component="form" onSubmit={handleSubmit(onSubmit)}>

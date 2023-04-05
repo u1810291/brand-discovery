@@ -31,10 +31,10 @@ export const SignUp = () => {
   }
   return (
     <MainLayout showBackButton>
-      <Stack marginY="auto" spacing={5}>
+      <Stack marginY="auto" marginTop={{ xs: 0, sm: 'auto' }} spacing={5}>
         <Stack alignSelf="center">
           <SpacewiseSVG />
-          <Typography fontWeight={800} fontSize={24} marginTop={5} alignSelf="center">
+          <Typography component="h3" fontWeight={800} fontSize={24} marginTop={5} alignSelf="center">
             Sign Up
           </Typography>
         </Stack>
@@ -65,7 +65,7 @@ export const SignUp = () => {
           <Button sx={{ height: 48 }} variant="outlined" href={ROUTES.signUpWithEmail}>
             Sign up with Email
           </Button>
-          <Typography>
+          <Typography component="span">
             By signing up you confirm that you accept the <Link>Terms of service</Link>, <Link>Privacy policy</Link> and{' '}
             <Link>Acceptable use policy</Link>
           </Typography>
@@ -79,7 +79,7 @@ export const SignUp = () => {
             width="100%"
             padding={2}
           >
-            <Typography fontSize={14} fontWeight={600}>
+            <Typography component="span" fontSize={14} fontWeight={600}>
               Already registered?
             </Typography>
             <Button>Login here</Button>
