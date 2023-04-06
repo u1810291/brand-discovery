@@ -2,7 +2,7 @@
 /* eslint-disable prettier/prettier */
 
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Button, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
+import { Button, Link, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
@@ -117,8 +117,9 @@ export const SignUpWithEmail = () => {
           <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
             Continue
           </Button>
-          <Typography fontSize={14} fontWeight={400}>
-            Use of this app constitutes acceptance of the Terms of Use, Booking Terms and Privacy Policy.
+          <Typography fontSize={14} fontWeight={400} color="#747978" textAlign="center">
+            Use of this app constitutes acceptance of the <Link>Terms of Use</Link>, <Link>Booking Terms</Link> and{' '}
+            <Link>Privacy Policy</Link>.
           </Typography>
         </Stack>
       </Stack>

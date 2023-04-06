@@ -31,5 +31,6 @@ const Root = styled(Stack)`
   width: 100%;
   max-width: 900px;
   margin-inline: auto;
+  overflow-x: hidden;
   padding: ${({ theme: { spacing } }) => spacing(3)};
 `

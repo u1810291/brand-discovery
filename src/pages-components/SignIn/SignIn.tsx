@@ -1,21 +1,20 @@
 'use client'
 
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useTheme } from '@mui/material'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { useTheme } from '@mui/material'
-import Image from 'next/image'
+import { getAuth } from 'firebase/auth'
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth'
 import { useForm } from 'react-hook-form'
+import { InputField } from 'src/UI/InputField'
+import { PasswordInput } from 'src/UI/PasswordInput'
 import { SpacewiseSVG } from 'src/assets/svg/components'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
-import { InputField } from 'src/UI/InputField'
-import { PasswordInput } from 'src/UI/PasswordInput'
 import * as yup from 'yup'
-import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth'
-import { getAuth } from 'firebase/auth'
 import firebaseApp from '../../services/firebase'
 
 type SingInFormType = {
@@ -103,13 +102,6 @@ export const SignIn = () => {
         </Stack>
         <Divider sx={{ marginBlock: { xs: 4, sm: 6 } }}>OR</Divider>
         <Stack spacing={{ xs: 2, sm: 4 }}>
-          <Button
-            variant="outlined"
-            sx={{ height: 48 }}
-            startIcon={<Image src="/images/Google.png" width={41} height={39} alt="Google" />}
-          >
-            Continue with Google
-          </Button>
           <Typography component="h5" fontWeight={500} fontSize={14} color={palette.grey[600]} alignSelf="center">
             Are you new to Spacewise?
           </Typography>

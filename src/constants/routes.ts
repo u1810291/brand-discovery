@@ -8,4 +8,5 @@ export const ROUTES = {
   reset: 'reset',
   resetPassword: '/reset-password',
   newPassword: '/new-password',
+  home: '/home',
 }
