@@ -9,4 +9,6 @@ export const ROUTES = {
   resetPassword: '/reset-password',
   newPassword: '/new-password',
   home: '/home',
+  verifyEmail: '/verify-email',
+  thankYou: '/thank-you',
 }
