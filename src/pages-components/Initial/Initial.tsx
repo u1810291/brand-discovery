@@ -1,4 +1,5 @@
-import { Box, Button, Stack, styled, Typography, useTheme } from '@mui/material'
+'use client'
+import { Button, Stack, styled, Typography, useTheme } from '@mui/material'
 import { LogoBackground, SpacewiseSVG } from 'src/assets/svg/components'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
@@ -23,11 +24,10 @@ export const Initial = () => {
             </Typography>
           </TextContainer>
         </Stack>
-        <Box paddingX={3}>
-          <Button variant="contained" fullWidth href={ROUTES.signIn}>
-            Login
-          </Button>
-        </Box>
+
+        <Button variant="contained" fullWidth href={ROUTES.signIn}>
+          Login
+        </Button>
       </Stack>
     </MainLayout>
   )

@@ -1,9 +1,11 @@
-import App from '../components/App'
+'use client'
 
-export default function Home() {
+const Home = () => {
   return (
-    <App>
-      <p>Index Page</p>
-    </App>
+    <div>
+      <div>Private</div>
+    </div>
   )
 }
+
+export default Home
