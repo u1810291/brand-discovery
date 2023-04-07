@@ -26,4 +26,23 @@ export const theme = createTheme({
   shape: {
     borderRadius: 4,
   },
+  components: {
+    MuiToggleButton: {
+      defaultProps: {
+        disableRipple: true,
+      },
+      styleOverrides: {
+        root: {
+          color: '#18bc9c',
+          background: '#ffffff',
+          transition: 'all .2s',
+
+          '&:hover, &.Mui-selected, &.Mui-selected:hover': {
+            color: '#ffffff',
+            background: '#18bc9c',
+          },
+        },
+      },
+    },
+  },
 })
