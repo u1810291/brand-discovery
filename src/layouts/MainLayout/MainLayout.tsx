@@ -5,14 +5,15 @@ import { FC, PropsWithChildren } from 'react'
 
 type MainLayoutProps = {
   showBackButton?: boolean
+  hasPadding?: boolean
 } & PropsWithChildren &
   StackProps
 
-export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, ...props }) => {
+export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasPadding = true, ...props }) => {
   const router = useRouter()
 
   return (
-    <Root {...props}>
+    <Root {...props} padding={hasPadding && 3}>
       {showBackButton && (
         <Stack alignItems="start" marginBottom={5}>
           <IconButton onClick={() => router.back()}>
@@ -31,5 +32,5 @@ const Root = styled(Stack)`
   width: 100%;
   max-width: 900px;
   margin-inline: auto;
-  padding: ${({ theme: { spacing } }) => spacing(3)};
+  overflow-x: hidden;
 `
