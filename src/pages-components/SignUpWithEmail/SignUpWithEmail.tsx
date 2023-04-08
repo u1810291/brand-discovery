@@ -1,10 +1,19 @@
+'use client'
+/* eslint-disable prettier/prettier */
+
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
+import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { InputField } from 'src/UI/InputField'
 import { PasswordInput } from 'src/UI/PasswordInput'
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
 import * as yup from 'yup'
+import { getAuth } from 'firebase/auth'
+import firebaseApp from '../../services/firebase'
+
+const auth = getAuth(firebaseApp())
 
 type SignUpWithEmailFormType = {
   email: string
@@ -44,8 +53,28 @@ export const SignUpWithEmail = () => {
     resolver: yupResolver(schema),
   })
 
+<<<<<<< HEAD
   const onSubmit = (data: SignUpWithEmailFormType) => {
     console.log(data)
+=======
+  const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
+
+  if (error) {
+    return (
+      <div>
+        <p>Error: {error.message}</p>
+      </div>
+    )
+  }
+  if (loading) {
+    return <p>Loading...</p>
+  }
+  if (user) {
+    return window.location.replace(ROUTES.initial)
+  }
+  const onSubmit = (data: SignUpWithEmailFormType) => {
+    createUserWithEmailAndPassword(data.email, data.password)
+>>>>>>> 634260660a8521434d6e571b3ce7e22543591d1d
   }
 
   return (

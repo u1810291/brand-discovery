@@ -1,12 +1,34 @@
+'use client'
+
 import { Button, Link, Stack, Typography, useTheme } from '@mui/material'
 import Image from 'next/image'
-import { SpacewiseSVG } from 'src/assets/svg/components'
+import { useSignInWithFacebook, useSignInWithGoogle } from 'react-firebase-hooks/auth'
+import { FacebookIcon, SpacewiseSVG } from 'src/assets/svg/components'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
+import { getAuth } from 'firebase/auth'
+import firebaseApp from '../../services/firebase'
+
+const auth = getAuth(firebaseApp())
 
 export const SignUp = () => {
   const { palette } = useTheme()
+  const [signInWithGoogle, googleUser, googleLoading, googleError] = useSignInWithGoogle(auth)
+  const [signInWithFacebook, facebookUser, facebookLoading, facebookError] = useSignInWithFacebook(auth)
 
+  if (googleError || facebookError) {
+    return (
+      <div>
+        <p>Error: {(googleError || facebookError).message}</p>
+      </div>
+    )
+  }
+  if (googleLoading || facebookLoading) {
+    return <p>Loading...</p>
+  }
+  if (googleUser || facebookUser) {
+    return window.location.replace(ROUTES.initial)
+  }
   return (
     <MainLayout showBackButton>
       <Stack marginY="auto" spacing={5}>
@@ -21,6 +43,10 @@ export const SignUp = () => {
             variant="outlined"
             sx={{ height: 48 }}
             startIcon={<Image src="/images/Google.png" width={41} height={39} alt="Google" />}
+<<<<<<< HEAD
+=======
+            onClick={() => signInWithGoogle()}
+>>>>>>> 634260660a8521434d6e571b3ce7e22543591d1d
           >
             Sign up with Google
           </Button>
@@ -30,10 +56,22 @@ export const SignUp = () => {
             startIcon={<Image src="/images/Linkedin.png" width={50} height={39} alt="Linkedin" />}
           >
             Sign up with Linkedin
+<<<<<<< HEAD
           </Button>
           <Button sx={{ height: 48 }} variant="outlined" startIcon={<FacebookIcon />}>
             Sign in with Facebook
           </Button> */}
+=======
+          </Button>*/}
+          <Button
+            sx={{ height: 48 }}
+            variant="outlined"
+            startIcon={<FacebookIcon />}
+            onClick={() => signInWithFacebook()}
+          >
+            Sign in with Facebook
+          </Button>
+>>>>>>> 634260660a8521434d6e571b3ce7e22543591d1d
           <Button sx={{ height: 48 }} variant="outlined" href={ROUTES.signUpWithEmail}>
             Sign up with Email
           </Button>

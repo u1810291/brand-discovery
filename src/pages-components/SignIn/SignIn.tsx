@@ -1,5 +1,11 @@
+'use client'
+
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Button, Divider, Stack, Typography, useTheme } from '@mui/material'
+import Button from '@mui/material/Button'
+import Divider from '@mui/material/Divider'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { useTheme } from '@mui/material'
 import Image from 'next/image'
 import { useForm } from 'react-hook-form'
 import { SpacewiseSVG } from 'src/assets/svg/components'
@@ -8,6 +14,9 @@ import { MainLayout } from 'src/layouts/MainLayout'
 import { InputField } from 'src/UI/InputField'
 import { PasswordInput } from 'src/UI/PasswordInput'
 import * as yup from 'yup'
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth'
+import { getAuth } from 'firebase/auth'
+import firebaseApp from '../../services/firebase'
 
 type SingInFormType = {
   email: string
@@ -19,6 +28,8 @@ const schema = yup.object({
   password: yup.string().required(),
 })
 
+const auth = getAuth(firebaseApp())
+
 export const SignIn = () => {
   const {
     handleSubmit,
@@ -29,9 +40,23 @@ export const SignIn = () => {
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
-
-  const onSubmit = (data: SingInFormType) => {
-    console.log(data)
+  const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth)
+  if (error) {
+    return (
+      <div>
+        <p>Error: {error.message}</p>
+      </div>
+    )
+  }
+  if (loading) {
+    return <p>Loading...</p>
+  }
+  const onSubmit = async (data: SingInFormType) => {
+    await signInWithEmailAndPassword(data.email, data.password)
+    if (user) {
+      console.log(user)
+      return window.location.replace(ROUTES.initial)
+    }
   }
 
   const forgotPassword = () => {

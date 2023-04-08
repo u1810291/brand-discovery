@@ -1,3 +1,4 @@
+'use client'
 import { Button, Stack, styled, Typography, useTheme } from '@mui/material'
 import { LogoBackground, SpacewiseSVG } from 'src/assets/svg/components'
 import { ROUTES } from 'src/constants/routes'
