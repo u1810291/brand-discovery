@@ -1,15 +1,17 @@
 'use client'
-import Link from 'next/link'
 
-const Header = ({ pathname }) => (
-  <header>
-    <Link href="/" className={pathname === '/' ? 'is-active' : ''}>
-      Home
-    </Link>{' '}
-    <Link href="/about" className={pathname === '/about' ? 'is-active' : ''}>
-      About
-    </Link>
-  </header>
+import Head from 'next/head'
+
+type HeaderTypes = {
+  title: string
+  children?: React.ReactNode
+}
+
+const Header = ({ title, children }: HeaderTypes) => (
+  <Head>
+    <title>{title}</title>
+    {children}
+  </Head>
 )
 
 export default Header

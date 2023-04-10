@@ -4,18 +4,20 @@ import CircularProgress from '@mui/material/CircularProgress'
 import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
 import Header from 'src/components/Header'
-
 export default () => {
-  const SignIn = dynamic(() => import('src/pages-components/SignIn').then((component) => component.SignIn), {
-    suspense: true,
-  })
+  const NewPassword = dynamic(
+    () => import('src/pages-components/NewPassword').then((component) => component.NewPassword),
+    {
+      suspense: true,
+    },
+  )
   return (
     <div>
-      <Header title="Sign in">
-        <meta name="description" content="Sign in page" />
+      <Header title="New password">
+        <meta name="description" content="New password page" />
       </Header>
       <Suspense fallback={<CircularProgress />}>
-        <SignIn />
+        <NewPassword />
       </Suspense>
     </div>
   )

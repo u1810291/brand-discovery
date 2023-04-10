@@ -1,9 +1,8 @@
+/* eslint-disable prettier/prettier */
 'use client'
-import Header from './Header'
 
 const App = ({ children }) => (
   <main>
-    <Header pathname={''} />
     {children}
   </main>
 )
