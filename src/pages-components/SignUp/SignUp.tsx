@@ -13,7 +13,7 @@ import Notification from 'src/components/Notification'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-import Link from '@mui/material/Link'
+import Link from 'next/link'
 import { useTheme } from '@mui/material/styles'
 
 const auth = getAuth(firebaseApp())
@@ -60,13 +60,25 @@ export const SignUp = () => {
           >
             Sign in with Facebook
           </Button>
-          <Button sx={{ height: 48 }} variant="outlined" href={ROUTES.signUpWithEmail}>
-            Sign up with Email
-          </Button>
+          <Link href={ROUTES.signUpWithEmail} style={{ textDecoration: 'none' }}>
+            <Button sx={{ height: 48 }} variant="outlined" href={ROUTES.signUpWithEmail}>
+              Sign up with Email
+            </Button>
+          </Link>
         </Stack>
         <Typography component="span" marginTop={3} color="#9AA09E">
-          By signing up you confirm that you accept the <Link>Terms of service</Link>, <Link>Privacy policy</Link> and{' '}
-          <Link>Acceptable use policy</Link>
+          By signing up you confirm that you accept the{' '}
+          <Link href="#" style={{ textDecoration: 'none' }}>
+            Terms of service
+          </Link>
+          ,{' '}
+          <Link href="#" style={{ textDecoration: 'none' }}>
+            Privacy policy
+          </Link>{' '}
+          and{' '}
+          <Link href="#" style={{ textDecoration: 'none' }}>
+            Acceptable use policy
+          </Link>
         </Typography>
         <Notification type="error" text={googleError?.message || facebookError?.message} />
       </Stack>
