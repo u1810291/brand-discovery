@@ -9,7 +9,6 @@ import { PasswordInput } from 'src/UI/PasswordInput'
 import SpacewiseSVG from 'src/assets/svg/components/spacewise.svg'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
-import * as yup from 'yup'
 import CircularProgress from '@mui/material/CircularProgress'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -18,22 +17,15 @@ import Typography from '@mui/material/Typography'
 import firebaseApp from 'src/services/firebase'
 import { Notification } from 'src/components/Notification/Notification'
 import { useTheme } from '@mui/material'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
-
-type SingInFormType = {
-  email: string
-  password: string
-}
-
-const schema = yup.object({
-  email: yup.string().required().email(),
-  password: yup.string().required(),
-})
+import { SingInFormType, schema } from './helper'
+import Link from 'next/link'
 
 const auth = getAuth(firebaseApp())
 
 export const SignIn = () => {
+  const [token, setToken] = useState(localStorage.getItem('uuid'))
   const {
     handleSubmit,
     control,
@@ -44,15 +36,19 @@ export const SignIn = () => {
     resolver: yupResolver(schema),
   })
   const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth)
-  const onSubmit = (data: SingInFormType) => {
-    signInWithEmailAndPassword(data.email, data.password)
-    window.localStorage.setItem('user', JSON.stringify(user))
+  const onSubmit = async (data: SingInFormType) => {
+    await signInWithEmailAndPassword(data.email, data.password)
   }
 
   useEffect(() => {
-    window.location.replace('home')
+    if (!!user?.user?.uid) {
+      localStorage.setItem('uuid', JSON.stringify(user?.user?.uid))
+      location.replace('home')
+    }
   }, [user])
+
   const { palette } = useTheme()
+
   return (
     <MainLayout id="main-layout">
       <Stack marginY="auto">
@@ -86,12 +82,14 @@ export const SignIn = () => {
               control={control}
               autoComplete="nope"
             />
-            <Button type="button" variant="text" sx={{ width: 'fit-content' }} href={ROUTES.resetPassword}>
-              Forgot Password?
-            </Button>
+            <Link href={ROUTES.resetPassword} style={{ textDecoration: 'none' }}>
+              <Button type="button" variant="text" sx={{ width: 'fit-content' }}>
+                Forgot Password?
+              </Button>
+            </Link>
           </Stack>
           <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
-            {loading ? <CircularProgress /> : 'Login'}
+            {loading ? <CircularProgress color="success" /> : 'Login'}
           </Button>
         </Stack>
         <Divider sx={{ marginBlock: { xs: 4, sm: 6 } }}>OR</Divider>
@@ -99,9 +97,11 @@ export const SignIn = () => {
           <Typography component="h5" fontWeight={500} fontSize={14} color={palette.grey[600]} alignSelf="center">
             Are you new to Spacewise?
           </Typography>
-          <Button fullWidth variant="outlined" href={ROUTES.signUp}>
-            Create new account
-          </Button>
+          <Link href={ROUTES.signUp} style={{ textDecoration: 'none' }}>
+            <Button fullWidth variant="outlined" href={ROUTES.signUp}>
+              Create new account
+            </Button>
+          </Link>
         </Stack>
       </Stack>
       <Notification text={error?.message} type="error" />

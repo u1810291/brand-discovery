@@ -10,6 +10,7 @@ import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import Image from 'next/image'
 import SpacewiseSVG from 'src/assets/svg/components/spacewise.svg'
+import Link from 'next/link'
 
 export const Initial = () => {
   const { palette } = useTheme()
@@ -31,9 +32,11 @@ export const Initial = () => {
             </Typography>
           </TextContainer>
         </Stack>
-        <Button variant="contained" fullWidth href={ROUTES.signIn}>
-          Login
-        </Button>
+        <Link href={ROUTES.signIn} style={{ textDecoration: 'none' }}>
+          <Button variant="contained" fullWidth>
+            Login
+          </Button>
+        </Link>
       </Stack>
     </MainLayout>
   )
