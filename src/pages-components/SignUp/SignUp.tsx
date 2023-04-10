@@ -20,6 +20,7 @@ import { useRouter } from 'next/navigation'
 const auth = getAuth(firebaseApp())
 
 export const SignUp = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { palette } = useTheme()
   const { push } = useRouter()
   const [signInWithGoogle, googleUser, , googleError] = useSignInWithGoogle(auth)
