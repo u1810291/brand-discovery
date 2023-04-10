@@ -17,15 +17,16 @@ import Typography from '@mui/material/Typography'
 import firebaseApp from 'src/services/firebase'
 import { Notification } from 'src/components/Notification/Notification'
 import { useTheme } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import Image from 'next/image'
 import { SingInFormType, schema } from './helper'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 const auth = getAuth(firebaseApp())
 
 export const SignIn = () => {
-  const [token, setToken] = useState(localStorage.getItem('uuid'))
+  const { push } = useRouter()
   const {
     handleSubmit,
     control,
@@ -43,7 +44,7 @@ export const SignIn = () => {
   useEffect(() => {
     if (!!user?.user?.uid) {
       localStorage.setItem('uuid', JSON.stringify(user?.user?.uid))
-      location.replace('home')
+      push('/home')
     }
   }, [user])
 
