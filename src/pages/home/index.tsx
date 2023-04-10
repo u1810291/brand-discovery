@@ -1,3 +1,21 @@
-import { Home } from 'src/pages-components/Home'
+'use client'
 
-export default Home
+import CircularProgress from '@mui/material/CircularProgress'
+import dynamic from 'next/dynamic'
+import { Suspense } from 'react'
+import Header from 'src/components/Header'
+export default () => {
+  const Home = dynamic(() => import('src/pages-components/Home').then((component) => component.Home), {
+    suspense: true,
+  })
+  return (
+    <div>
+      <Header title="Home">
+        <meta name="description" content="Home page" />
+      </Header>
+      <Suspense fallback={<CircularProgress />}>
+        <Home />
+      </Suspense>
+    </div>
+  )
+}

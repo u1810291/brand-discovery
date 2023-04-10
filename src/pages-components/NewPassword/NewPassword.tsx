@@ -1,10 +1,22 @@
+'use client'
+import { useState } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Button, Stack, Typography } from '@mui/material'
+import { useUpdatePassword } from 'react-firebase-hooks/auth'
 import { useForm } from 'react-hook-form'
-import { SpacewiseSVG } from 'src/assets/svg/components'
+import SpacewiseSVG from 'src/assets/svg/components/spacewise.svg'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { PasswordInput } from 'src/UI/PasswordInput'
 import * as yup from 'yup'
+import firebaseApp from '../../services/firebase'
+import { getAuth } from 'firebase/auth'
+import Notification from 'src/components/Notification'
+import Image from 'next/image'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+
+const auth = getAuth(firebaseApp())
 
 type NewPasswordFormType = {
   password: string
@@ -20,6 +32,7 @@ const schema = yup.object({
 })
 
 export const NewPassword = () => {
+  const [success, setSuccess] = useState('')
   const {
     handleSubmit,
     control,
@@ -29,16 +42,20 @@ export const NewPassword = () => {
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
+  const [updatePassword, updating, error] = useUpdatePassword(auth)
 
-  const onSubmit = (data: NewPasswordFormType) => {
-    console.log(data)
+  const onSubmit = async (data: NewPasswordFormType) => {
+    const success = await updatePassword(data.password)
+    if (success) {
+      setSuccess('Updated password')
+    }
   }
 
   return (
     <MainLayout showBackButton>
       <Stack marginY="auto" marginTop={{ xs: 0, sm: 'auto' }} spacing={5}>
         <Stack alignSelf="center">
-          <SpacewiseSVG />
+          <Image src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
         </Stack>
         <Typography component="h3" fontWeight={800} fontSize={24} marginTop={5} marginBottom={4} alignSelf="center">
           Reset Password
@@ -63,9 +80,10 @@ export const NewPassword = () => {
             />
           </Stack>
           <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
-            Continue
+            {updating ? <CircularProgress /> : 'Continue'}
           </Button>
         </Stack>
+        <Notification text={error?.message || success} type={error ? 'error' : 'success'} />
       </Stack>
     </MainLayout>
   )

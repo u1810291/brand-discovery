@@ -1,46 +1,25 @@
 'use client'
-/* eslint-disable prettier/prettier */
 
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Button, Link, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { InputField } from 'src/UI/InputField'
 import { PasswordInput } from 'src/UI/PasswordInput'
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
-import * as yup from 'yup'
 import { getAuth } from 'firebase/auth'
-import firebaseApp from '../../services/firebase'
+import firebaseApp from 'src/services/firebase'
+import Notification from 'src/components/Notification'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import ToggleButton from '@mui/material/ToggleButton'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import Link from '@mui/material/Link'
+import { defaultValues, SignUpWithEmailFormType, schema } from './helper'
 
 const auth = getAuth(firebaseApp())
-
-type SignUpWithEmailFormType = {
-  email: string
-  companyName: string
-  firstName: string
-  lastName: string
-  password: string
-  spaceCount: string
-}
-
-const defaultValues = {
-  email: '',
-  companyName: '',
-  firstName: '',
-  lastName: '',
-  password: '',
-  spaceCount: '',
-}
-
-const schema = yup.object({
-  email: yup.string().required().email(),
-  companyName: yup.string().required(),
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
-  password: yup.string().required(),
-  spaceCount: yup.string().notRequired(),
-})
 
 export const SignUpWithEmail = () => {
   const {
@@ -53,28 +32,13 @@ export const SignUpWithEmail = () => {
     resolver: yupResolver(schema),
   })
 
-<<<<<<< HEAD
-  const onSubmit = (data: SignUpWithEmailFormType) => {
-    console.log(data)
-=======
   const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
 
-  if (error) {
-    return (
-      <div>
-        <p>Error: {error.message}</p>
-      </div>
-    )
-  }
-  if (loading) {
-    return <p>Loading...</p>
-  }
   if (user) {
-    return window.location.replace(ROUTES.initial)
+    return window.location.replace(ROUTES.home)
   }
   const onSubmit = (data: SignUpWithEmailFormType) => {
     createUserWithEmailAndPassword(data.email, data.password)
->>>>>>> 634260660a8521434d6e571b3ce7e22543591d1d
   }
 
   return (
@@ -100,10 +64,8 @@ export const SignUpWithEmail = () => {
               <ToggleButtonGroup
                 exclusive
                 aria-label="text alignment"
+                onChange={(e, value) => props.field.onChange(value)}
                 {...props}
-                onChange={(e, value) => {
-                  props.field.onChange(value)
-                }}
               >
                 <ToggleButton value="1-3" key="1-3">
                   1-3 Spaces
@@ -120,13 +82,14 @@ export const SignUpWithEmail = () => {
             control={control}
           />
           <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
-            Continue
+            {loading ? <CircularProgress color="success" /> : 'Continue'}
           </Button>
           <Typography fontSize={14} fontWeight={400} color="#747978" textAlign="center">
             Use of this app constitutes acceptance of the <Link>Terms of Use</Link>, <Link>Booking Terms</Link> and{' '}
             <Link>Privacy Policy</Link>.
           </Typography>
         </Stack>
+        <Notification type="error" text={error?.message} />
       </Stack>
     </MainLayout>
   )

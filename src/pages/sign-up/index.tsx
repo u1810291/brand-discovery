@@ -5,19 +5,16 @@ import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
 import Header from 'src/components/Header'
 export default () => {
-  const NewPassword = dynamic(
-    () => import('src/pages-components/NewPassword').then((component) => component.NewPassword),
-    {
-      suspense: true,
-    },
-  )
+  const SignUp = dynamic(() => import('src/pages-components/SignUp').then((component) => component.SignUp), {
+    suspense: true,
+  })
   return (
     <div>
-      <Header title="New password">
-        <meta name="description" content="New password page" />
+      <Header title="Sign up">
+        <meta name="description" content="Sign up page" />
       </Header>
       <Suspense fallback={<CircularProgress />}>
-        <NewPassword />
+        <SignUp />
       </Suspense>
     </div>
   )

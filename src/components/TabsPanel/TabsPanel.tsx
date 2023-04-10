@@ -1,6 +1,11 @@
-import { Divider, Stack, Tab, Tabs, TabsProps, styled } from '@mui/material'
+'use client'
 import { FC, ReactNode, SyntheticEvent, useState } from 'react'
-import { TabPanel } from './components'
+import Stack from '@mui/material/Stack'
+import Tabs, { TabsProps } from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
+import Divider from '@mui/material/Divider'
+import Item from './Item/Item'
+import { styled } from '@mui/material'
 
 type TabsPanelProps = {
   tabs: Array<{ icon: string | React.ReactElement; content: ReactNode }>
@@ -17,15 +22,15 @@ export const TabsPanel: FC<TabsPanelProps> = ({ tabs, className, ...props }) => 
     <Stack spacing={1} className={className} flex={1} divider={<StyledDivider />}>
       <Stack flex={1}>
         {tabs.map((tab, index) => (
-          <TabPanel key={index} value={value} index={index}>
+          <Item key={index} value={value} index={index}>
             {tab.content}
-          </TabPanel>
+          </Item>
         ))}
       </Stack>
       <Stack>
         <Tabs value={value} onChange={handleChange} {...props}>
           {tabs.map((tab, index) => (
-            <Tab key={index} icon={tab.icon} sx={{width:'25%'}} />
+            <Tab key={index} icon={tab.icon} sx={{ width: '25%' }} />
           ))}
         </Tabs>
       </Stack>

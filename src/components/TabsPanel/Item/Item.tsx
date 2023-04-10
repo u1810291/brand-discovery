@@ -1,13 +1,14 @@
-import { Stack } from '@mui/material'
+'use client'
+import Stack from '@mui/material/Stack'
 import { FC, ReactNode } from 'react'
 
-type TabPanelProps = {
+type ItemProps = {
   children: ReactNode
   index: number
   value: number
 }
 
-const TabPanel: FC<TabPanelProps> = ({ index, value, children }) => {
+const Item: FC<ItemProps> = ({ index, value, children }) => {
   return (
     <Stack
       role="tabpanel"
@@ -24,4 +25,4 @@ const TabPanel: FC<TabPanelProps> = ({ index, value, children }) => {
   )
 }
 
-export default TabPanel
+export default Item

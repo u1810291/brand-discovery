@@ -1,21 +1,25 @@
 'use client'
 
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useTheme } from '@mui/material'
-import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { getAuth } from 'firebase/auth'
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth'
 import { useForm } from 'react-hook-form'
 import { InputField } from 'src/UI/InputField'
 import { PasswordInput } from 'src/UI/PasswordInput'
-import { SpacewiseSVG } from 'src/assets/svg/components'
+import SpacewiseSVG from 'src/assets/svg/components/spacewise.svg'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import * as yup from 'yup'
-import firebaseApp from '../../services/firebase'
+import CircularProgress from '@mui/material/CircularProgress'
+import Button from '@mui/material/Button'
+import Divider from '@mui/material/Divider'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import firebaseApp from 'src/services/firebase'
+import { Notification } from 'src/components/Notification/Notification'
+import { useTheme } from '@mui/material'
+import { useEffect } from 'react'
+import Image from 'next/image'
 
 type SingInFormType = {
   email: string
@@ -40,30 +44,20 @@ export const SignIn = () => {
     resolver: yupResolver(schema),
   })
   const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth)
-  if (error) {
-    return (
-      <div>
-        <p>Error: {error.message}</p>
-      </div>
-    )
-  }
-  if (loading) {
-    return <p>Loading...</p>
-  }
-  const onSubmit = async (data: SingInFormType) => {
-    await signInWithEmailAndPassword(data.email, data.password)
-    if (user) {
-      console.log(user)
-      return window.location.replace(ROUTES.initial)
-    }
+  const onSubmit = (data: SingInFormType) => {
+    signInWithEmailAndPassword(data.email, data.password)
+    window.localStorage.setItem('user', JSON.stringify(user))
   }
 
+  useEffect(() => {
+    window.location.replace('home')
+  }, [user])
   const { palette } = useTheme()
   return (
-    <MainLayout>
+    <MainLayout id="main-layout">
       <Stack marginY="auto">
         <Stack alignSelf="center">
-          <SpacewiseSVG />
+          <Image src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
         </Stack>
         <Typography component="h3" fontWeight={800} fontSize={24} marginTop={5} marginBottom={4} alignSelf="center">
           Login with Spacewise ID
@@ -97,7 +91,7 @@ export const SignIn = () => {
             </Button>
           </Stack>
           <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
-            Login
+            {loading ? <CircularProgress /> : 'Login'}
           </Button>
         </Stack>
         <Divider sx={{ marginBlock: { xs: 4, sm: 6 } }}>OR</Divider>
@@ -110,6 +104,7 @@ export const SignIn = () => {
           </Button>
         </Stack>
       </Stack>
+      <Notification text={error?.message} type="error" />
     </MainLayout>
   )
 }
