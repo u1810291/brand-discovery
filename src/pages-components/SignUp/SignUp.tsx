@@ -26,7 +26,7 @@ export const SignUp = () => {
   const [signInWithFacebook, facebookUser, , facebookError] = useSignInWithFacebook(auth)
 
   useEffect(() => {
-    if (!!googleUser?.user?.uid || !!facebookUser?.user?.uid ) {
+    if (!!googleUser?.user?.uid || !!facebookUser?.user?.uid) {
       localStorage.setItem('uuid', JSON.stringify(googleUser?.user?.uid || facebookUser?.user?.uid))
       push(ROUTES.home)
     }
