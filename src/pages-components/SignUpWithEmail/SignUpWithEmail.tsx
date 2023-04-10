@@ -18,10 +18,13 @@ import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Link from '@mui/material/Link'
 import { defaultValues, SignUpWithEmailFormType, schema } from './helper'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 const auth = getAuth(firebaseApp())
 
 export const SignUpWithEmail = () => {
+  const { push } = useRouter()
   const {
     control,
     handleSubmit,
@@ -34,9 +37,12 @@ export const SignUpWithEmail = () => {
 
   const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
 
-  if (user) {
-    return window.location.replace(ROUTES.home)
-  }
+  useEffect(() => {
+    if (!!user?.user?.uid) {
+      localStorage.setItem('uuid', JSON.stringify(user?.user?.uid))
+      push(ROUTES.home)
+    }
+  }, [user])
   const onSubmit = (data: SignUpWithEmailFormType) => {
     createUserWithEmailAndPassword(data.email, data.password)
   }

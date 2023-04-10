@@ -15,16 +15,21 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
 import { useTheme } from '@mui/material/styles'
+import { useRouter } from 'next/navigation'
 
 const auth = getAuth(firebaseApp())
 
 export const SignUp = () => {
   const { palette } = useTheme()
+  const { push } = useRouter()
   const [signInWithGoogle, googleUser, , googleError] = useSignInWithGoogle(auth)
   const [signInWithFacebook, facebookUser, , facebookError] = useSignInWithFacebook(auth)
 
   useEffect(() => {
-    window.location.replace('home')
+    if (!!googleUser?.user?.uid || !!facebookUser?.user?.uid) {
+      localStorage.setItem('uuid', JSON.stringify(googleUser?.user?.uid || facebookUser?.user?.uid))
+      push(ROUTES.home)
+    }
   }, [googleUser, facebookUser])
 
   return (
