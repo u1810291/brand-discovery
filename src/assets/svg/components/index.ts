@@ -1,3 +1,4 @@
+export { CheckMarkIcon } from './CheckMarkIcon'
 export { FacebookIcon } from './FacebookIcon'
 export { LogoBackground } from './LogoBackground'
-export { SpacewiseSVG } from './SpacewiseSVG'
+export { SpacewiceBackground } from './SpacewiceBackground'
