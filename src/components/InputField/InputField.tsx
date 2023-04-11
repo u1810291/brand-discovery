@@ -1,4 +1,4 @@
-import { TextField, TextFieldProps } from '@mui/material'
+import TextField, { TextFieldProps } from '@mui/material/TextField'
 import { FieldValues, useController, UseControllerProps } from 'react-hook-form'
 
 export function InputField<T extends FieldValues>({

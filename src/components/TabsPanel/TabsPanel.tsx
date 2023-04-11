@@ -1,11 +1,11 @@
 'use client'
 import { FC, ReactNode, SyntheticEvent, useState } from 'react'
-import Stack from '@mui/material/Stack'
-import Tabs, { TabsProps } from '@mui/material/Tabs'
-import Tab from '@mui/material/Tab'
-import Divider from '@mui/material/Divider'
 import Item from './Item/Item'
+import Tab from '@mui/material/Tab'
 import { styled } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import Divider from '@mui/material/Divider'
+import Tabs, { TabsProps } from '@mui/material/Tabs'
 
 type TabsPanelProps = {
   tabs: Array<{ icon: string | React.ReactElement; content: ReactNode }>

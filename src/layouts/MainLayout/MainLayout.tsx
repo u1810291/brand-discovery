@@ -1,7 +1,11 @@
-import { ArrowBack } from '@mui/icons-material'
-import { IconButton, Stack, StackProps, styled } from '@mui/material'
-import { useRouter } from 'next/router'
+'use client'
+
 import { FC, PropsWithChildren } from 'react'
+import { styled } from '@mui/material'
+import { useRouter } from 'next/router'
+import IconButton from '@mui/material/IconButton'
+import ArrowBack from '@mui/icons-material/ArrowBack'
+import Stack, { StackProps } from '@mui/material/Stack'
 
 type MainLayoutProps = {
   showBackButton?: boolean

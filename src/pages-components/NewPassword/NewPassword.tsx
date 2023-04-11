@@ -1,35 +1,23 @@
 'use client'
+
 import { useState } from 'react'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { useUpdatePassword } from 'react-firebase-hooks/auth'
-import { useForm } from 'react-hook-form'
-import SpacewiseSVG from 'src/assets/svg/components/spacewise.svg'
-import { MainLayout } from 'src/layouts/MainLayout'
-import { PasswordInput } from 'src/UI/PasswordInput'
-import * as yup from 'yup'
-import firebaseApp from '../../services/firebase'
 import { getAuth } from 'firebase/auth'
-import Notification from 'src/components/Notification'
+import { useForm } from 'react-hook-form'
+import { MainLayout } from 'src/layouts/MainLayout'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { NewPasswordFormType, schema } from './helper'
+import { PasswordInput } from 'src/components/PasswordInput'
+import { useUpdatePassword } from 'react-firebase-hooks/auth'
 import Image from 'next/image'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import firebaseApp from '../../services/firebase'
+import Notification from 'src/components/Notification'
 import CircularProgress from '@mui/material/CircularProgress'
+import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 
 const auth = getAuth(firebaseApp())
-
-type NewPasswordFormType = {
-  password: string
-  confirmPassword: string
-}
-
-const schema = yup.object({
-  password: yup.string().required(),
-  confirmPassword: yup
-    .string()
-    .required()
-    .oneOf([yup.ref('password')], 'Your passwords do not match.'),
-})
 
 export const NewPassword = () => {
   const [success, setSuccess] = useState('')

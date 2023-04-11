@@ -1,8 +1,10 @@
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+'use client'
+
+import Box from '@mui/material/Box'
 import HomeIcon from '@mui/icons-material/Home'
 import InfoIcon from '@mui/icons-material/Info'
 import SettingsIcon from '@mui/icons-material/Settings'
-import { Box } from '@mui/material'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import { TabsPanel } from 'src/components/TabsPanel'
 import { MainLayout } from 'src/layouts/MainLayout'
 

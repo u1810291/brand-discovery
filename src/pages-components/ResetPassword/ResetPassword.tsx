@@ -1,29 +1,23 @@
+'use client'
+
 import { useState } from 'react'
-import Notification from 'src/components/Notification'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import CircularProgress from '@mui/material/CircularProgress'
-import Button from '@mui/material/Button'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { getAuth } from 'firebase/auth'
-import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth'
 import { useForm } from 'react-hook-form'
-import SpacewiseSVG from 'src/assets/svg/components/spacewise.svg'
 import { MainLayout } from 'src/layouts/MainLayout'
-import { InputField } from 'src/UI/InputField'
-import * as yup from 'yup'
-import firebaseApp from 'src/services/firebase'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { InputField } from 'src/components/InputField'
+import { schema, ResetPasswordFormType } from './helper'
+import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth'
 import Image from 'next/image'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
+import firebaseApp from 'src/services/firebase'
+import Typography from '@mui/material/Typography'
+import Notification from 'src/components/Notification'
+import CircularProgress from '@mui/material/CircularProgress'
+import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 
 const auth = getAuth(firebaseApp())
-
-type ResetPasswordFormType = {
-  email: string
-}
-
-const schema = yup.object({
-  email: yup.string().required().email(),
-})
 
 export const ResetPassword = () => {
   const [success, setSuccess] = useState('')
