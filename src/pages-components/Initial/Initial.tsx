@@ -34,11 +34,11 @@ export const Initial = () => {
             </Typography>
           </TextContainer>
         </Stack>
-        <Link href={ROUTES.signIn} style={{ textDecoration: 'none' }}>
-          <Button variant="contained" fullWidth>
+        <Button variant="contained" fullWidth>
+          <Link href={ROUTES.signIn} style={{ textDecoration: 'none' }}>
             Login
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </Stack>
     </MainLayout>
   )
