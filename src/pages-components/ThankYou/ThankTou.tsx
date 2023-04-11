@@ -1,12 +1,12 @@
 'use client'
 
-import { useTheme } from '@mui/material'
-import Typography from '@mui/material/Typography'
-import Stack from '@mui/material/Stack'
-import { SpacewiceBackground } from 'src/assets/svg/components'
-import SpacewiseSVG from 'src/assets/svg/components/spacewise.svg'
-import { MainLayout } from 'src/layouts/MainLayout'
 import Image from 'next/image'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
+import SpacewiseBackground from 'src/assets/svg/spacewise-background.svg'
+import { useTheme } from '@mui/material'
+import { MainLayout } from 'src/layouts/MainLayout'
 
 export const ThankYou = () => {
   const { palette } = useTheme()
@@ -40,7 +40,9 @@ export const ThankYou = () => {
           </Typography>
         </Stack>
         <Stack position="absolute" bottom={0} width="100%" height={{ xs: 380, sm: 500 }}>
-          <SpacewiceBackground width="100%" height="100%" />
+          <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+            <Image src={SpacewiseBackground} fill style={{ objectFit: 'contain' }} alt="Spacewise background" />
+          </div>
         </Stack>
       </Stack>
     </MainLayout>

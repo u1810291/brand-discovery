@@ -1,15 +1,17 @@
-import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
+'use client'
+
+import { useState } from 'react'
+import { useTheme } from '@mui/material'
+import { getAuth } from 'firebase/auth'
+import { MainLayout } from 'src/layouts/MainLayout'
+import { useSendEmailVerification } from 'react-firebase-hooks/auth'
 import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
+import firebaseApp from 'src/services/firebase'
 import Typography from '@mui/material/Typography'
 import Notification from 'src/components/Notification'
-import { getAuth } from 'firebase/auth'
-import { useSendEmailVerification } from 'react-firebase-hooks/auth'
-import { CheckMarkIcon } from 'src/assets/svg/components'
-import { MainLayout } from 'src/layouts/MainLayout'
-import firebaseApp from 'src/services/firebase'
-import { useTheme } from '@mui/material'
-import { useState } from 'react'
+import CircularProgress from '@mui/material/CircularProgress'
+import CheckMarkIcon from 'src/assets/svg/check-mark-icon.svg'
 
 const auth = getAuth(firebaseApp())
 
