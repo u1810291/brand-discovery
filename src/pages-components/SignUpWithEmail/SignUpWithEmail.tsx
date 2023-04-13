@@ -40,7 +40,7 @@ export const SignUpWithEmail = () => {
   useEffect(() => {
     if (!!user?.user?.uid) {
       localStorage.setItem('uuid', JSON.stringify(user?.user?.uid))
-      push(ROUTES.home)
+      push(ROUTES.verifyEmail)
     }
   }, [user])
   const onSubmit = (data: SignUpWithEmailFormType) => {
