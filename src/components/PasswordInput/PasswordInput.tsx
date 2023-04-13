@@ -1,17 +1,15 @@
-import { Lock, LockOpen } from '@mui/icons-material'
-import {
-  FormControl,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  OutlinedInputProps,
-  styled,
-  Typography,
-} from '@mui/material'
-
+'use client'
+import Lock from '@mui/icons-material/Lock'
+import InputLabel from '@mui/material/InputLabel'
+import Typography from '@mui/material/Typography'
+import IconButton from '@mui/material/IconButton'
+import FormControl from '@mui/material/FormControl'
+import LockOpen from '@mui/icons-material/LockOpen'
+import InputAdornment from '@mui/material/InputAdornment'
+import OutlinedInput, { OutlinedInputProps } from '@mui/material/OutlinedInput'
+import { useToggle } from 'src/hooks'
+import { styled } from '@mui/material/styles'
 import { FieldValues, useController, UseControllerProps } from 'react-hook-form'
-import { useToggle } from '../../hooks'
 
 export function PasswordInput<T extends FieldValues>({
   name,

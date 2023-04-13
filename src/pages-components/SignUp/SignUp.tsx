@@ -1,32 +1,36 @@
+/* eslint-disable prettier/prettier */
 'use client'
 
 import { useEffect } from 'react'
 import { getAuth } from 'firebase/auth'
-import Image from 'next/image'
-import { useSignInWithFacebook, useSignInWithGoogle } from 'react-firebase-hooks/auth'
-import { FacebookIcon } from 'src/assets/svg/components'
-import SpacewiseSVG from 'src/assets/svg/components/spacewise.svg'
-import { ROUTES } from 'src/constants/routes'
-import { MainLayout } from 'src/layouts/MainLayout'
-import firebaseApp from 'src/services/firebase'
-import Notification from 'src/components/Notification'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import Link from 'next/link'
-import { useTheme } from '@mui/material/styles'
 import { useRouter } from 'next/navigation'
+import { ROUTES } from 'src/constants/routes'
+import { useTheme } from '@mui/material/styles'
+import { MainLayout } from 'src/layouts/MainLayout'
+import { useSendEmailVerification, useSignInWithFacebook, useSignInWithGoogle } from 'react-firebase-hooks/auth'
+import Link from 'next/link'
+import Image from 'next/image'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
+import firebaseApp from 'src/services/firebase'
+import Typography from '@mui/material/Typography'
+import Notification from 'src/components/Notification'
+import CircularProgress from '@mui/material/CircularProgress'
+import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
+import FacebookIcon from 'src/assets/svg/facebook-icon.svg'
 
 const auth = getAuth(firebaseApp())
 
 export const SignUp = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { palette } = useTheme()
   const { push } = useRouter()
   const [signInWithGoogle, googleUser, , googleError] = useSignInWithGoogle(auth)
   const [signInWithFacebook, facebookUser, , facebookError] = useSignInWithFacebook(auth)
+  const [sendEmailVerification, sending, error] = useSendEmailVerification(auth)
 
   useEffect(() => {
-    if (!!googleUser?.user?.uid || !!facebookUser?.user?.uid) {
+    if (!sending && (!!googleUser?.user?.uid || !!facebookUser?.user?.uid)) {
       localStorage.setItem('uuid', JSON.stringify(googleUser?.user?.uid || facebookUser?.user?.uid))
       push(ROUTES.home)
     }
@@ -46,9 +50,12 @@ export const SignUp = () => {
             variant="outlined"
             sx={{ height: 48 }}
             startIcon={<Image src="/images/Google.png" width={41} height={39} alt="Google" />}
-            onClick={() => signInWithGoogle()}
+            onClick={async () => {
+              await signInWithGoogle()
+              await sendEmailVerification()
+            }}
           >
-            Sign up with Google
+            {sending ? <CircularProgress color="success" /> : 'Sign up with Google'}
           </Button>
           {/*<Button
             sx={{ height: 48 }}
@@ -60,13 +67,16 @@ export const SignUp = () => {
           <Button
             sx={{ height: 48 }}
             variant="outlined"
-            startIcon={<FacebookIcon />}
-            onClick={() => signInWithFacebook()}
+            startIcon={<Image src={FacebookIcon} width={24} height={24} alt="facebook icon"/>}
+            onClick={async () => {
+              await signInWithFacebook()
+              await sendEmailVerification()
+            }}
           >
-            Sign in with Facebook
+            {sending ? <CircularProgress color="success" /> : 'Sign in with Facebook'}
           </Button>
           <Link href={ROUTES.signUpWithEmail} style={{ textDecoration: 'none' }}>
-            <Button sx={{ height: 48 }} variant="outlined" href={ROUTES.signUpWithEmail}>
+            <Button sx={{ height: 48 }} variant="outlined">
               Sign up with Email
             </Button>
           </Link>
@@ -85,7 +95,7 @@ export const SignUp = () => {
             Acceptable use policy
           </Link>
         </Typography>
-        <Notification type="error" text={googleError?.message || facebookError?.message} />
+        <Notification type="error" text={googleError?.message || facebookError?.message || error?.message} />
       </Stack>
     </MainLayout>
   )
