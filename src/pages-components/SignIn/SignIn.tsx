@@ -54,7 +54,7 @@ export const SignIn = () => {
     <MainLayout id="main-layout">
       <Stack marginY="auto">
         <Stack alignSelf="center">
-          <Image src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
+          <Image unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
         </Stack>
         <Typography component="h3" fontWeight={800} fontSize={24} marginTop={5} marginBottom={4} alignSelf="center">
           Login with Spacewise ID

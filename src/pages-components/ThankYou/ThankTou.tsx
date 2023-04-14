@@ -15,19 +15,21 @@ export const ThankYou = () => {
   const { palette } = useTheme()
   const { push } = useRouter()
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      push(ROUTES.home)
-    }, 5000)
-    return () => {
-      clearInterval(timeout)
-    }
-  }, [])
+  console.log(window.location.href)
+
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     router.push(ROUTES.home)
+  //   }, 5000)
+  //   return () => {
+  //     clearInterval(timeout)
+  //   }
+  // }, [])
   return (
     <MainLayout hasPadding={false}>
       <Stack direction="column" bgcolor="#D1EAF1" flex={1} position="relative" alignItems="center">
         <Stack marginTop={{ xs: 13, sm: 25 }} alignItems="center">
-          <Image src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
+          <Image unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
           <Typography fontWeight={800} fontSize={24} color={palette.primary.main} marginTop={1}>
             Brand Discovery
           </Typography>
@@ -54,7 +56,13 @@ export const ThankYou = () => {
         </Stack>
         <Stack position="absolute" bottom={0} width="100%" height={{ xs: 380, sm: 500 }}>
           <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-            <Image src={SpacewiseBackground} fill style={{ objectFit: 'contain' }} alt="Spacewise background" />
+            <Image
+              unoptimized
+              src={SpacewiseBackground}
+              fill
+              style={{ objectFit: 'contain' }}
+              alt="Spacewise background"
+            />
           </div>
         </Stack>
       </Stack>

@@ -39,7 +39,7 @@ export const SignUp = () => {
     <MainLayout showBackButton>
       <Stack marginY="auto" marginTop={{ xs: 0, sm: 'auto' }} spacing={5}>
         <Stack alignSelf="center">
-          <Image src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
+          <Image unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
           <Typography component="h3" fontWeight={800} fontSize={24} marginTop={5} alignSelf="center">
             Sign Up
           </Typography>
@@ -48,7 +48,7 @@ export const SignUp = () => {
           <Button
             variant="outlined"
             sx={{ height: 48 }}
-            startIcon={<Image src="/images/Google.png" width={41} height={39} alt="Google" />}
+            startIcon={<Image unoptimized src="/images/Google.png" width={41} height={39} alt="Google" />}
             onClick={async () => {
               await signInWithGoogle()
               if (googleUser) {
@@ -61,14 +61,14 @@ export const SignUp = () => {
           {/*<Button
             sx={{ height: 48 }}
             variant="outlined"
-            startIcon={<Image src="/images/Linkedin.png" width={50} height={39} alt="Linkedin" />}
+            startIcon={<Image unoptimized src="/images/Linkedin.png" width={50} height={39} alt="Linkedin" />}
           >
             Sign up with Linkedin
           </Button>*/}
           <Button
             sx={{ height: 48 }}
             variant="outlined"
-            startIcon={<Image src={FacebookIcon} width={24} height={24} alt="facebook icon"/>}
+            startIcon={<Image unoptimized src={FacebookIcon} width={24} height={24} alt="facebook icon"/>}
             onClick={async () => {
               await signInWithFacebook()
               if (facebookUser) {
