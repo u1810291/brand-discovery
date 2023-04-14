@@ -5,6 +5,7 @@ import { useTheme } from '@mui/material'
 import { getAuth } from 'firebase/auth'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { useSendEmailVerification } from 'react-firebase-hooks/auth'
+import Image from 'next/image'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import firebaseApp from 'src/services/firebase'
@@ -33,7 +34,7 @@ export const VerifyEmail = () => {
             alignSelf: 'center',
           }}
         >
-          <CheckMarkIcon />
+          <Image src={CheckMarkIcon} alt="Spacewise background" />
         </Stack>
         <Typography fontSize={24} fontWeight={800} lineHeight="40px" textAlign="center" marginTop={{ xs: 3, sm: 10 }}>
           Verify your email address

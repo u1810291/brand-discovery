@@ -7,9 +7,22 @@ import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 import SpacewiseBackground from 'src/assets/svg/spacewise-background.svg'
 import { useTheme } from '@mui/material'
 import { MainLayout } from 'src/layouts/MainLayout'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { ROUTES } from 'src/constants/routes'
 
 export const ThankYou = () => {
   const { palette } = useTheme()
+  const { push } = useRouter()
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      push(ROUTES.home)
+    }, 5000)
+    return () => {
+      clearInterval(timeout)
+    }
+  }, [])
   return (
     <MainLayout hasPadding={false}>
       <Stack direction="column" bgcolor="#D1EAF1" flex={1} position="relative" alignItems="center">

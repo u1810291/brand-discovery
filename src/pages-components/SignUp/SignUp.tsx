@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { ROUTES } from 'src/constants/routes'
 import { useTheme } from '@mui/material/styles'
 import { MainLayout } from 'src/layouts/MainLayout'
-import { useSendEmailVerification, useSignInWithFacebook, useSignInWithGoogle } from 'react-firebase-hooks/auth'
+import { useSignInWithFacebook, useSignInWithGoogle } from 'react-firebase-hooks/auth'
 import Link from 'next/link'
 import Image from 'next/image'
 import Stack from '@mui/material/Stack'
@@ -25,12 +25,11 @@ export const SignUp = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { palette } = useTheme()
   const { push } = useRouter()
-  const [signInWithGoogle, googleUser, , googleError] = useSignInWithGoogle(auth)
-  const [signInWithFacebook, facebookUser, , facebookError] = useSignInWithFacebook(auth)
-  const [sendEmailVerification, sending, error] = useSendEmailVerification(auth)
+  const [signInWithGoogle, googleUser, googleLoader, googleError] = useSignInWithGoogle(auth)
+  const [signInWithFacebook, facebookUser, facebookLoader, facebookError] = useSignInWithFacebook(auth)
 
   useEffect(() => {
-    if (!sending && (!!googleUser?.user?.uid || !!facebookUser?.user?.uid)) {
+    if (!!googleUser?.user?.uid || !!facebookUser?.user?.uid) {
       localStorage.setItem('uuid', JSON.stringify(googleUser?.user?.uid || facebookUser?.user?.uid))
       push(ROUTES.home)
     }
@@ -52,10 +51,12 @@ export const SignUp = () => {
             startIcon={<Image src="/images/Google.png" width={41} height={39} alt="Google" />}
             onClick={async () => {
               await signInWithGoogle()
-              await sendEmailVerification()
+              if (googleUser) {
+                push(ROUTES.verifyEmail)
+              }
             }}
           >
-            {sending ? <CircularProgress color="success" /> : 'Sign up with Google'}
+            {googleLoader ? <CircularProgress color="success" /> : 'Sign up with Google'}
           </Button>
           {/*<Button
             sx={{ height: 48 }}
@@ -70,10 +71,12 @@ export const SignUp = () => {
             startIcon={<Image src={FacebookIcon} width={24} height={24} alt="facebook icon"/>}
             onClick={async () => {
               await signInWithFacebook()
-              await sendEmailVerification()
+              if (facebookUser) {
+                push(ROUTES.verifyEmail)
+              }
             }}
           >
-            {sending ? <CircularProgress color="success" /> : 'Sign in with Facebook'}
+            {facebookLoader ? <CircularProgress color="success" /> : 'Sign in with Facebook'}
           </Button>
           <Link href={ROUTES.signUpWithEmail} style={{ textDecoration: 'none' }}>
             <Button sx={{ height: 48 }} variant="outlined">
@@ -95,7 +98,7 @@ export const SignUp = () => {
             Acceptable use policy
           </Link>
         </Typography>
-        <Notification type="error" text={googleError?.message || facebookError?.message || error?.message} />
+        <Notification type="error" text={googleError?.message || facebookError?.message} />
       </Stack>
     </MainLayout>
   )

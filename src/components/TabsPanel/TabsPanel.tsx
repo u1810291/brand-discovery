@@ -6,12 +6,15 @@ import { styled } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
 import Tabs, { TabsProps } from '@mui/material/Tabs'
+import { Notification } from '../Notification/Notification'
 
 type TabsPanelProps = {
   tabs: Array<{ icon: string | React.ReactElement; content: ReactNode }>
+  error: string
+  success: string
 } & TabsProps
 
-export const TabsPanel: FC<TabsPanelProps> = ({ tabs, className, ...props }) => {
+export const TabsPanel: FC<TabsPanelProps> = ({ tabs, className, error, success, ...props }) => {
   const [value, setValue] = useState(0)
 
   const handleChange = (event: SyntheticEvent, newValue: number) => {
@@ -34,6 +37,7 @@ export const TabsPanel: FC<TabsPanelProps> = ({ tabs, className, ...props }) => 
           ))}
         </Tabs>
       </Stack>
+      <Notification type={error ? 'error' : 'success'} text={error || success} />
     </Stack>
   )
 }
