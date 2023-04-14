@@ -1,0 +1,1 @@
+export { GallerySwiper } from './GallerySwiper'

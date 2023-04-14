@@ -1,20 +1,21 @@
 'use client'
 
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import firebaseApp from 'src/services/firebase'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import HomeIcon from '@mui/icons-material/Home'
 import InfoIcon from '@mui/icons-material/Info'
 import SettingsIcon from '@mui/icons-material/Settings'
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import { TabsPanel } from 'src/components/TabsPanel'
-import { MainLayout } from 'src/layouts/MainLayout'
-import { useSignOut } from 'react-firebase-hooks/auth'
-import { getAuth } from 'firebase/auth'
-import { useEffect, useState } from 'react'
 import { CircularProgress } from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import { getAuth } from 'firebase/auth'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { useSignOut } from 'react-firebase-hooks/auth'
+import { TabsPanel } from 'src/components/TabsPanel'
 import { ROUTES } from 'src/constants/routes'
+import { MainLayout } from 'src/layouts/MainLayout'
+import firebaseApp from 'src/services/firebase'
+import { HomePageContent } from './components'
 
 const auth = getAuth(firebaseApp())
 
@@ -34,7 +35,7 @@ export const Home = () => {
   }, [])
 
   const tabs = [
-    { icon: <HomeIcon />, content: <Box>Slider</Box> },
+    { icon: <HomeIcon />, content: <HomePageContent /> },
     { icon: <FavoriteBorderIcon />, content: <Box>Like</Box> },
     { icon: <InfoIcon />, content: <Box>Info</Box> },
     {
@@ -56,7 +57,7 @@ export const Home = () => {
     },
   ]
   return (
-    <MainLayout>
+    <MainLayout padding={3} paddingTop={5}>
       <TabsPanel tabs={tabs} error={error} success={success} />
     </MainLayout>
   )
