@@ -35,7 +35,7 @@ export const Initial = () => {
           </TextContainer>
         </Stack>
         <Button variant="contained" fullWidth>
-          <Link href={ROUTES.signIn} style={{ textDecoration: 'none' }}>
+          <Link href={ROUTES.signIn} style={{ textDecoration: 'none', width: '100%', height: '100%', color: 'white' }}>
             Login
           </Link>
         </Button>
