@@ -43,6 +43,7 @@ export const SignUpWithEmail = () => {
       push(ROUTES.verifyEmail)
     }
   }, [user])
+
   const onSubmit = (data: SignUpWithEmailFormType) => {
     createUserWithEmailAndPassword(data.email, data.password)
   }

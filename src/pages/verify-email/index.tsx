@@ -12,6 +12,7 @@ export default () => {
       suspense: true,
     },
   )
+  console.log(VerifyEmail)
   return (
     <div>
       <Header title="Verify email">
