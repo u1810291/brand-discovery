@@ -1,23 +1,23 @@
 /* eslint-disable prettier/prettier */
 'use client'
 
-import { useEffect } from 'react'
-import { getAuth } from 'firebase/auth'
-import { useRouter } from 'next/navigation'
-import { ROUTES } from 'src/constants/routes'
-import { useTheme } from '@mui/material/styles'
-import { MainLayout } from 'src/layouts/MainLayout'
-import { useSignInWithFacebook, useSignInWithGoogle } from 'react-firebase-hooks/auth'
-import Link from 'next/link'
-import Image from 'next/image'
-import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import firebaseApp from 'src/services/firebase'
-import Typography from '@mui/material/Typography'
-import Notification from 'src/components/Notification'
 import CircularProgress from '@mui/material/CircularProgress'
-import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { useTheme } from '@mui/material/styles'
+import { getAuth } from 'firebase/auth'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { useSignInWithFacebook, useSignInWithGoogle } from 'react-firebase-hooks/auth'
 import FacebookIcon from 'src/assets/svg/facebook-icon.svg'
+import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
+import Notification from 'src/components/Notification'
+import { ROUTES } from 'src/constants/routes'
+import { MainLayout } from 'src/layouts/MainLayout'
+import firebaseApp from 'src/services/firebase'
 
 const auth = getAuth(firebaseApp())
 
@@ -68,7 +68,7 @@ export const SignUp = () => {
           <Button
             sx={{ height: 48 }}
             variant="outlined"
-            startIcon={<Image src={FacebookIcon} width={24} height={24} alt="facebook icon"/>}
+            startIcon={<Image src={FacebookIcon} width={24} height={24} alt="facebook icon" />}
             onClick={async () => {
               await signInWithFacebook()
               if (facebookUser) {
@@ -79,7 +79,7 @@ export const SignUp = () => {
             {facebookLoader ? <CircularProgress color="success" /> : 'Sign in with Facebook'}
           </Button>
           <Link href={ROUTES.signUpWithEmail} style={{ textDecoration: 'none' }}>
-            <Button sx={{ height: 48 }} variant="outlined">
+            <Button sx={{ height: 48 }} variant="outlined" fullWidth>
               Sign up with Email
             </Button>
           </Link>

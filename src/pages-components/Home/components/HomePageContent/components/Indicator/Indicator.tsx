@@ -13,7 +13,7 @@ export const Indicator: FC<IndicatorProps> = ({ activeIndex, count }) => {
       direction="row"
       gap={{ xs: '4px', sm: '20px' }}
       height="4px"
-      width="100%"
+      width="calc(100% - 32px)"
       position="absolute"
       left=" 16px"
       top="16px"

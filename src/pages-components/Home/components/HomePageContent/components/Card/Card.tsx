@@ -31,6 +31,7 @@ export const Card: FC<CardProps> = ({ images, isShowLabel, isLike, ...props }) =
 
   return (
     <Container {...props}>
+      <Background />
       <Indicator count={images.length} activeIndex={activeIndex} />
       <Stack height="100%" width="40%" onClick={getPrevSlide} position="absolute" top={0} left={0} zIndex={2} />
       <Stack height="100%" width="40%" onClick={getNextSlide} position="absolute" top={0} right={0} zIndex={2} />
@@ -94,5 +95,22 @@ const ImageContainer = styled(Stack)`
   img {
     width: 100%;
     height: 100%;
+    object-fit: cover;
   }
+`
+
+const Background = styled(Stack)`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  opacity: 0.8;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0) 21%,
+    rgba(0, 0, 0, 0) 90%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  box-shadow: 0px 16px 64px rgba(179, 180, 174, 0.25);
 `

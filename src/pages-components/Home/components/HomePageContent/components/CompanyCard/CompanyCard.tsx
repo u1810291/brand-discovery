@@ -3,9 +3,10 @@ import { Chip, Typography, styled } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Image from 'next/image'
 import { FC } from 'react'
+import { CompanyType } from 'src/types'
 
 type CompanyCardProps = {
-  data?: { title: string; location: string; image: string; followers: number; tags: string[] }
+  data?: CompanyType
 }
 export const CompanyCard: FC<CompanyCardProps> = ({ data }) => {
   return (

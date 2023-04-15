@@ -16,6 +16,7 @@ import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
 import { HomePageContent } from './components'
+import { companies } from './mock'
 
 const auth = getAuth(firebaseApp())
 
@@ -35,7 +36,20 @@ export const Home = () => {
   }, [])
 
   const tabs = [
-    { icon: <HomeIcon />, content: <HomePageContent /> },
+    {
+      icon: <HomeIcon />,
+      content: (
+        <HomePageContent
+          data={companies}
+          likeAction={(id) => {
+            return
+          }}
+          dislikeAction={(id) => {
+            return
+          }}
+        />
+      ),
+    },
     { icon: <FavoriteBorderIcon />, content: <Box>Like</Box> },
     { icon: <InfoIcon />, content: <Box>Info</Box> },
     {

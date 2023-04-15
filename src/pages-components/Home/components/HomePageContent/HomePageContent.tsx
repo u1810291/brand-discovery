@@ -4,51 +4,10 @@ import { IconButton, styled } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { animated, interpolate, useSprings } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
-import { useState } from 'react'
+import { FC, useState } from 'react'
+import { CompanyType } from 'src/types'
 import { Card, CompanyCard } from './components'
 // TODO: поправить цвета в теме
-const companies = [
-  {
-    company: {
-      title: 'Adidas',
-      location: 'San Francisco',
-      image: '/images/adidas1.jpg',
-      followers: 0,
-      tags: ['Sport', '+2'],
-    },
-    images: ['/images/adidas1.jpg', '/images/adidas1.jpg', '/images/adidas1.jpg', '/images/adidas1.jpg'],
-  },
-  {
-    company: {
-      title: 'Nice',
-      location: 'San Francisco',
-      image: '/images/adidas1.jpg',
-      followers: 0,
-      tags: ['Sport', '+2'],
-    },
-    images: ['/images/adidas1.jpg', '/images/adidas1.jpg', '/images/adidas1.jpg', '/images/adidas1.jpg'],
-  },
-  {
-    company: {
-      title: 'Puma',
-      location: 'San Francisco',
-      image: '/images/adidas1.jpg',
-      followers: 0,
-      tags: ['Sport', '+2'],
-    },
-    images: ['/images/adidas1.jpg', '/images/adidas1.jpg', '/images/adidas1.jpg', '/images/adidas1.jpg'],
-  },
-  {
-    company: {
-      title: 'Reebok',
-      location: 'San Francisco',
-      image: '/images/adidas1.jpg',
-      followers: 0,
-      tags: ['Sport', '+2'],
-    },
-    images: ['/images/adidas2.jpg', '/images/adidas1.jpg', '/images/adidas2.jpg', '/images/adidas1.jpg'],
-  },
-]
 
 const to = (i: number) => ({
   x: 0,
@@ -61,19 +20,25 @@ const from = (_i: number) => ({ x: 0, rot: 0, scale: 1, y: 0 })
 
 const trans = (r: number, s: number) => `rotateX(0deg) rotateY(${r}deg) rotateZ(${r}deg) scale(${s})`
 
-export const HomePageContent = () => {
+type ContentProps = {
+  data: { company: CompanyType; images: string[] }[]
+  likeAction: (id: string) => void | Promise<void>
+  dislikeAction: (id: string) => void | Promise<void>
+}
+
+export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAction }) => {
   const [isLike, setIsLike] = useState<boolean | null>(null)
   const [isShowLabel, setIsShowLabel] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
 
-  const currentIndex = companies.length - activeIndex - 1
+  const currentIndex = data.length - activeIndex - 1
 
-  const likeAction = () => {
-    console.log('like action')
+  const handleLikeAction = () => {
+    likeAction(data[currentIndex].company.id)
   }
 
-  const dislikeAction = () => {
-    console.log('dislike action')
+  const handleDislikeAction = () => {
+    dislikeAction(data[currentIndex].company.id)
   }
 
   const getNextSlide = (isDisLike: boolean) => {
@@ -90,46 +55,41 @@ export const HomePageContent = () => {
         rot,
         scale,
         delay: 0,
-        config: { friction: 50, tension: 800 },
+        config: { friction: 50, tension: 800, duration: 400 },
       }
     })
     setActiveIndex((prev) => prev + 1)
   }
   const getDragResult = async (direction: number) => {
     if (direction > 0) {
-      await dislikeAction()
+      await handleDislikeAction()
     } else if (direction < 0) {
-      await likeAction()
+      await handleLikeAction()
     }
   }
 
   const onLikeClick = async () => {
-    await likeAction()
-    getNextSlide(false)
+    await handleLikeAction()
     setIsLike(true)
     setIsShowLabel(true)
+    getNextSlide(false)
   }
 
   const onDislikeClick = async () => {
-    await dislikeAction()
-    getNextSlide(true)
+    await handleDislikeAction()
     setIsLike(false)
     setIsShowLabel(true)
+    getNextSlide(true)
   }
   const [gone] = useState(() => new Set())
-  const [props, api] = useSprings(companies.length, (i) => ({
+  const [props, api] = useSprings(data.length, (i) => ({
     ...to(i),
     from: from(i),
   }))
 
   const bind = useDrag(({ args: [index], active, movement: [mx], direction: [xDir], velocity: [vx] }) => {
     const trigger = vx > 0.1
-    if (!active && trigger) {
-      gone.add(index)
-      setActiveIndex((prev) => prev + 1)
-      setIsShowLabel(false)
-      getDragResult(xDir)
-    }
+
     if (xDir > 0) {
       setIsLike(false)
       setIsShowLabel(true)
@@ -138,6 +98,13 @@ export const HomePageContent = () => {
       setIsShowLabel(true)
     } else {
       setIsShowLabel(false)
+    }
+
+    if (!active && trigger) {
+      gone.add(index)
+      setActiveIndex((prev) => prev + 1)
+      setIsShowLabel(false)
+      getDragResult(xDir)
     }
 
     api.start((i) => {
@@ -154,7 +121,7 @@ export const HomePageContent = () => {
         config: { friction: 50, tension: active ? 800 : isGone ? 200 : 500 },
       }
     })
-    if (!active && gone.size === companies.length) {
+    if (!active && gone.size === data.length) {
       alert('finish')
     }
   })
@@ -166,7 +133,7 @@ export const HomePageContent = () => {
             <Card
               isLike={isLike}
               isShowLabel={i === currentIndex && isShowLabel}
-              images={companies[i]?.images || []}
+              images={data[i]?.images || []}
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
               {...bind(i)}
@@ -180,20 +147,12 @@ export const HomePageContent = () => {
 
       {currentIndex >= 0 && (
         <Wrapper>
-          <CompanyCard data={companies[currentIndex]?.company} />
+          <CompanyCard data={data[currentIndex]?.company} />
           <Stack direction="row" justifyContent="space-between" width="100%" paddingX={9}>
-            <StyledButton
-              onClick={onLikeClick}
-              size="large"
-              sx={{ background: 'rgba(24, 188, 156, 0.15)', borderColor: '#18bc9c' }}
-            >
+            <StyledButton onClick={onLikeClick} size="large" sx={{ borderColor: '#18bc9c' }}>
               <FavoriteOutlinedIcon color="primary" />
             </StyledButton>
-            <StyledButton
-              sx={{ borderColor: '#EC1B40', background: 'rgba(236, 27, 64, 0.15)' }}
-              size="large"
-              onClick={onDislikeClick}
-            >
+            <StyledButton sx={{ borderColor: '#EC1B40' }} size="large" onClick={onDislikeClick}>
               <CloseIcon color="error" />
             </StyledButton>
           </Stack>
@@ -220,7 +179,7 @@ const StyledButton = styled(IconButton)`
   align-items: flex-start;
   padding: 16px;
   gap: 10px;
-  border: 1px solid;
+  border: 2px solid;
   border-radius: 50%;
 `
 const Animated = styled(animated.div)`
