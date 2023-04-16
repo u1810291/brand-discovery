@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useTheme } from '@mui/material'
 import { getAuth } from 'firebase/auth'
 import { MainLayout } from 'src/layouts/MainLayout'
-import { useAuthState, useSendEmailVerification } from 'react-firebase-hooks/auth'
+import { useSendEmailVerification } from 'react-firebase-hooks/auth'
 import Image from 'next/image'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
@@ -20,7 +20,7 @@ export const VerifyEmail = () => {
   const { palette } = useTheme()
   const [sendEmailVerification, sending, error] = useSendEmailVerification(auth)
   const [success, setSuccess] = useState<string>()
-  const [user, loading, authStateError] = useAuthState(auth)
+  // const [user, loading, authStateError] = useAuthState(auth)
 
   console.error(auth)
   useEffect(() => {

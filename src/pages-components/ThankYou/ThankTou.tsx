@@ -10,18 +10,18 @@ import { MainLayout } from 'src/layouts/MainLayout'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { ROUTES } from 'src/constants/routes'
-import { useSignInWithEmailLink } from 'react-firebase-hooks/auth'
-import firebaseApp from 'src/services/firebase'
-import { getAuth } from 'firebase/auth'
+// import { useSignInWithEmailLink } from 'react-firebase-hooks/auth'
+// import firebaseApp from 'src/services/firebase'
+// import { getAuth } from 'firebase/auth'
 
-const auth = getAuth(firebaseApp())
+// const auth = getAuth(firebaseApp())
 
 export const ThankYou = () => {
   const { palette } = useTheme()
   const router = useRouter()
   const query = router.query
 
-  const [signInWithEmailLink, loggedInUser, loading, error] = useSignInWithEmailLink(auth)
+  // const [signInWithEmailLink, loggedInUser, loading, error] = useSignInWithEmailLink(auth)
 
   useEffect(() => {
     let timeout = null
