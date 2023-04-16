@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useTheme } from '@mui/material'
 import { getAuth } from 'firebase/auth'
 import { MainLayout } from 'src/layouts/MainLayout'
-import { useSendEmailVerification } from 'react-firebase-hooks/auth'
+import { useAuthState, useSendEmailVerification } from 'react-firebase-hooks/auth'
 import Image from 'next/image'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
@@ -20,7 +20,9 @@ export const VerifyEmail = () => {
   const { palette } = useTheme()
   const [sendEmailVerification, sending, error] = useSendEmailVerification(auth)
   const [success, setSuccess] = useState<string>()
+  const [user, loading, authStateError] = useAuthState(auth)
 
+  console.error(auth)
   useEffect(() => {
     // eslint-disable-next-line prettier/prettier
     (async () => {
@@ -28,6 +30,7 @@ export const VerifyEmail = () => {
       if (res) setSuccess('Sent email')
     })()
   }, [])
+
   return (
     <MainLayout showBackButton>
       <Stack flex={1} marginTop={{ xs: 10, sm: 20 }}>

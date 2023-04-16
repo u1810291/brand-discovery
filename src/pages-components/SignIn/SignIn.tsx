@@ -43,7 +43,8 @@ export const SignIn = () => {
 
   useEffect(() => {
     if (!!user?.user?.uid) {
-      localStorage.setItem('uuid', JSON.stringify(user?.user?.uid))
+      const token = JSON.stringify(user.user.toJSON())
+      localStorage.setItem('token', JSON.parse(token).stsTokenManager.accessToken)
       push('/home')
     }
   }, [user])

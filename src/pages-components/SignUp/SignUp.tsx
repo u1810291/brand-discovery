@@ -30,7 +30,8 @@ export const SignUp = () => {
 
   useEffect(() => {
     if (!!googleUser?.user?.uid || !!facebookUser?.user?.uid) {
-      localStorage.setItem('uuid', JSON.stringify(googleUser?.user?.uid || facebookUser?.user?.uid))
+      const token = JSON.stringify(googleUser.user.toJSON() || facebookUser.user.toJSON())
+      localStorage.setItem('uuid', JSON.parse(token).stsTokenManager.accessToken)
       push(ROUTES.home)
     }
   }, [googleUser, facebookUser])

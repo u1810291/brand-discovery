@@ -10,21 +10,33 @@ import { MainLayout } from 'src/layouts/MainLayout'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { ROUTES } from 'src/constants/routes'
+import { useSignInWithEmailLink } from 'react-firebase-hooks/auth'
+import firebaseApp from 'src/services/firebase'
+import { getAuth } from 'firebase/auth'
+
+const auth = getAuth(firebaseApp())
 
 export const ThankYou = () => {
   const { palette } = useTheme()
-  const { push } = useRouter()
+  const router = useRouter()
+  const query = router.query
 
-  console.log(window.location.href)
+  const [signInWithEmailLink, loggedInUser, loading, error] = useSignInWithEmailLink(auth)
 
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     router.push(ROUTES.home)
-  //   }, 5000)
-  //   return () => {
-  //     clearInterval(timeout)
-  //   }
-  // }, [])
+  useEffect(() => {
+    let timeout = null
+    if (query?.apiKey) {
+      // async function() {
+      //   signInWithEmailLink()
+      // }
+      timeout = setTimeout(() => {
+        router.push(ROUTES.home)
+      }, 5000)
+    }
+    return () => {
+      clearInterval(timeout)
+    }
+  }, [query?.apiKey])
   return (
     <MainLayout hasPadding={false}>
       <Stack direction="column" bgcolor="#D1EAF1" flex={1} position="relative" alignItems="center">

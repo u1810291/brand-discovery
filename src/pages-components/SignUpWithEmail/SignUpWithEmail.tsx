@@ -20,11 +20,12 @@ import ToggleButton from '@mui/material/ToggleButton'
 import Notification from 'src/components/Notification'
 import CircularProgress from '@mui/material/CircularProgress'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import { sendEmailVerification } from 'firebase/auth'
 
 const auth = getAuth(firebaseApp())
 
 export const SignUpWithEmail = () => {
-  const { push } = useRouter()
+  const router = useRouter()
   const {
     control,
     handleSubmit,
@@ -37,10 +38,29 @@ export const SignUpWithEmail = () => {
 
   const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
 
+  const actionCodeSettings = {
+    // The URL to redirect to for sign-in completion. This is also the deep
+    // link for mobile redirects. The domain (www.example.com) for this URL
+    // must be whitelisted in the Firebase Console.
+    url: 'https://www.example.com/finishSignUp?cartId=1234',
+    iOS: {
+      bundleId: 'com.example.ios',
+    },
+    android: {
+      packageName: 'com.example.android',
+      installApp: true,
+      minimumVersion: '12',
+    },
+    // This must be true.
+    handleCodeInApp: true,
+  }
+
   useEffect(() => {
     if (!!user?.user?.uid) {
-      localStorage.setItem('uuid', JSON.stringify(user?.user?.uid))
-      push(ROUTES.verifyEmail)
+      const token = JSON.stringify(user.user.toJSON())
+      localStorage.setItem('token', JSON.parse(token).stsTokenManager.accessToken)
+      sendEmailVerification(auth.currentUser, actionCodeSettings)
+      router.push(ROUTES.verifyEmail)
     }
   }, [user])
 
