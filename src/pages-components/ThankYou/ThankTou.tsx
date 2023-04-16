@@ -22,6 +22,10 @@ export const ThankYou = () => {
   const query = router.query
 
   // const [signInWithEmailLink, loggedInUser, loading, error] = useSignInWithEmailLink(auth)
+  // mode=verifyEmail&
+  // oobCode=A0ndFF9mzOKMFdGAfbv_J57OarLv-Z48P2K-evbLxVEAAAGHf7_gjw&
+  // apiKey=AIzaSyAVcxZF5D_PEV3ea-UhJl7lYnFs7CLduPw&
+  // lang=en
 
   useEffect(() => {
     let timeout = null
