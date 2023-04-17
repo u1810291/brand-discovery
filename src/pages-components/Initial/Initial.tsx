@@ -1,16 +1,17 @@
+/* eslint-disable prettier/prettier */
 'use client'
 
-import Link from 'next/link'
-import Image from 'next/image'
-import Stack from '@mui/material/Stack'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
-import LogoBackground from 'src/assets/svg/logo-background.svg'
-import { TextContainer } from './styles'
 import { useTheme } from '@mui/material'
+import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import Image from 'next/image'
+import Link from 'next/link'
+import LogoBackground from 'src/assets/svg/logo-background.svg'
+import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
+import { TextContainer } from './styles'
 
 export const Initial = () => {
   const { palette } = useTheme()
@@ -25,20 +26,20 @@ export const Initial = () => {
       >
         <Stack position="relative" width={{ xs: 375, sm: 500 }} height={{ xs: 450 }} marginX="auto">
           <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-            <Image src={LogoBackground} fill style={{ objectFit: 'contain' }} alt="Logo background" />
+            <Image unoptimized src={LogoBackground} fill style={{ objectFit: 'contain' }} alt="Logo background" />
           </div>
           <TextContainer>
-            <Image src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
+            <Image unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
             <Typography fontWeight={800} fontSize={24} color={palette.primary.main}>
               Brand Discovery
             </Typography>
           </TextContainer>
         </Stack>
-        <Button variant="contained" fullWidth>
-          <Link href={ROUTES.signIn} style={{ textDecoration: 'none', width: '100%', height: '100%', color: 'white' }}>
+        <Link href={ROUTES.signIn} style={{ textDecoration: 'none' }}>
+          <Button variant="contained" fullWidth>
             Login
-          </Link>
-        </Button>
+          </Button>
+        </Link>
       </Stack>
     </MainLayout>
   )

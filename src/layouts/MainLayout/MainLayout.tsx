@@ -17,7 +17,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
   const router = useRouter()
 
   return (
-    <Root {...props} padding={hasPadding && 3}>
+    <Root padding={hasPadding && 3} {...props}>
       {showBackButton && (
         <Stack alignItems="start" marginBottom={5}>
           <IconButton onClick={() => router.back()}>
@@ -31,8 +31,8 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
 }
 
 const Root = styled(Stack)`
-  height: 100%;
-  min-height: 100vh;
+  height: 100vh;
+  box-sizing: border-box;
   width: 100%;
   max-width: 900px;
   margin-inline: auto;
