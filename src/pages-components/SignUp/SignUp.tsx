@@ -46,7 +46,7 @@ export const SignUp = () => {
           </Typography>
         </Stack>
         <Stack spacing={2}>
-          <Button
+          {/* <Button
             variant="outlined"
             sx={{ height: 48 }}
             startIcon={<Image unoptimized src="/images/Google.png" width={41} height={39} alt="Google" />}
@@ -58,7 +58,7 @@ export const SignUp = () => {
             }}
           >
             {googleLoader ? <CircularProgress color="success" /> : 'Sign up with Google'}
-          </Button>
+          </Button> */}
           {/*<Button
             sx={{ height: 48 }}
             variant="outlined"
@@ -66,7 +66,7 @@ export const SignUp = () => {
           >
             Sign up with Linkedin
           </Button>*/}
-          <Button
+          {/* <Button
             sx={{ height: 48 }}
             variant="outlined"
             startIcon={<Image unoptimized src={FacebookIcon} width={24} height={24} alt="facebook icon"/>}
@@ -78,7 +78,7 @@ export const SignUp = () => {
             }}
           >
             {facebookLoader ? <CircularProgress color="success" /> : 'Sign in with Facebook'}
-          </Button>
+          </Button> */}
           <Button fullWidth sx={{ height: 48 }} variant="outlined">
             <Link href={ROUTES.signUpWithEmail} style={{ textDecoration: 'none', color: 'inherit' }}>
                 Sign up with Email
