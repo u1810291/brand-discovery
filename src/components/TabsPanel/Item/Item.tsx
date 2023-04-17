@@ -8,13 +8,14 @@ type ItemProps = {
   value: number
 }
 
-const Item: FC<ItemProps> = ({ index, value, children }) => {
+export const Item: FC<ItemProps> = ({ index, value, children }) => {
   return (
     <Stack
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
+      height={value === index ? '100%' : 0}
     >
       {value === index && (
         <Stack flex={1} sx={{ width: '100%', height: '100%' }}>
@@ -24,5 +25,3 @@ const Item: FC<ItemProps> = ({ index, value, children }) => {
     </Stack>
   )
 }
-
-export default Item

@@ -10,24 +10,42 @@ import { MainLayout } from 'src/layouts/MainLayout'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { ROUTES } from 'src/constants/routes'
+// import { useSignInWithEmailLink } from 'react-firebase-hooks/auth'
+// import firebaseApp from 'src/services/firebase'
+// import { getAuth } from 'firebase/auth'
+
+// const auth = getAuth(firebaseApp())
 
 export const ThankYou = () => {
   const { palette } = useTheme()
-  const { push } = useRouter()
+  const router = useRouter()
+  const query = router.query
+
+  // const [signInWithEmailLink, loggedInUser, loading, error] = useSignInWithEmailLink(auth)
+  // mode=verifyEmail&
+  // oobCode=A0ndFF9mzOKMFdGAfbv_J57OarLv-Z48P2K-evbLxVEAAAGHf7_gjw&
+  // apiKey=AIzaSyAVcxZF5D_PEV3ea-UhJl7lYnFs7CLduPw&
+  // lang=en
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      push(ROUTES.home)
-    }, 5000)
+    let timeout = null
+    if (query?.apiKey) {
+      // async function() {
+      //   signInWithEmailLink()
+      // }
+      timeout = setTimeout(() => {
+        router.push(ROUTES.home)
+      }, 5000)
+    }
     return () => {
       clearInterval(timeout)
     }
-  }, [])
+  }, [query?.apiKey])
   return (
     <MainLayout hasPadding={false}>
       <Stack direction="column" bgcolor="#D1EAF1" flex={1} position="relative" alignItems="center">
         <Stack marginTop={{ xs: 13, sm: 25 }} alignItems="center">
-          <Image src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
+          <Image unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
           <Typography fontWeight={800} fontSize={24} color={palette.primary.main} marginTop={1}>
             Brand Discovery
           </Typography>
@@ -54,7 +72,13 @@ export const ThankYou = () => {
         </Stack>
         <Stack position="absolute" bottom={0} width="100%" height={{ xs: 380, sm: 500 }}>
           <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-            <Image src={SpacewiseBackground} fill style={{ objectFit: 'contain' }} alt="Spacewise background" />
+            <Image
+              unoptimized
+              src={SpacewiseBackground}
+              fill
+              style={{ objectFit: 'contain' }}
+              alt="Spacewise background"
+            />
           </div>
         </Stack>
       </Stack>
