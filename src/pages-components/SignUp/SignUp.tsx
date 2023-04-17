@@ -79,11 +79,11 @@ export const SignUp = () => {
           >
             {facebookLoader ? <CircularProgress color="success" /> : 'Sign in with Facebook'}
           </Button>
-          <Link href={ROUTES.signUpWithEmail} style={{ textDecoration: 'none' }}>
-            <Button sx={{ height: 48 }} variant="outlined">
-              Sign up with Email
-            </Button>
-          </Link>
+          <Button fullWidth sx={{ height: 48 }} variant="outlined">
+            <Link href={ROUTES.signUpWithEmail} style={{ textDecoration: 'none', color: 'inherit' }}>
+                Sign up with Email
+            </Link>
+          </Button>
         </Stack>
         <Typography component="span" marginTop={3} color="#9AA09E">
           By signing up you confirm that you accept the{' '}

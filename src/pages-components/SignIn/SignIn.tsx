@@ -87,7 +87,7 @@ export const SignIn = () => {
             <Button type="button" variant="text" sx={{ width: 'fit-content' }}>
               <Link
                 href={ROUTES.resetPassword}
-                style={{ textDecoration: 'none', width: '100%', height: '100%', color: 'white' }}
+                style={{ textDecoration: 'none', width: '100%', height: '100%', color: 'inherit' }}
               >
                 Forgot Password?
               </Link>
@@ -105,7 +105,13 @@ export const SignIn = () => {
           <Button fullWidth variant="outlined" href={ROUTES.signUp}>
             <Link
               href={ROUTES.signUp}
-              style={{ textDecoration: 'none', width: '100%', height: '100%', color: 'white' }}
+              style={{
+                textDecoration: 'none',
+                width: '100%',
+                height: '100%',
+                color: 'inherit',
+                textAlign: 'center',
+              }}
             >
               Create new account
             </Link>

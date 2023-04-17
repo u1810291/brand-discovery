@@ -20,9 +20,21 @@ import ToggleButton from '@mui/material/ToggleButton'
 import Notification from 'src/components/Notification'
 import CircularProgress from '@mui/material/CircularProgress'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import { sendEmailVerification } from 'firebase/auth'
+// import { initializeApp } from 'firebase/app'
+import 'firebase/firestore'
 
 const auth = getAuth(firebaseApp())
+// const firebaseConfig = {
+//   apiKey: 'AIzaSyA3NzKeWjSrrtEeNDXE1T4qxYr__5zNdTE',
+//   authDomain: 'brand-discovery-42739.firebaseapp.com',
+//   projectId: 'brand-discovery-42739',
+//   storageBucket: 'brand-discovery-42739.appspot.com',
+//   messagingSenderId: '609950786624',
+//   appId: '1:609950786624:web:36793b7abfb83e8ed5aba5',
+//   measurementId: 'G-288GJLGKMX',
+// }
+
+// const app = initializeApp(firebaseConfig)
 
 export const SignUpWithEmail = () => {
   const router = useRouter()
@@ -38,34 +50,25 @@ export const SignUpWithEmail = () => {
 
   const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
 
-  const actionCodeSettings = {
-    // The URL to redirect to for sign-in completion. This is also the deep
-    // link for mobile redirects. The domain (www.example.com) for this URL
-    // must be whitelisted in the Firebase Console.
-    url: 'https://www.example.com/finishSignUp?cartId=1234',
-    iOS: {
-      bundleId: 'com.example.ios',
-    },
-    android: {
-      packageName: 'com.example.android',
-      installApp: true,
-      minimumVersion: '12',
-    },
-    // This must be true.
-    handleCodeInApp: true,
-  }
-
   useEffect(() => {
     if (!!user?.user?.uid) {
       const token = JSON.stringify(user.user.toJSON())
       localStorage.setItem('token', JSON.parse(token).stsTokenManager.accessToken)
-      sendEmailVerification(auth.currentUser, actionCodeSettings)
       router.push(ROUTES.verifyEmail)
     }
   }, [user])
 
-  const onSubmit = (data: SignUpWithEmailFormType) => {
-    createUserWithEmailAndPassword(data.email, data.password)
+  const onSubmit = async (data: SignUpWithEmailFormType) => {
+    await createUserWithEmailAndPassword(data.email, data.password)
+    // if (user?.user?.uid) {
+    //   app.firestore().collection('user').add({
+    //     id: user?.user?.uid,
+    //     first_name: data.firstName,
+    //     last_name: data.lastName,
+    //     company_name: data.companyName,
+    //     spaces: data.spaceCount,
+    //   })
+    // }
   }
 
   return (
@@ -75,7 +78,13 @@ export const SignUpWithEmail = () => {
           Sign Up with Email
         </Typography>
         <Stack spacing={2} component="form" onSubmit={handleSubmit(onSubmit)}>
-          <InputField name="email" placeholder="Enter your E-mail" label="E-mail address" control={control} />
+          <InputField
+            name="email"
+            placeholder="Enter your E-mail"
+            label="E-mail address"
+            control={control}
+            autoComplete="email"
+          />
           <InputField name="companyName" placeholder="Enter your Company name" label="Company name" control={control} />
           <InputField name="firstName" placeholder="Enter your First name" label="First name" control={control} />
           <InputField name="lastName" placeholder="Enter your Last name" label="Last name" control={control} />
@@ -87,7 +96,7 @@ export const SignUpWithEmail = () => {
             control={control}
           />
           <Controller
-            render={(props) => (
+            render={({ formState, fieldState, ...props }) => (
               <ToggleButtonGroup
                 exclusive
                 aria-label="text alignment"

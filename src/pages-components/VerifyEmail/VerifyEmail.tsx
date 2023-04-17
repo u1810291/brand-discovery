@@ -22,7 +22,6 @@ export const VerifyEmail = () => {
   const [success, setSuccess] = useState<string>()
   // const [user, loading, authStateError] = useAuthState(auth)
 
-  console.error(auth)
   useEffect(() => {
     // eslint-disable-next-line prettier/prettier
     (async () => {
