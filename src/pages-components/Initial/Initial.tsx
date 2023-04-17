@@ -12,9 +12,16 @@ import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { TextContainer } from './styles'
+import { useRouter } from 'next/router'
 
 export const Initial = () => {
   const { palette } = useTheme()
+  const router = useRouter()
+
+  if (!!window.localStorage.getItem('token')) {
+    router.push(ROUTES.home)
+  }
+
   return (
     <MainLayout>
       <Stack

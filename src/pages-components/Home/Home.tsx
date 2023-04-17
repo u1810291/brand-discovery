@@ -63,6 +63,7 @@ export const Home = () => {
               if (success) {
                 setSuccess('You are signed out')
               }
+              localStorage.setItem('token', '')
             }}
           >
             {loading ? <CircularProgress /> : 'Logout'}
