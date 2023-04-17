@@ -31,9 +31,10 @@ export const Home = () => {
   }, [errorMessage])
 
   useEffect(() => {
-    const timer = setTimeout(() => push(ROUTES.root), 1000)
-    return () => clearInterval(timer)
-  }, [])
+    if (success) {
+      setTimeout(() => push(ROUTES.root), 100)
+    }
+  }, [success])
 
   const tabs = [
     {
