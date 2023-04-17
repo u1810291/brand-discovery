@@ -76,7 +76,7 @@ export const Card: FC<CardProps> = ({ images, isShowLabel, isLike, ...props }) =
         setSwiper={setSwiper}
         renderElement={(item) => (
           <ImageContainer width="100%" height="100%">
-            <Image src={item} alt="picture" width={600} height={400} />
+            <Image unoptimized src={item} alt="picture" width={600} height={400} />
           </ImageContainer>
         )}
       />

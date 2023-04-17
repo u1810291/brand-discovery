@@ -2,19 +2,28 @@
 'use client'
 
 import { useTheme } from '@mui/material'
-import Button from '@mui/material/Button'
+// import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import Image from 'next/image'
-import Link from 'next/link'
+// import Link from 'next/link'
 import LogoBackground from 'src/assets/svg/logo-background.svg'
 import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { TextContainer } from './styles'
+import { useRouter } from 'next/router'
 
 export const Initial = () => {
   const { palette } = useTheme()
+  const router = useRouter()
+
+  if (!!window.localStorage.getItem('token')) {
+    router.push(ROUTES.home)
+  } else {
+    setTimeout(() => router.push(ROUTES.signIn), 1000)
+  }
+
   return (
     <MainLayout>
       <Stack
@@ -35,11 +44,11 @@ export const Initial = () => {
             </Typography>
           </TextContainer>
         </Stack>
-        <Link href={ROUTES.signIn} style={{ textDecoration: 'none' }}>
+        {/* <Link href={ROUTES.signIn} style={{ textDecoration: 'none' }}>
           <Button variant="contained" fullWidth>
             Login
           </Button>
-        </Link>
+        </Link> */}
       </Stack>
     </MainLayout>
   )

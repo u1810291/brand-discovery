@@ -9,6 +9,7 @@ export default () => {
   const InitialPage = dynamic(() => import('src/pages-components/Initial').then((component) => component.Initial), {
     suspense: true,
   })
+
   return (
     <div>
       <Header title="Initial">
