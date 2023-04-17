@@ -35,10 +35,10 @@ export const Initial = () => {
       >
         <Stack position="relative" width={{ xs: 375, sm: 500 }} height={{ xs: 450 }} marginX="auto">
           <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-            <Image unoptimized src={LogoBackground} fill style={{ objectFit: 'contain' }} alt="Logo background" />
+            <Image placeholder="blur" blurDataURL={`${LogoBackground}`} unoptimized src={LogoBackground} fill style={{ objectFit: 'contain' }} alt="Logo background" />
           </div>
           <TextContainer>
-            <Image unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
+            <Image placeholder="blur" blurDataURL={`${SpacewiseSVG}`} unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
             <Typography fontWeight={800} fontSize={24} color={palette.primary.main}>
               Brand Discovery
             </Typography>

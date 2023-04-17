@@ -45,7 +45,7 @@ export const ThankYou = () => {
     <MainLayout hasPadding={false}>
       <Stack direction="column" bgcolor="#D1EAF1" flex={1} position="relative" alignItems="center">
         <Stack marginTop={{ xs: 13, sm: 25 }} alignItems="center">
-          <Image unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
+          <Image placeholder="blur" unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
           <Typography fontWeight={800} fontSize={24} color={palette.primary.main} marginTop={1}>
             Brand Discovery
           </Typography>
