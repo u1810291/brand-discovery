@@ -16,6 +16,7 @@ const to = (i: number) => ({
   rot: 0,
   delay: i * 100,
 })
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const from = (_i: number) => ({ x: 0, rot: 0, scale: 1, y: 0 })
 
 const trans = (r: number, s: number) => `rotateX(0deg) rotateY(${r}deg) rotateZ(${r}deg) scale(${s})`

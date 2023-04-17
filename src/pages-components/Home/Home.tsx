@@ -42,10 +42,10 @@ export const Home = () => {
       content: (
         <HomePageContent
           data={companies}
-          likeAction={(id) => {
+          likeAction={() => {
             return
           }}
-          dislikeAction={(id) => {
+          dislikeAction={() => {
             return
           }}
         />

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 'use client'
 
 import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
+// import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useTheme } from '@mui/material/styles'
@@ -10,11 +11,11 @@ import { getAuth } from 'firebase/auth'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
-import { useSignInWithFacebook, useSignInWithGoogle } from 'react-firebase-hooks/auth'
-import FacebookIcon from 'src/assets/svg/facebook-icon.svg'
+// import { useEffect } from 'react'
+// import { useSignInWithFacebook, useSignInWithGoogle } from 'react-firebase-hooks/auth'
+// import FacebookIcon from 'src/assets/svg/facebook-icon.svg'
 import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
-import Notification from 'src/components/Notification'
+// import Notification from 'src/components/Notification'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
@@ -22,19 +23,18 @@ import firebaseApp from 'src/services/firebase'
 const auth = getAuth(firebaseApp())
 
 export const SignUp = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { palette } = useTheme()
   const { push } = useRouter()
-  const [signInWithGoogle, googleUser, googleLoader, googleError] = useSignInWithGoogle(auth)
-  const [signInWithFacebook, facebookUser, facebookLoader, facebookError] = useSignInWithFacebook(auth)
+  // const [signInWithGoogle, googleUser, googleLoader, googleError] = useSignInWithGoogle(auth)
+  // const [signInWithFacebook, facebookUser, facebookLoader, facebookError] = useSignInWithFacebook(auth)
 
-  useEffect(() => {
-    if (!!googleUser?.user?.uid || !!facebookUser?.user?.uid) {
-      const token = JSON.stringify(googleUser.user.toJSON() || facebookUser.user.toJSON())
-      localStorage.setItem('uuid', JSON.parse(token).stsTokenManager.accessToken)
-      push(ROUTES.home)
-    }
-  }, [googleUser, facebookUser])
+  // useEffect(() => {
+  //   if (!!googleUser?.user?.uid || !!facebookUser?.user?.uid) {
+  //     const token = JSON.stringify(googleUser.user.toJSON() || facebookUser.user.toJSON())
+  //     localStorage.setItem('uuid', JSON.parse(token).stsTokenManager.accessToken)
+  //     push(ROUTES.home)
+  //   }
+  // }, [googleUser, facebookUser])
 
   return (
     <MainLayout showBackButton>
@@ -99,7 +99,7 @@ export const SignUp = () => {
             Acceptable use policy
           </Link>
         </Typography>
-        <Notification type="error" text={googleError?.message || facebookError?.message} />
+        {/* <Notification type="error" text={googleError?.message || facebookError?.message} /> */}
       </Stack>
     </MainLayout>
   )
