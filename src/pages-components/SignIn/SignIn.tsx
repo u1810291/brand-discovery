@@ -43,7 +43,8 @@ export const SignIn = () => {
 
   useEffect(() => {
     if (!!user?.user?.uid) {
-      localStorage.setItem('uuid', JSON.stringify(user?.user?.uid))
+      const token = JSON.stringify(user.user.toJSON())
+      localStorage.setItem('token', JSON.parse(token).stsTokenManager.accessToken)
       push('/home')
     }
   }, [user])
@@ -54,7 +55,7 @@ export const SignIn = () => {
     <MainLayout id="main-layout">
       <Stack marginY="auto">
         <Stack alignSelf="center">
-          <Image src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
+          <Image unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
         </Stack>
         <Typography component="h3" fontWeight={800} fontSize={24} marginTop={5} marginBottom={4} alignSelf="center">
           Login with Spacewise ID
@@ -86,7 +87,7 @@ export const SignIn = () => {
             <Button type="button" variant="text" sx={{ width: 'fit-content' }}>
               <Link
                 href={ROUTES.resetPassword}
-                style={{ textDecoration: 'none', width: '100%', height: '100%', color: 'white' }}
+                style={{ textDecoration: 'none', width: '100%', height: '100%', color: 'inherit' }}
               >
                 Forgot Password?
               </Link>
@@ -104,7 +105,13 @@ export const SignIn = () => {
           <Button fullWidth variant="outlined" href={ROUTES.signUp}>
             <Link
               href={ROUTES.signUp}
-              style={{ textDecoration: 'none', width: '100%', height: '100%', color: 'white' }}
+              style={{
+                textDecoration: 'none',
+                width: '100%',
+                height: '100%',
+                color: 'inherit',
+                textAlign: 'center',
+              }}
             >
               Create new account
             </Link>
