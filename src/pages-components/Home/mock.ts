@@ -10,7 +10,7 @@ export const companies: { company: CompanyType; images: string[] }[] = [
       tags: ['Sport', '+2'],
       id: '1',
     },
-    images: ['/images/adidas1.jpg', '/images/adidas2.jpg', '/images/adidas3.jpg'],
+    images: ['/images/adidas1.jpg', '/images/adidas2.jpg', '/images/adidas3.jpeg'],
   },
   {
     company: {
