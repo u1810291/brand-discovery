@@ -20,7 +20,7 @@ export const Initial = () => {
 
   if (!!window.localStorage.getItem('token')) {
     router.push(ROUTES.home)
-  } else {
+  } else if(router.pathname !== 'reset-password') {
     setTimeout(() => router.push(ROUTES.signIn), 1000)
   }
 

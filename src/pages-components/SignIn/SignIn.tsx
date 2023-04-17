@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { getAuth } from 'firebase/auth'
 import { useTheme } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/router'
 import { ROUTES } from 'src/constants/routes'
 import { SingInFormType, schema } from './helper'
 import { MainLayout } from 'src/layouts/MainLayout'
@@ -26,7 +26,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 const auth = getAuth(firebaseApp())
 
 export const SignIn = () => {
-  const { push } = useRouter()
+  const router = useRouter()
   const {
     handleSubmit,
     control,
@@ -45,7 +45,7 @@ export const SignIn = () => {
     if (!!user?.user?.uid) {
       const token = JSON.stringify(user.user.toJSON())
       localStorage.setItem('token', JSON.parse(token).stsTokenManager.accessToken)
-      push('/home')
+      router.push('/home')
     }
   }, [user])
 
