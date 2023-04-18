@@ -8,6 +8,7 @@
     "serve": "npm run build && firebase emulators:start --only functions,hosting",
     "shell": "npm run build && firebase functions:shell",
     "deploy": "firebase deploy --only hosting",
+    "deploy:dev": "firebase use brand-discovery-42739 && firebase deploy --only hosting && firebase use brand-discovery-2a140",
     "logs": "firebase functions:log"
   },
   "dependencies": {

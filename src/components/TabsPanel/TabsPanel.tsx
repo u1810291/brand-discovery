@@ -22,7 +22,7 @@ export const TabsPanel: FC<TabsPanelProps> = ({ tabs, className, error, success,
   }
 
   return (
-    <Stack spacing={1} className={className} flex={1} divider={<StyledDivider />}>
+    <Stack spacing={1} className={className} flex={1}>
       <Stack flex={1}>
         {tabs.map((tab, index) => (
           <Item key={index} value={value} index={index}>
@@ -30,6 +30,7 @@ export const TabsPanel: FC<TabsPanelProps> = ({ tabs, className, error, success,
           </Item>
         ))}
       </Stack>
+      <StyledDivider />
       <Stack>
         <Tabs value={value} onChange={handleChange} {...props}>
           {tabs.map((tab, index) => (

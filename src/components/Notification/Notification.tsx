@@ -3,7 +3,6 @@ import Alert from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
 
 export function Notification({ text, type, duration }: INotification) {
-  console.log(text)
   const [open, setOpen] = useState(!!text)
   const handleClose = () => {
     setOpen(false)

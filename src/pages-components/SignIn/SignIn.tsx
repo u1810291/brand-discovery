@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { getAuth } from 'firebase/auth'
 import { useTheme } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/router'
 import { ROUTES } from 'src/constants/routes'
 import { SingInFormType, schema } from './helper'
 import { MainLayout } from 'src/layouts/MainLayout'
@@ -26,7 +26,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 const auth = getAuth(firebaseApp())
 
 export const SignIn = () => {
-  const { push } = useRouter()
+  const router = useRouter()
   const {
     handleSubmit,
     control,
@@ -45,7 +45,7 @@ export const SignIn = () => {
     if (!!user?.user?.uid) {
       const token = JSON.stringify(user.user.toJSON())
       localStorage.setItem('token', JSON.parse(token).stsTokenManager.accessToken)
-      push('/home')
+      router.push('/home')
     }
   }, [user])
 
@@ -55,7 +55,15 @@ export const SignIn = () => {
     <MainLayout id="main-layout">
       <Stack marginY="auto">
         <Stack alignSelf="center">
-          <Image unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
+          <Image
+            placeholder="blur"
+            blurDataURL={`${SpacewiseSVG}`}
+            unoptimized
+            src={SpacewiseSVG}
+            alt="Spacewise"
+            width={261}
+            height={37}
+          />
         </Stack>
         <Typography component="h3" fontWeight={800} fontSize={24} marginTop={5} marginBottom={4} alignSelf="center">
           Login with Spacewise ID
@@ -102,9 +110,9 @@ export const SignIn = () => {
           <Typography component="h5" fontWeight={500} fontSize={14} color={palette.grey[600]} alignSelf="center">
             Are you new to Spacewise?
           </Typography>
-          <Button fullWidth variant="outlined" href={ROUTES.signUp}>
+          <Button fullWidth variant="outlined">
             <Link
-              href={ROUTES.signUp}
+              href={ROUTES.signUpWithEmail}
               style={{
                 textDecoration: 'none',
                 width: '100%',

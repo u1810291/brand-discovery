@@ -20,15 +20,6 @@ export const VerifyEmail = () => {
   const { palette } = useTheme()
   const [sendEmailVerification, sending, error] = useSendEmailVerification(auth)
   const [success, setSuccess] = useState<string>()
-  // const [user, loading, authStateError] = useAuthState(auth)
-
-  useEffect(() => {
-    // eslint-disable-next-line prettier/prettier
-    (async () => {
-      const res = await sendEmailVerification()
-      if (res) setSuccess('Sent email')
-    })()
-  }, [])
 
   return (
     <MainLayout showBackButton>
@@ -44,7 +35,13 @@ export const VerifyEmail = () => {
             alignSelf: 'center',
           }}
         >
-          <Image unoptimized src={CheckMarkIcon} alt="Spacewise background" />
+          <Image
+            placeholder="blur"
+            blurDataURL={`${CheckMarkIcon}`}
+            unoptimized
+            src={CheckMarkIcon}
+            alt="Spacewise background"
+          />
         </Stack>
         <Typography fontSize={24} fontWeight={800} lineHeight="40px" textAlign="center" marginTop={{ xs: 3, sm: 10 }}>
           Verify your email address

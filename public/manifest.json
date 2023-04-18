@@ -2,7 +2,7 @@
     "theme_color": "#1abc9c",
     "background_color": "#d1eaf1",
     "display": "standalone",
-    "scope": "/",
+    "scope": ".",
     "start_url": "/",
     "name": "Brand discovery",
     "short_name": "brand-discovery",

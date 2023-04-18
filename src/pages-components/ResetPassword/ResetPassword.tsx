@@ -43,7 +43,15 @@ export const ResetPassword = () => {
     <MainLayout showBackButton>
       <Stack marginY="auto" marginTop={{ xs: 0, sm: 'auto' }} spacing={5}>
         <Stack alignSelf="center">
-          <Image unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
+          <Image
+            placeholder="blur"
+            blurDataURL={`${SpacewiseSVG}`}
+            unoptimized
+            src={SpacewiseSVG}
+            alt="Spacewise"
+            width={261}
+            height={37}
+          />
         </Stack>
         <Typography component="h3" fontWeight={800} fontSize={24} marginTop={5} marginBottom={4} alignSelf="center">
           Reset Password

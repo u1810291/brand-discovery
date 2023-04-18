@@ -1,26 +1,27 @@
 'use client'
 
-import { useState } from 'react'
-import { getAuth } from 'firebase/auth'
 import { useForm } from 'react-hook-form'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { NewPasswordFormType, schema } from './helper'
 import { PasswordInput } from 'src/components/PasswordInput'
-import { useUpdatePassword } from 'react-firebase-hooks/auth'
 import Image from 'next/image'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import firebaseApp from '../../services/firebase'
 import Notification from 'src/components/Notification'
 import CircularProgress from '@mui/material/CircularProgress'
 import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
+import { useVerifyResetPassword } from 'src/services/useVerifyReset'
+import { useRouter } from 'next/router'
+import { ROUTES } from 'src/constants/routes'
+import { getAuth } from 'firebase/auth'
+import firebaseApp from 'src/services/firebase'
+import { useEffect } from 'react'
 
 const auth = getAuth(firebaseApp())
 
 export const NewPassword = () => {
-  const [success, setSuccess] = useState('')
   const {
     handleSubmit,
     control,
@@ -30,20 +31,32 @@ export const NewPassword = () => {
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
-  const [updatePassword, updating, error] = useUpdatePassword(auth)
+  const router = useRouter()
+  const [resetPassword, success, loading, error] = useVerifyResetPassword(auth)
+
+  useEffect(() => {
+    if (success) {
+      router.push(ROUTES.signIn)
+    }
+  }, [success])
 
   const onSubmit = async (data: NewPasswordFormType) => {
-    const success = await updatePassword(data.password)
-    if (success) {
-      setSuccess('Updated password')
-    }
+    await resetPassword(router.query.oobCode, data.password)
   }
 
   return (
     <MainLayout showBackButton>
       <Stack marginY="auto" marginTop={{ xs: 0, sm: 'auto' }} spacing={5}>
         <Stack alignSelf="center">
-          <Image unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
+          <Image
+            placeholder="blur"
+            blurDataURL={`${SpacewiseSVG}`}
+            unoptimized
+            src={SpacewiseSVG}
+            alt="Spacewise"
+            width={261}
+            height={37}
+          />
         </Stack>
         <Typography component="h3" fontWeight={800} fontSize={24} marginTop={5} marginBottom={4} alignSelf="center">
           Reset Password
@@ -68,7 +81,7 @@ export const NewPassword = () => {
             />
           </Stack>
           <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
-            {updating ? <CircularProgress /> : 'Continue'}
+            {loading ? <CircularProgress /> : 'Continue'}
           </Button>
         </Stack>
         <Notification text={error?.message || success} type={error ? 'error' : 'success'} />
