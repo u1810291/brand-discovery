@@ -61,15 +61,8 @@ export const SignUpWithEmail = () => {
 
   const onSubmit = async (data: SignUpWithEmailFormType) => {
     await createUserWithEmailAndPassword(data.email, data.password)
-    // if (user?.user?.uid) {
-    //   app.firestore().collection('user').add({
-    //     id: user?.user?.uid,
-    //     first_name: data.firstName,
-    //     last_name: data.lastName,
-    //     company_name: data.companyName,
-    //     spaces: data.spaceCount,
-    //   })
-    // }
+    if (user?.user?.uid) {
+    }
   }
 
   return (
