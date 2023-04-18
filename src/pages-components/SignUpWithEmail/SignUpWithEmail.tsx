@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography'
 import { getAuth } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
+import { useCreateUserWithEmailAndPassword, useSendEmailVerification } from 'react-firebase-hooks/auth'
 import { Controller, useForm } from 'react-hook-form'
 import { InputField } from 'src/components/InputField'
 import Notification from 'src/components/Notification'
@@ -21,21 +21,9 @@ import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
 import { SignUpWithEmailFormType, defaultValues, schema } from './helper'
-// import { initializeApp } from 'firebase/app'
 import 'firebase/firestore'
 
 const auth = getAuth(firebaseApp())
-// const firebaseConfig = {
-//   apiKey: 'AIzaSyA3NzKeWjSrrtEeNDXE1T4qxYr__5zNdTE',
-//   authDomain: 'brand-discovery-42739.firebaseapp.com',
-//   projectId: 'brand-discovery-42739',
-//   storageBucket: 'brand-discovery-42739.appspot.com',
-//   messagingSenderId: '609950786624',
-//   appId: '1:609950786624:web:36793b7abfb83e8ed5aba5',
-//   measurementId: 'G-288GJLGKMX',
-// }
-
-// const app = initializeApp(firebaseConfig)
 
 export const SignUpWithEmail = () => {
   const router = useRouter()
@@ -50,19 +38,19 @@ export const SignUpWithEmail = () => {
   })
 
   const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
+  const [sendEmailVerification, sending, emailVerifyError] = useSendEmailVerification(auth)
 
   useEffect(() => {
-    if (!!user?.user?.uid) {
+    if (!!user?.user?.uid && !emailVerifyError?.message && !sending) {
       const token = JSON.stringify(user.user.toJSON())
       localStorage.setItem('token', JSON.parse(token).stsTokenManager.accessToken)
       router.push(ROUTES.verifyEmail)
     }
-  }, [user])
+  }, [user?.user?.uid, sending])
 
   const onSubmit = async (data: SignUpWithEmailFormType) => {
     await createUserWithEmailAndPassword(data.email, data.password)
-    if (user?.user?.uid) {
-    }
+    await sendEmailVerification()
   }
 
   return (
@@ -107,14 +95,14 @@ export const SignUpWithEmail = () => {
             control={control}
           />
           <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
-            {loading ? <CircularProgress color="success" /> : 'Continue'}
+            {loading || sending ? <CircularProgress color="success" /> : 'Continue'}
           </Button>
           <Typography fontSize={14} fontWeight={400} color="#747978" textAlign="center">
             Use of this app constitutes acceptance of the <Link>Terms of Use</Link>, <Link>Booking Terms</Link> and{' '}
             <Link>Privacy Policy</Link>.
           </Typography>
         </Stack>
-        <Notification type="error" text={error?.message} />
+        <Notification type="error" text={error?.message || emailVerifyError?.message} />
       </Stack>
     </MainLayout>
   )

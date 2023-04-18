@@ -20,15 +20,6 @@ export const VerifyEmail = () => {
   const { palette } = useTheme()
   const [sendEmailVerification, sending, error] = useSendEmailVerification(auth)
   const [success, setSuccess] = useState<string>()
-  // const [user, loading, authStateError] = useAuthState(auth)
-
-  useEffect(() => {
-    // eslint-disable-next-line prettier/prettier
-    (async () => {
-      const res = await sendEmailVerification()
-      if (res) setSuccess('Sent email')
-    })()
-  }, [])
 
   return (
     <MainLayout showBackButton>

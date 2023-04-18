@@ -10,29 +10,26 @@ import { MainLayout } from 'src/layouts/MainLayout'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { ROUTES } from 'src/constants/routes'
-// import { useSignInWithEmailLink } from 'react-firebase-hooks/auth'
-// import firebaseApp from 'src/services/firebase'
-// import { getAuth } from 'firebase/auth'
+import { useVerifyEmail } from 'src/services/useVerifyEmail'
+import firebaseApp from 'src/services/firebase'
+import { getAuth } from 'firebase/auth'
 
-// const auth = getAuth(firebaseApp())
+const auth = getAuth(firebaseApp())
 
 export const ThankYou = () => {
   const { palette } = useTheme()
   const router = useRouter()
   const query = router.query
 
-  // const [signInWithEmailLink, loggedInUser, loading, error] = useSignInWithEmailLink(auth)
-  // mode=verifyEmail&
-  // oobCode=A0ndFF9mzOKMFdGAfbv_J57OarLv-Z48P2K-evbLxVEAAAGHf7_gjw&
-  // apiKey=AIzaSyAVcxZF5D_PEV3ea-UhJl7lYnFs7CLduPw&
-  // lang=en
+  const [verifyEmail, success, loading, error] = useVerifyEmail(auth)
 
   useEffect(() => {
     let timeout = null
-    if (query?.apiKey) {
-      // async function() {
-      //   signInWithEmailLink()
-      // }
+    console.error(loading, error)
+    if (query?.oobCode) {
+      verifyEmail(query.oobCode)
+    }
+    if (success) {
       timeout = setTimeout(() => {
         router.push(ROUTES.home)
       }, 5000)
@@ -40,12 +37,20 @@ export const ThankYou = () => {
     return () => {
       clearInterval(timeout)
     }
-  }, [query?.apiKey])
+  }, [query?.apiKey, success])
   return (
     <MainLayout hasPadding={false}>
       <Stack direction="column" bgcolor="#D1EAF1" flex={1} position="relative" alignItems="center">
         <Stack marginTop={{ xs: 13, sm: 25 }} alignItems="center">
-          <Image placeholder="blur" unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
+          <Image
+            placeholder="blur"
+            blurDataURL={`${SpacewiseSVG}`}
+            unoptimized
+            src={SpacewiseSVG}
+            alt="Spacewise"
+            width={261}
+            height={37}
+          />
           <Typography fontWeight={800} fontSize={24} color={palette.primary.main} marginTop={1}>
             Brand Discovery
           </Typography>
