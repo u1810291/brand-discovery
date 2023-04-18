@@ -1,26 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import { useEffect } from 'react'
-import { getAuth } from 'firebase/auth'
-import { useRouter } from 'next/router'
-import { ROUTES } from 'src/constants/routes'
-import { MainLayout } from 'src/layouts/MainLayout'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Controller, useForm } from 'react-hook-form'
-import { InputField } from 'src/components/InputField'
-import { PasswordInput } from 'src/components/PasswordInput'
-import { defaultValues, SignUpWithEmailFormType, schema } from './helper'
-import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
-import Button from '@mui/material/Button'
-import firebaseApp from 'src/services/firebase'
-import Typography from '@mui/material/Typography'
 import ToggleButton from '@mui/material/ToggleButton'
-import Notification from 'src/components/Notification'
-import CircularProgress from '@mui/material/CircularProgress'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import Typography from '@mui/material/Typography'
+import { getAuth } from 'firebase/auth'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
+import { Controller, useForm } from 'react-hook-form'
+import { InputField } from 'src/components/InputField'
+import Notification from 'src/components/Notification'
+import { PasswordInput } from 'src/components/PasswordInput'
+import { ROUTES } from 'src/constants/routes'
+import { MainLayout } from 'src/layouts/MainLayout'
+import firebaseApp from 'src/services/firebase'
+import { SignUpWithEmailFormType, defaultValues, schema } from './helper'
 // import { initializeApp } from 'firebase/app'
 import 'firebase/firestore'
 
@@ -97,13 +97,8 @@ export const SignUpWithEmail = () => {
             control={control}
           />
           <Controller
-            render={({ formState, fieldState, ...props }) => (
-              <ToggleButtonGroup
-                exclusive
-                aria-label="text alignment"
-                onChange={(e, value) => props.field.onChange(value)}
-                {...props}
-              >
+            render={({ field: { value, onChange } }) => (
+              <ToggleButtonGroup exclusive aria-label="text alignment" value={value} onChange={onChange}>
                 <ToggleButton value="1-3" key="1-3">
                   1-3 Spaces
                 </ToggleButton>
