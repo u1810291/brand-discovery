@@ -1,11 +1,12 @@
 'use client'
 
-import { FC, PropsWithChildren } from 'react'
-import { styled } from '@mui/material'
-import { useRouter } from 'next/router'
-import IconButton from '@mui/material/IconButton'
 import ArrowBack from '@mui/icons-material/ArrowBack'
+import { styled } from '@mui/material'
+import IconButton from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
+import { useRouter } from 'next/router'
+import { FC, PropsWithChildren } from 'react'
+import { useWindowSize } from 'src/hooks'
 
 type MainLayoutProps = {
   showBackButton?: boolean
@@ -15,9 +16,9 @@ type MainLayoutProps = {
 
 export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasPadding = true, ...props }) => {
   const router = useRouter()
-
+  const { height } = useWindowSize()
   return (
-    <Root padding={hasPadding && 3} {...props}>
+    <Root padding={hasPadding && 3} height={`${height}px`} {...props}>
       {showBackButton && (
         <Stack alignItems="start" marginBottom={5}>
           <IconButton onClick={() => router.back()}>
@@ -31,7 +32,6 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
 }
 
 const Root = styled(Stack)`
-  height: 100vh;
   box-sizing: border-box;
   width: 100%;
   max-width: 900px;

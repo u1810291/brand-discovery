@@ -11,7 +11,9 @@ type CompanyCardProps = {
 export const CompanyCard: FC<CompanyCardProps> = ({ data }) => {
   return (
     <Root>
-      <Image unoptimized alt="logo" src={data?.image} width={96} height={96} />
+      <Stack alignItems="center" justifyContent="center">
+        <Image unoptimized alt="logo" src={data?.image} width={96} height={96} />
+      </Stack>
       <Stack spacing={0.5}>
         <Typography fontWeight={800} fontSize={'16px'} lineHeight={'22px'}>
           {data?.title}
