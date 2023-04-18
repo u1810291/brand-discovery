@@ -3,7 +3,7 @@
 
 import { useEffect } from 'react'
 import { getAuth } from 'firebase/auth'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/router'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { yupResolver } from '@hookform/resolvers/yup'
