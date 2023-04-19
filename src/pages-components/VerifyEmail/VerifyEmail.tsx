@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTheme } from '@mui/material'
 import { getAuth } from 'firebase/auth'
 import { MainLayout } from 'src/layouts/MainLayout'
