@@ -11,10 +11,19 @@ import { useWindowSize } from 'src/hooks'
 type MainLayoutProps = {
   showBackButton?: boolean
   hasPadding?: boolean
+  showNavbar?: boolean
+  navChildren?: any
 } & PropsWithChildren &
   StackProps
 
-export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasPadding = true, ...props }) => {
+export const MainLayout: FC<MainLayoutProps> = ({
+  children,
+  showBackButton,
+  hasPadding = true,
+  showNavbar,
+  navChildren,
+  ...props
+}) => {
   const router = useRouter()
   const { height } = useWindowSize()
   return (
@@ -24,6 +33,11 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
           <IconButton onClick={() => router.back()}>
             <ArrowBack />
           </IconButton>
+        </Stack>
+      )}
+      {showNavbar && (
+        <Stack alignItems="start" marginBottom={5}>
+          {navChildren}
         </Stack>
       )}
       {children}

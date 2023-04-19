@@ -60,7 +60,7 @@ export const Home = () => {
     },
   ]
   return (
-    <MainLayout padding={3} paddingTop={5}>
+    <MainLayout padding={3} paddingTop={5} sx={{ background: '#F8F9FB' }}>
       <TabsPanel tabs={tabs} error={error} success={success} />
     </MainLayout>
   )
