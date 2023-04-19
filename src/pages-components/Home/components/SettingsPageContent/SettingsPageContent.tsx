@@ -15,7 +15,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
     <Stack position="relative" width="100%" height="90%">
       <Stack
         position="absolute"
-        sx={{ background: 'transparent', height: 'calc(100% + 47px)', width: 'calc(100% + 50px)' }}
+        sx={{ background: 'transparent', height: 'calc(100% + 100px)', width: 'calc(100% + 50px)' }}
         left={-25}
         top={-40}
       >
@@ -40,7 +40,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
           <LegalSettings />
           <Button
             fullWidth
-            sx={{ height: 48, color: 'black', background: 'white', marginTop: 3 }}
+            sx={{ height: 48, color: 'black', background: 'white', marginTop: 3, marginBottom: 3 }}
             onClick={async () => {
               const success = await signOut()
               if (success) {

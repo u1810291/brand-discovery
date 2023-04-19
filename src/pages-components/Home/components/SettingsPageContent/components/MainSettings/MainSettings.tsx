@@ -1,3 +1,5 @@
+'use client'
+
 import Divider from '@mui/material/Divider'
 import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
@@ -6,11 +8,13 @@ import ListSubheader from '@mui/material/ListSubheader'
 import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
 import Switch from '@mui/material/Switch'
-import Button from '@mui/material/Button'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import { styled } from '@mui/material'
+import { Typography, styled } from '@mui/material'
+import { useEffect, useState } from 'react'
 
 export const MainSettings = () => {
+  const [distance, setDistance] = useState<number | number[]>(50)
+  useEffect(() => {}, [distance])
   return (
     <List
       sx={{ width: '100%', bgcolor: 'white' }}
@@ -19,12 +23,18 @@ export const MainSettings = () => {
       subheader={<ListSubheaderStyled id="nested-list-subheader">Discovery</ListSubheaderStyled>}
     >
       <ListItemButton onClick={() => console.error('error')}>
-        <ListItemTextStyled primary="Categories" color="primary" />
+        <Box sx={{ display: 'flex', width: '100%' }}>
+          <ListItemTextStyled primary="Categories" color="primary" sx={{ width: 'auto' }} />
+          <TypographyStyled>Sport, Health, +4 mores</TypographyStyled>
+        </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
       </ListItemButton>
       <StyledDivider sx={{ left: 20 }} />
       <ListItemButton onClick={() => console.error('error')}>
-        <ListItemTextStyled primary="Location" color="primary" />
+        <Box sx={{ display: 'flex', width: '100%' }}>
+          <ListItemTextStyled primary="Location" color="primary" sx={{ width: 'auto' }} />
+          <TypographyStyled>Current location, New York, NY</TypographyStyled>
+        </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
       </ListItemButton>
       <StyledDivider sx={{ left: 20 }} />
@@ -34,9 +44,15 @@ export const MainSettings = () => {
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <ListItemTextStyled primary="Distance preference" sx={{ textAlign: 'start' }} color="primary" />
-          <Button>47 km</Button>
+          <TypographyStyled>{distance} km</TypographyStyled>
         </Box>
-        <Slider defaultValue={50} aria-label="Default" valueLabelDisplay="auto" />
+        <Slider
+          defaultValue={distance}
+          value={distance}
+          onChange={(e: any) => setDistance(e.target.value)} // this annoying type needs to be fixed with this kind of approach
+          aria-label="Default"
+          valueLabelDisplay="auto"
+        />
       </ListItemButton>
       <ListItemButton onClick={() => console.error('error')}>
         <ListItemTextStyled primary="Only show brands in this range" />
@@ -82,3 +98,15 @@ const ListSubheaderStyled = styled(ListSubheader)`
   order: 0;
   flex-grow: 0;
 `
+
+const TypographyStyled = styled(Typography)(({ theme }) =>
+  theme.unstable_sx({
+    color: 'primary.main',
+    alignItems: 'center',
+    verticalAlign: 'middle',
+    display: 'table-cell',
+    textAlign: 'center',
+    flexGrow: 1,
+    lineHeight: '32px',
+  }),
+)
