@@ -17,6 +17,7 @@ import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
 import { HomePageContent } from './components'
 import { companies } from './mock'
+import { SettingsPageContent } from './components/SettingsPageContent'
 
 const auth = getAuth(firebaseApp())
 
@@ -55,21 +56,7 @@ export const Home = () => {
     { icon: <InfoIcon />, content: <Box>Info</Box> },
     {
       icon: <SettingsIcon />,
-      content: (
-        <Box>
-          <Button
-            onClick={async () => {
-              const success = await signOut()
-              if (success) {
-                setSuccess('You are signed out')
-              }
-              localStorage.setItem('token', '')
-            }}
-          >
-            {loading ? <CircularProgress /> : 'Logout'}
-          </Button>
-        </Box>
-      ),
+      content: <SettingsPageContent setSuccess={setSuccess} signOut={signOut} loading={loading} />,
     },
   ]
   return (
