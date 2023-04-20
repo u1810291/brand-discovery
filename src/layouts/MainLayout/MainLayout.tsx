@@ -20,7 +20,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
   return (
     <Root padding={hasPadding && 3} height={`${height}px`} {...props}>
       {showBackButton && (
-        <Stack alignItems="start" marginBottom={5}>
+        <Stack alignItems="start" marginBottom={{ xs: 2.5, sm: 5 }}>
           <IconButton onClick={() => router.back()}>
             <ArrowBack />
           </IconButton>
