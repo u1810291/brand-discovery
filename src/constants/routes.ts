@@ -8,4 +8,5 @@ export const ROUTES = {
   home: '/home',
   verifyEmail: '/verify-email',
   thankYou: '/thank-you',
+  brand: '/brand',
 }

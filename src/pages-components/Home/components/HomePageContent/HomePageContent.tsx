@@ -4,7 +4,9 @@ import { styled } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { animated, interpolate } from '@react-spring/web'
+import Link from 'next/link'
 import { FC } from 'react'
+import { ROUTES } from 'src/constants/routes'
 import { CompanyType } from 'src/types'
 import { Card, CompanyCard } from './components'
 import { useHomePageAnim } from './hooks'
@@ -30,7 +32,7 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
             <Card
               isLike={isLike}
               isShowLabel={i === currentIndex && isShowLabel}
-              images={data[i]?.images || []}
+              images={data[i]?.images.slice(0, 5) || []}
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
               {...bind(i)}
@@ -44,7 +46,9 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
 
       {currentIndex >= 0 && (
         <Wrapper>
-          <CompanyCard data={data[currentIndex]?.company} />
+          <LinkContainer href={`${ROUTES.brand}/${data[currentIndex].company.id}`}>
+            <CompanyCard data={data[currentIndex]?.company} />
+          </LinkContainer>
           <Stack direction="row" justifyContent="space-between" width="100%" paddingX={9}>
             <StyledButton onClick={onDislikeClick} sx={{ borderColor: '#EC1B40' }} size="large">
               <CloseIcon color="error" />
@@ -84,4 +88,9 @@ const Animated = styled(animated.div)`
   width: 100%;
   height: 100%;
   will-change: transform;
+`
+
+const LinkContainer = styled(Link)`
+  color: inherit;
+  text-decoration: none;
 `
