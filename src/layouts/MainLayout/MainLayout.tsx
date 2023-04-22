@@ -6,7 +6,10 @@ import IconButton from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
 import { useRouter } from 'next/router'
 import { FC, PropsWithChildren } from 'react'
+import { useSelector } from 'react-redux'
+import { Modal } from 'src/components'
 import { useWindowSize } from 'src/hooks'
+import { modalSelector } from 'src/store/slices/modal/modal.slice'
 
 type MainLayoutProps = {
   showBackButton?: boolean
@@ -26,6 +29,7 @@ export const MainLayout: FC<MainLayoutProps> = ({
 }) => {
   const router = useRouter()
   const { height } = useWindowSize()
+  const { open } = useSelector(modalSelector)
   return (
     <Root padding={hasPadding && 3} height={`${height}px`} {...props}>
       {showBackButton && (
@@ -41,6 +45,7 @@ export const MainLayout: FC<MainLayoutProps> = ({
         </Stack>
       )}
       {children}
+      <Modal />
     </Root>
   )
 }

@@ -10,11 +10,10 @@ import Box from '@mui/material/Box'
 import Switch from '@mui/material/Switch'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { Typography, styled } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export const MainSettings = () => {
   const [distance, setDistance] = useState<number | number[]>(50)
-  useEffect(() => {}, [distance])
   return (
     <List
       sx={{ width: '100%', bgcolor: 'white' }}
@@ -25,7 +24,7 @@ export const MainSettings = () => {
       <ListItemButton onClick={() => console.error('error')}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Categories" color="primary" sx={{ width: 'auto' }} />
-          <TypographyStyled>Sport, Health, +4 mores</TypographyStyled>
+          <TypographyStyled>Sport, Health, +4 more</TypographyStyled>
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
       </ListItemButton>
