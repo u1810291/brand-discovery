@@ -10,6 +10,7 @@ export default () => {
     () => import('src/pages-components/ResetPassword').then((component) => component.ResetPassword),
     {
       suspense: true,
+      ssr: false,
     },
   )
   return (

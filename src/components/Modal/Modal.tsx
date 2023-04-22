@@ -1,4 +1,5 @@
-import { FC } from 'react'
+'use client'
+
 import { DialogProps } from '@mui/material/Dialog'
 import { CustomDialog } from 'src/UI/CustomDialog'
 import { AppDispatch, useDispatch } from 'src/store'

@@ -1,10 +1,12 @@
-import { configureStore, createEntityAdapter } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit'
 import { useDispatch as useBasicDispatch } from 'react-redux'
 import modalSlice from './slices/modal'
+import authSlice from './slices/auth'
 
 const store = configureStore({
   reducer: {
     modal: modalSlice,
+    auth: authSlice,
   },
   devTools: true,
 })

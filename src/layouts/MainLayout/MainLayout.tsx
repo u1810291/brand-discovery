@@ -5,11 +5,10 @@ import { styled } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
 import { useRouter } from 'next/router'
-import { FC, PropsWithChildren } from 'react'
-import { useSelector } from 'react-redux'
+import { FC, PropsWithChildren, useEffect } from 'react'
 import { Modal } from 'src/components'
+import { ROUTES } from 'src/constants/routes'
 import { useWindowSize } from 'src/hooks'
-import { modalSelector } from 'src/store/slices/modal/modal.slice'
 
 type MainLayoutProps = {
   showBackButton?: boolean
@@ -29,7 +28,10 @@ export const MainLayout: FC<MainLayoutProps> = ({
 }) => {
   const router = useRouter()
   const { height } = useWindowSize()
-  const { open } = useSelector(modalSelector)
+
+  useEffect(() => {
+    if (localStorage.getItem('token') && new Date() - new Date(localStorage.getItem('logTime')).to > 100) router.push(ROUTES.home)
+  }, [localStorage.getItem('token')])
   return (
     <Root padding={hasPadding && 3} height={`${height}px`} {...props}>
       {showBackButton && (

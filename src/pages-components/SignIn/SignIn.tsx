@@ -4,7 +4,6 @@ import { useEffect } from 'react'
 import { getAuth } from 'firebase/auth'
 import { useTheme } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import { useRouter } from 'next/router'
 import { ROUTES } from 'src/constants/routes'
 import { SingInFormType, schema } from './helper'
 import { MainLayout } from 'src/layouts/MainLayout'
@@ -22,10 +21,14 @@ import firebaseApp from 'src/services/firebase'
 import Typography from '@mui/material/Typography'
 import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 import CircularProgress from '@mui/material/CircularProgress'
+import { useDispatch } from 'src/store'
+import { login } from 'src/store/slices/auth'
+import { useRouter } from 'next/router'
 
 const auth = getAuth(firebaseApp())
 
 export const SignIn = () => {
+  const dispatch = useDispatch()
   const router = useRouter()
   const {
     handleSubmit,
@@ -39,15 +42,10 @@ export const SignIn = () => {
   const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth)
   const onSubmit = async (data: SingInFormType) => {
     await signInWithEmailAndPassword(data.email, data.password)
-  }
-
-  useEffect(() => {
-    if (!!user?.user?.uid) {
-      const token = JSON.stringify(user.user.toJSON())
-      localStorage.setItem('token', JSON.parse(token).stsTokenManager.accessToken)
-      router.push('/home')
+    if (user) {
+      dispatch(login({ token: JSON.stringify(user.user.toJSON()) }))
     }
-  }, [user])
+  }
 
   const { palette } = useTheme()
 

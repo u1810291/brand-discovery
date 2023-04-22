@@ -21,7 +21,7 @@ import { closeModal, openModal } from 'src/store/slices/modal'
 import { SettingsPageContent } from './components/SettingsPageContent'
 
 const auth = getAuth(firebaseApp())
-// TODO: need global state for control limit and initial modal
+
 export const Home = () => {
   const { push } = useRouter()
   const [success, setSuccess] = useState('')

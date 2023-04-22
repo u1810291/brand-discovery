@@ -10,6 +10,7 @@ export default () => {
     () => import('src/pages-components/SignUpWithEmail').then((component) => component.SignUpWithEmail),
     {
       suspense: true,
+      ssr: false,
     },
   )
   return (
