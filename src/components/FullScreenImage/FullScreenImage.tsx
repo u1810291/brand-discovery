@@ -1,7 +1,7 @@
 import { Close } from '@mui/icons-material'
 import { Dialog, IconButton, Stack, Typography, styled } from '@mui/material'
 import Image from 'next/image'
-import { FC } from 'react'
+import { FC, memo } from 'react'
 import { useToggle } from 'src/hooks'
 
 type FullScreenImageProps = {
@@ -9,16 +9,16 @@ type FullScreenImageProps = {
   company?: { title: string; image: string }
 }
 
-export const FullScreenImage: FC<FullScreenImageProps> = ({ image, company }) => {
+export const FullScreenImage: FC<FullScreenImageProps> = memo(function FullScreen({ image: { alt, ...img }, company }) {
   const { isOpen, open, close } = useToggle(false)
   return (
     <>
-      <Image {...image} unoptimized onClick={open} />
+      <Image {...img} unoptimized onClick={open} alt={alt} />
       <StyledDialog open={isOpen} onClose={close} fullScreen>
         <Stack direction="row" padding={3} width="100%" alignItems="center" justifyContent="space-between">
           <Stack direction="row" gap="10px" alignItems="center">
             <Stack bgcolor="rgba(255, 255, 255, 0.8)">
-              <Image src={company?.image} alt="Company logo" width={56} height={56} />
+              <Image unoptimized src={company?.image} alt="Company logo" width={56} height={56} />
             </Stack>
             <Typography fontWeight={700} fontSize={'16px'} lineHeight={'22px'}>
               {company?.title}
@@ -28,11 +28,11 @@ export const FullScreenImage: FC<FullScreenImageProps> = ({ image, company }) =>
             <Close />
           </IconButton>
         </Stack>
-        <FullImage unoptimized {...image} />
+        <FullImage unoptimized {...img} alt={alt} />
       </StyledDialog>
     </>
   )
-}
+})
 
 const FullImage = styled(Image)`
   position: absolute;

@@ -11,7 +11,7 @@ import ModalBackground from 'src/assets/svg/modal-background.svg'
 interface CustomDialogProps extends DialogProps, PropsWithChildren {
   title: string
   subtitle: string
-  icon: ReactNode
+  icon?: ReactNode
 }
 
 export const CustomDialog: FC<CustomDialogProps> = ({
