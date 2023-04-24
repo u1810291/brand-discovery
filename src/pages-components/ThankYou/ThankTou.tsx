@@ -1,18 +1,18 @@
 'use client'
 
-import Image from 'next/image'
+import { useTheme } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
-import SpacewiseBackground from 'src/assets/svg/spacewise-background.svg'
-import { useTheme } from '@mui/material'
-import { MainLayout } from 'src/layouts/MainLayout'
+import { getAuth } from 'firebase/auth'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import SpacewiseBackground from 'src/assets/svg/spacewise-background.svg'
+import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 import { ROUTES } from 'src/constants/routes'
-import { useVerifyEmail } from 'src/services/useVerifyEmail'
+import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
-import { getAuth } from 'firebase/auth'
+import { useVerifyEmail } from 'src/services/useVerifyEmail'
 
 const auth = getAuth(firebaseApp())
 
@@ -39,7 +39,7 @@ export const ThankYou = () => {
     }
   }, [query?.apiKey, success])
   return (
-    <MainLayout hasPadding={false}>
+    <MainLayout padding={0}>
       <Stack direction="column" bgcolor="#D1EAF1" flex={1} position="relative" alignItems="center">
         <Stack marginTop={{ xs: 13, sm: 25 }} alignItems="center">
           <Image
