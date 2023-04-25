@@ -11,4 +11,5 @@ export const ROUTES = {
   location: '/location',
   brand: '/brand',
   link: '/link',
+  walkThrough: '/walk-through',
 }
