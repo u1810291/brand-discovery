@@ -9,4 +9,5 @@ export const ROUTES = {
   verifyEmail: '/verify-email',
   thankYou: '/thank-you',
   location: '/location',
+  brand: '/brand',
 }

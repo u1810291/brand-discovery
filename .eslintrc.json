@@ -5,10 +5,14 @@
     "sourceType": "module"
   },
   "plugins": ["@typescript-eslint/eslint-plugin"],
-  "extends": ["plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
   "root": true,
   "env": {
-    "node": true,
+    "browser": true,
+    "es2021": true,
     "jest": true
   },
   "ignorePatterns": [".eslintrc.js"],
