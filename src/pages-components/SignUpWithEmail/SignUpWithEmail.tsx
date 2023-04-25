@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography'
 import { getAuth } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import { useCreateUserWithEmailAndPassword, useSendEmailVerification } from 'react-firebase-hooks/auth'
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
 import { Controller, useForm } from 'react-hook-form'
 import { InputField } from 'src/components/InputField'
 import Notification from 'src/components/Notification'
@@ -22,11 +22,15 @@ import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
 import { SignUpWithEmailFormType, defaultValues, schema } from './helper'
 import 'firebase/firestore'
+import { signUp } from 'src/store/slices/auth'
+import { AppDispatch, useDispatch } from 'src/store'
+import { useSendVerifyEmail } from 'src/services/useSendVerifyEmail'
 
 const auth = getAuth(firebaseApp())
 
 export const SignUpWithEmail = () => {
   const router = useRouter()
+  const dispatch: AppDispatch = useDispatch()
   const {
     control,
     handleSubmit,
@@ -38,19 +42,18 @@ export const SignUpWithEmail = () => {
   })
 
   const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
-  const [sendEmailVerification, sending, emailVerifyError] = useSendEmailVerification(auth)
+  const [sendVerifyEmail, sending, emailVerifyError] = useSendVerifyEmail(auth)
 
   useEffect(() => {
     if (!!user?.user?.uid && !emailVerifyError?.message && !sending) {
-      const token = JSON.stringify(user.user.toJSON())
-      localStorage.setItem('token', JSON.parse(token).stsTokenManager.accessToken)
-      router.push(ROUTES.verifyEmail)
+      dispatch(signUp(JSON.parse(JSON.stringify(user))))
+      // router.push(ROUTES.verifyEmail)
     }
   }, [user?.user?.uid, sending])
 
   const onSubmit = async (data: SignUpWithEmailFormType) => {
     await createUserWithEmailAndPassword(data.email, data.password)
-    await sendEmailVerification()
+    await sendVerifyEmail()
   }
 
   return (

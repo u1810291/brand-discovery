@@ -1,5 +1,5 @@
 import { authSlice } from './auth.slice'
 
-export const { login, logout } = authSlice.actions
-export const modal = (state) => state.modal
+export const { login, logout, signUp } = authSlice.actions
+export const authSelector = (state) => state.auth
 export default authSlice.reducer

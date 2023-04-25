@@ -9,8 +9,11 @@ import Typography from '@mui/material/Typography'
 import React from 'react'
 import { styled } from '@mui/material'
 import { AccountSettings, LegalSettings, MainSettings } from './components'
+import { AppDispatch, useDispatch } from 'src/store'
+import { logout } from 'src/store/slices/auth'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
+  const dispatch: AppDispatch = useDispatch()
   return (
     <Stack position="relative" width="100%" height="90%">
       <Stack
@@ -45,7 +48,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
               const success = await signOut()
               if (success) {
                 setSuccess('You are signed out')
-                localStorage.setItem('token', '')
+                dispatch(logout())
               }
             }}
           >

@@ -19,30 +19,36 @@ import { TabsPanel } from 'src/components/TabsPanel'
 import { useSignOut } from 'react-firebase-hooks/auth'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { SettingsPageContent } from './components/SettingsPageContent'
+import { UserData } from 'src/store/slices/auth/auth.slice'
 
 const auth = getAuth(firebaseApp())
 
 export const Home = () => {
-  const { push } = useRouter()
+  const router = useRouter()
   const [success, setSuccess] = useState('')
   const [signOut, loading, errorMessage] = useSignOut(auth)
   const dispatch = useDispatch()
-  dispatch(
-    openModal({
-      title: `Hi Username, \n Welcome back`,
-      subTitle: `Now you can start working with \n Spacewise Brand Discovery`,
-      open: true,
-      children: (
-        <Button variant="contained" onClick={() => dispatch(closeModal())}>
-          Start Now
-        </Button>
-      ),
-    }),
-  )
+  const user: UserData = JSON.parse(localStorage.getItem('user') || null)
+  useEffect(() => {
+    if (router.pathname === '/home' && Date.parse(new Date().toString()) - user?.lastLoginAt < 100) {
+      dispatch(
+        openModal({
+          title: `Hi Username, \n Welcome back`,
+          subTitle: `Now you can start working with \n Spacewise Brand Discovery`,
+          open: true,
+          children: (
+            <Button variant="contained" onClick={() => dispatch(closeModal())}>
+              Start Now
+            </Button>
+          ),
+        }),
+      )
+    }
+  }, [])
 
   useEffect(() => {
     if (success) {
-      setTimeout(() => push(ROUTES.root), 100)
+      setTimeout(() => router.push(ROUTES.root), 100)
     }
   }, [success])
 

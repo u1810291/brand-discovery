@@ -9,8 +9,12 @@ const store = configureStore({
     auth: authSlice,
   },
   devTools: true,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 })
-export type RootType = ReturnType<typeof store.getState>
+// export type RootType = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
 export const useDispatch = (): AppDispatch => useBasicDispatch()
 export default store

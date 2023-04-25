@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import Dialog, { DialogProps } from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 
@@ -78,7 +79,7 @@ export const CustomDialog: FC<CustomDialogProps> = ({
             fontSize={16}
             lineHeight="22px"
             marginBottom={4}
-            color="rgba(57, 63, 62, 1)"
+            color="#9AA09E"
           >
             {subtitle}
           </Typography>
@@ -99,7 +100,10 @@ const StyledDialog = styled(Dialog)`
   }
 
   .MuiPaper-root {
+
+    border-radius: 24px 24px 0px 0px;
     margin-inline: 0;
     width: 100%;
+    margin-bottom: 0;
   }
 `

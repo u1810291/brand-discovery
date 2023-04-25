@@ -6,6 +6,7 @@ type ModalType = {
   title: string
   subTitle: string
   children: ReactElement | null
+  icon?: ReactElement | null
 }
 
 // create a slice
@@ -16,6 +17,7 @@ export const modalSlice = createSlice({
     open: false,
     subTitle: '',
     children: null,
+    icon: null,
   },
   reducers: {
     openModal: (state, { payload }: { payload: ModalType }) => {
@@ -23,11 +25,13 @@ export const modalSlice = createSlice({
       state.title = payload.title
       state.subTitle = payload.subTitle
       state.children = payload.children
+      state.icon = payload.icon
     },
     closeModal: (state) => {
       state.title = ''
       state.subTitle = ''
       state.children = null
+      state.icon = null
       state.open = false
     },
   },

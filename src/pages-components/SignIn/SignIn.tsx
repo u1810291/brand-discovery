@@ -21,15 +21,15 @@ import firebaseApp from 'src/services/firebase'
 import Typography from '@mui/material/Typography'
 import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 import CircularProgress from '@mui/material/CircularProgress'
-import { useDispatch } from 'src/store'
+import { AppDispatch, useDispatch } from 'src/store'
 import { login } from 'src/store/slices/auth'
-import { useRouter } from 'next/router'
 
 const auth = getAuth(firebaseApp())
 
 export const SignIn = () => {
-  const dispatch = useDispatch()
-  const router = useRouter()
+  const dispatch: AppDispatch = useDispatch()
+  const { palette } = useTheme()
+
   const {
     handleSubmit,
     control,
@@ -42,13 +42,13 @@ export const SignIn = () => {
   const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth)
   const onSubmit = async (data: SingInFormType) => {
     await signInWithEmailAndPassword(data.email, data.password)
-    if (user) {
-      dispatch(login({ token: JSON.stringify(user.user.toJSON()) }))
-    }
   }
 
-  const { palette } = useTheme()
-
+  useEffect(() => {
+    if (user?.user?.uid) {
+      dispatch(login(JSON.parse(JSON.stringify(user))))
+    }
+  }, [user?.user?.uid])
   return (
     <MainLayout id="main-layout">
       <Stack marginY="auto">

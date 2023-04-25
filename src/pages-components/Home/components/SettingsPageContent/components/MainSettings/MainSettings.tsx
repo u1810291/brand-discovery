@@ -7,13 +7,50 @@ import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import Switch from '@mui/material/Switch'
+import Button from '@mui/material/Button'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { Typography, styled } from '@mui/material'
 import { useState } from 'react'
+import { useDispatch } from 'src/store'
+import { closeModal, openModal } from 'src/store/slices/modal'
+import { LocationIcon } from 'src/assets/icons/location'
+import { useRouter } from 'next/router'
+import { ROUTES } from 'src/constants/routes'
 
 export const MainSettings = () => {
   const [distance, setDistance] = useState<number | number[]>(50)
+  const dispatch = useDispatch()
+  const router = useRouter()
+
+  const handleLocation = () => {
+    dispatch(
+      openModal({
+        open: true,
+        title: 'Use my location',
+        subTitle: `You’ll need to enable your location in to use Spacewise`,
+        children: (
+          <Stack display="flex" flexDirection="column" gap={2} width="100%">
+            <Button variant="contained" onClick={() => console.error('error')}>
+              Allow Location
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                dispatch(closeModal())
+                router.push(ROUTES.location)
+              }}
+            >
+              Pick a Separate Location
+            </Button>
+          </Stack>
+        ),
+        icon: <LocationIcon />,
+      }),
+    )
+  }
+
   return (
     <List
       sx={{ width: '100%', bgcolor: 'white' }}
@@ -29,7 +66,7 @@ export const MainSettings = () => {
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
       </ListItemButton>
       <StyledDivider sx={{ left: 20 }} />
-      <ListItemButton onClick={() => console.error('error')}>
+      <ListItemButton onClick={handleLocation}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Location" color="primary" sx={{ width: 'auto' }} />
           <TypographyStyled>Current location, New York, NY</TypographyStyled>

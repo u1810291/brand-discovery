@@ -25,7 +25,6 @@ export const ThankYou = () => {
 
   useEffect(() => {
     let timeout = null
-    console.error(loading, error)
     if (query?.oobCode) {
       verifyEmail(query.oobCode)
     }
