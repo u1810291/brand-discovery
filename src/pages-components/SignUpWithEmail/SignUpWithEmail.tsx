@@ -25,6 +25,8 @@ import 'firebase/firestore'
 import { signUp } from 'src/store/slices/auth'
 import { AppDispatch, useDispatch } from 'src/store'
 import { useSendVerifyEmail } from 'src/services/useSendVerifyEmail'
+import { Type } from 'src/store/slices/notify/notify.slice'
+import { notify } from 'src/store/slices/notify'
 
 const auth = getAuth(firebaseApp())
 
@@ -56,6 +58,16 @@ export const SignUpWithEmail = () => {
     await sendVerifyEmail()
   }
 
+  useEffect(() => {
+    if (error?.message || emailVerifyError?.message) {
+      dispatch(
+        notify({
+          type: Type.error,
+          message: error?.message || emailVerifyError?.message,
+        }),
+      )
+    }
+  }, [error, emailVerifyError])
   return (
     <MainLayout showBackButton>
       <Stack marginY="auto" marginTop={{ xs: 0, sm: 'auto' }} spacing={3}>
@@ -105,7 +117,6 @@ export const SignUpWithEmail = () => {
             <Link>Privacy Policy</Link>.
           </Typography>
         </Stack>
-        <Notification type="error" text={error?.message || emailVerifyError?.message} />
       </Stack>
     </MainLayout>
   )

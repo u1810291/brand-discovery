@@ -11,19 +11,28 @@ import Stack from '@mui/material/Stack'
 import Switch from '@mui/material/Switch'
 import Button from '@mui/material/Button'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import { Typography, styled } from '@mui/material'
-import { useState } from 'react'
+import { CircularProgress, Typography, styled } from '@mui/material'
+import { useEffect, useState } from 'react'
 import { useDispatch } from 'src/store'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { LocationIcon } from 'src/assets/icons/location'
 import { useRouter } from 'next/router'
 import { ROUTES } from 'src/constants/routes'
+import { useGeoLocation } from 'src/hooks/useGeoLocation'
+import { setLocation } from 'src/store/slices/user'
 
 export const MainSettings = () => {
   const [distance, setDistance] = useState<number | number[]>(50)
+  const { getLocation, location, error, loading } = useGeoLocation()
   const dispatch = useDispatch()
   const router = useRouter()
 
+  useEffect(() => {
+    if (!!location) {
+      dispatch(setLocation({ location: location }))
+    }
+  }, [error, location])
+  console.error(loading)
   const handleLocation = () => {
     dispatch(
       openModal({
@@ -32,8 +41,8 @@ export const MainSettings = () => {
         subTitle: `You’ll need to enable your location in to use Spacewise`,
         children: (
           <Stack display="flex" flexDirection="column" gap={2} width="100%">
-            <Button variant="contained" onClick={() => console.error('error')}>
-              Allow Location
+            <Button variant="contained" onClick={getLocation}>
+              {loading ? <CircularProgress /> : `Allow Location`}
             </Button>
             <Button
               variant="outlined"

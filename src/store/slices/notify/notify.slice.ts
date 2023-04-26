@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-enum Type {
+export enum Type {
   success = 'success',
   error = 'error',
 }

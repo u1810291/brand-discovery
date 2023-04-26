@@ -11,7 +11,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { InputField } from 'src/components/InputField'
 import { PasswordInput } from 'src/components/PasswordInput'
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth'
-import { Notification } from 'src/components/Notification/Notification'
 import Link from 'next/link'
 import Image from 'next/image'
 import Stack from '@mui/material/Stack'
@@ -23,6 +22,8 @@ import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 import CircularProgress from '@mui/material/CircularProgress'
 import { AppDispatch, useDispatch } from 'src/store'
 import { login } from 'src/store/slices/auth'
+import { notify } from 'src/store/slices/notify'
+import { Type } from 'src/store/slices/notify/notify.slice'
 
 const auth = getAuth(firebaseApp())
 
@@ -49,6 +50,17 @@ export const SignIn = () => {
       dispatch(login(JSON.parse(JSON.stringify(user))))
     }
   }, [user?.user?.uid])
+
+  useEffect(() => {
+    if (error?.message) {
+      dispatch(
+        notify({
+          type: Type.error,
+          message: error?.message,
+        }),
+      )
+    }
+  }, [error])
   return (
     <MainLayout id="main-layout">
       <Stack marginY="auto">
@@ -124,7 +136,6 @@ export const SignIn = () => {
           </Button>
         </Stack>
       </Stack>
-      <Notification text={error?.message} type="error" />
     </MainLayout>
   )
 }

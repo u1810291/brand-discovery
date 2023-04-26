@@ -9,9 +9,11 @@ import { useRouter } from 'next/router'
 import { useWindowSize } from 'src/hooks'
 import { useSelector } from 'react-redux'
 import { ROUTES } from 'src/constants/routes'
+import Notification from 'src/components/Notification'
 import { authSelector } from 'src/store/slices/auth'
 import { FC, PropsWithChildren, ReactElement, useLayoutEffect } from 'react'
 import { UserData } from 'src/store/slices/auth/auth.slice'
+import { notifySelector } from 'src/store/slices/notify'
 
 type MainLayoutProps = {
   showBackButton?: boolean
@@ -24,6 +26,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
   const router = useRouter()
   const { height } = useWindowSize()
   const { user } = useSelector(authSelector)
+  const { message, type } = useSelector(notifySelector)
   const userData: UserData = JSON.parse(localStorage.getItem('user') || null)
 
   //TODO: Needs to be fixed redirect
@@ -50,6 +53,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
       )}
       {children}
       <Modal />
+      <Notification text={message} type={type} />
     </Root>
   )
 }
