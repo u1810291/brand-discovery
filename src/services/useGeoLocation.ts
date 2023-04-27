@@ -65,7 +65,7 @@ export const useOneLocation = (uid) => {
       const q = query(collection(db(), 'settings'), where('uid', '==', uid))
       const docs = await getDocs(q)
       // data.docs.forEach(item => {
-      console.error(docs)
+      // console.error(docs)
       // setData([item.data()])
       // })
     } catch (err) {
@@ -78,7 +78,7 @@ export const useOneLocation = (uid) => {
 
 export async function getLocations(query) {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_GET_COUNTRIES_AND_CITY_ENDPOINT}/?format=json&addressdetails=1&q=${query}&format=json&limit=5`,
+    `${process.env.NEXT_PUBLIC_GET_COUNTRIES_AND_CITY_ENDPOINT}/?format=json&addressdetails=1&q=${query}&format=json&limit=15`,
   )
   const data = res.json()
   return data
