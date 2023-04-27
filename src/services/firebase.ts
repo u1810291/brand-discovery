@@ -19,17 +19,17 @@ const firebaseConfig = {
 let singleton = null,
   database = null
 
-export function db() {
-  if (!database) {
-    database = getFirestore(initFirebase())
-  }
-  return database
-}
-
 // Initialize Firebase
 export default function initFirebase() {
   if (!singleton) {
     singleton = initializeApp(firebaseConfig)
   }
   return singleton
+}
+
+export function db() {
+  if (!database) {
+    database = getFirestore(initFirebase())
+  }
+  return database
 }

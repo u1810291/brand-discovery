@@ -65,7 +65,7 @@ export const useOneLocation = (uid) => {
       const q = query(collection(db(), 'settings'), where('uid', '==', uid))
       const docs = await getDocs(q)
       // data.docs.forEach(item => {
-      // console.error(docs)
+      console.error(q, docs)
       // setData([item.data()])
       // })
     } catch (err) {
