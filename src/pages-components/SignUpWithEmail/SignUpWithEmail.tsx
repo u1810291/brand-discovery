@@ -10,24 +10,23 @@ import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
 import { getAuth } from 'firebase/auth'
+import 'firebase/firestore'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
 import { Controller, useForm } from 'react-hook-form'
 import { InputField } from 'src/components/InputField'
-import Notification from 'src/components/Notification'
 import { PasswordInput } from 'src/components/PasswordInput'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
-import { SignUpWithEmailFormType, defaultValues, schema } from './helper'
-import 'firebase/firestore'
-import { signUp } from 'src/store/slices/auth'
-import { AppDispatch, useDispatch } from 'src/store'
 import { useSendVerifyEmail } from 'src/services/useSendVerifyEmail'
-import { Type } from 'src/store/slices/notify/notify.slice'
-import { notify } from 'src/store/slices/notify'
 import { useUpdateUser } from 'src/services/useUpdateUser'
+import { AppDispatch, useDispatch } from 'src/store'
+import { signUp } from 'src/store/slices/auth'
+import { notify } from 'src/store/slices/notify'
+import { Type } from 'src/store/slices/notify/notify.slice'
+import { SignUpWithEmailFormType, defaultValues, schema } from './helper'
 
 const auth = getAuth(firebaseApp())
 
@@ -85,7 +84,7 @@ export const SignUpWithEmail = () => {
         <Typography component="h3" fontWeight={700} fontSize={28} alignSelf="center">
           Sign Up with Email
         </Typography>
-        <Stack spacing={2} component="form" onSubmit={handleSubmit(onSubmit)}>
+        <Stack spacing={{ xs: 2, sm: 4 }} component="form" onSubmit={handleSubmit(onSubmit)}>
           <InputField
             name="email"
             placeholder="Enter your E-mail"

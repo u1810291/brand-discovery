@@ -1,17 +1,17 @@
 'use client'
 
-import IconButton from '@mui/material/IconButton'
 import ArrowBack from '@mui/icons-material/ArrowBack'
-import Stack, { StackProps } from '@mui/material/Stack'
 import { styled } from '@mui/material'
-import { Modal } from 'src/components'
+import IconButton from '@mui/material/IconButton'
+import Stack, { StackProps } from '@mui/material/Stack'
 import { useRouter } from 'next/router'
-import { useWindowSize } from 'src/hooks'
-import { useSelector } from 'react-redux'
-import Notification from 'src/components/Notification'
 import { FC, PropsWithChildren, ReactElement, useEffect } from 'react'
-import { notifySelector } from 'src/store/slices/notify'
+import { useSelector } from 'react-redux'
+import { Modal } from 'src/components'
+import Notification from 'src/components/Notification'
 import { ROUTES } from 'src/constants/routes'
+import { useWindowSize } from 'src/hooks'
+import { notifySelector } from 'src/store/slices/notify'
 
 type MainLayoutProps = {
   showBackButton?: boolean
@@ -37,7 +37,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
       }
       if (
         [ROUTES.home, ROUTES.brand, ROUTES.location, ROUTES.thankYou, ROUTES.link].includes(router.pathname) &&
-        !user.emailVerified
+        !user?.emailVerified
       ) {
         setTimeout(() => router.push(ROUTES.verifyEmail), 1000)
       }
@@ -60,7 +60,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
   }, [])
 
   return (
-    <Root padding={3} height={`${height}px`} {...props}>
+    <Root padding={{ xs: 3, sm: 5 }} height={`${height}px`} {...props}>
       {showBackButton && (
         <Stack alignItems="center" marginBottom={{ xs: 2.5, sm: 5 }} display="flex" flexDirection="row">
           <IconButton onClick={() => router.back()}>
@@ -82,4 +82,5 @@ const Root = styled(Stack)`
   max-width: 900px;
   margin-inline: auto;
   overflow-x: hidden;
+  box-shadow: 0px 16px 64px rgba(179, 180, 174, 0.25);
 `

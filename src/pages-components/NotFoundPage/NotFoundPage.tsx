@@ -52,6 +52,7 @@ const ImageContainer = styled(Stack)`
   bottom: 0;
   width: 100%;
   max-height: 55%;
+  overflow: hidden;
   img {
     width: 100%;
     height: auto;

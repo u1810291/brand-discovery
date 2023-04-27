@@ -41,7 +41,7 @@ export const ThankYou = () => {
   return (
     <MainLayout padding={0}>
       <Stack direction="column" bgcolor="#D1EAF1" flex={1} position="relative" alignItems="center">
-        <Stack marginTop={{ xs: 13, sm: 25 }} alignItems="center">
+        <Stack marginTop={{ xs: 13, sm: 25 }} alignItems="center" zIndex={1}>
           <Image
             placeholder="blur"
             blurDataURL={`${SpacewiseSVG}`}
@@ -75,7 +75,7 @@ export const ThankYou = () => {
             We&apos;ll review your request and {'\n'} grant you access shortly.
           </Typography>
         </Stack>
-        <Stack position="absolute" bottom={0} width="100%" height={{ xs: 380, sm: 500 }}>
+        <Stack position="absolute" bottom={0} right={{ sm: '23%' }} width="100%" height={{ xs: 380, sm: 500 }}>
           <div style={{ width: '100%', height: '100%', position: 'relative' }}>
             <Image
               unoptimized
