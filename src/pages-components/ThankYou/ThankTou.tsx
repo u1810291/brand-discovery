@@ -21,6 +21,7 @@ export const ThankYou = () => {
   const router = useRouter()
   const query = router.query
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [verifyEmail, success, loading, error] = useVerifyEmail(auth)
 
   useEffect(() => {
