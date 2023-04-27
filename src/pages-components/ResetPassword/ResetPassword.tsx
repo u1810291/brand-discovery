@@ -1,23 +1,23 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { getAuth } from 'firebase/auth'
-import { useForm } from 'react-hook-form'
-import { MainLayout } from 'src/layouts/MainLayout'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { InputField } from 'src/components/InputField'
-import { schema, ResetPasswordFormType } from './helper'
-import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth'
-import Image from 'next/image'
-import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import firebaseApp from 'src/services/firebase'
-import Typography from '@mui/material/Typography'
 import CircularProgress from '@mui/material/CircularProgress'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { getAuth } from 'firebase/auth'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth'
+import { useForm } from 'react-hook-form'
 import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
+import { InputField } from 'src/components/InputField'
+import { MainLayout } from 'src/layouts/MainLayout'
+import firebaseApp from 'src/services/firebase'
 import { useDispatch } from 'src/store'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
+import { ResetPasswordFormType, schema } from './helper'
 
 const auth = getAuth(firebaseApp())
 
@@ -84,9 +84,9 @@ export const ResetPassword = () => {
             {sending ? <CircularProgress /> : 'Send me reset password instructions'}
           </Button>
         </Stack>
-        <Button type="button" variant="text" sx={{ width: 'fit-content', alignSelf: 'center' }}>
+        {/* <Button type="button" variant="text" sx={{ width: 'fit-content', alignSelf: 'center' }}>
           Reset via Phone Number
-        </Button>
+        </Button> */}
       </Stack>
     </MainLayout>
   )
