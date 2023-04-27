@@ -24,19 +24,19 @@ export const NotFoundPage = () => {
         <Typography marginTop={5} fontSize={16} lineHeight="22px" fontWeight={500} color="rgba(82, 176, 158, 1)">
           It looks like this was the result of either
         </Typography>
-        <Stack direction="row" alignItems="center" mt={3}>
+        <Stack spacing={1} direction="row" alignItems="center" mt={3}>
           <InfoOutlinedIcon sx={{ color: 'rgba(225, 134, 93, 1)' }} />
           <Typography fontSize={12} fontWeight={500} color="rgba(116, 121, 120, 1)">
             It looks like this was the result of either
           </Typography>
         </Stack>
-        <Stack direction="row" alignItems="center" mt={1}>
+        <Stack spacing={1} direction="row" alignItems="center" mt={1}>
           <InfoOutlinedIcon sx={{ color: 'rgba(225, 134, 93, 1)' }} />
           <Typography fontSize={12} fontWeight={500} color="rgba(116, 121, 120, 1)">
             An out-of-date link
           </Typography>
         </Stack>
-        <Button variant="contained" href={ROUTES.home} sx={{ width: 'fit-content', marginTop: 5 }}>
+        <Button size="large" variant="contained" href={ROUTES.home} sx={{ width: 'fit-content', marginTop: 5 }}>
           Back to Homepage
         </Button>
       </Stack>
@@ -51,8 +51,7 @@ const ImageContainer = styled(Stack)`
   position: absolute;
   bottom: 0;
   width: 100%;
-  border-radius: 16px;
-  overflow: hidden;
+  max-height: 55%;
   img {
     width: 100%;
     height: auto;
