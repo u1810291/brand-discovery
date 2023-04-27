@@ -25,7 +25,7 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
   })
 
   return (
-    <Stack flex={1} position="relative">
+    <Stack flex={1} position="relative" marginX={3} marginTop={5} marginBottom={4}>
       <Stack flex={1}>
         {animArray.map(({ x, y, rot, scale }, i) => (
           <Animated key={i} style={{ x, y }}>

@@ -4,22 +4,22 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import HomeIcon from '@mui/icons-material/Home'
 import InfoIcon from '@mui/icons-material/Info'
-import firebaseApp from 'src/services/firebase'
 import SettingsIcon from '@mui/icons-material/Settings'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import { companies } from './mock'
 import { getAuth } from 'firebase/auth'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'src/store'
 import { useEffect, useState } from 'react'
 import { ROUTES } from 'src/constants/routes'
-import { HomePageContent } from './components'
-import { MainLayout } from 'src/layouts/MainLayout'
 import { TabsPanel } from 'src/components/TabsPanel'
 import { useSignOut } from 'react-firebase-hooks/auth'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { SettingsPageContent } from './components/SettingsPageContent'
 import { UserData } from 'src/store/slices/auth/auth.slice'
+import { MainLayout } from 'src/layouts/MainLayout'
+import firebaseApp from 'src/services/firebase'
+import { HomePageContent, LikedPageContent } from './components'
+import { companies } from './mock'
 
 const auth = getAuth(firebaseApp())
 
@@ -67,7 +67,7 @@ export const Home = () => {
         />
       ),
     },
-    { icon: <FavoriteBorderIcon />, content: <Box>Like</Box> },
+    { icon: <FavoriteBorderIcon />, content: <LikedPageContent data={companies} /> },
     { icon: <InfoIcon />, content: <Box>Info</Box> },
     {
       icon: <SettingsIcon />,

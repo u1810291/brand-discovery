@@ -103,7 +103,12 @@ const StyledDialog = styled(Dialog)`
 
     border-radius: 24px 24px 0px 0px;
     margin-inline: 0;
+    margin-bottom: 0;
     width: 100%;
     margin-bottom: 0;
+  }
+
+  .MuiDialogContent-root {
+    padding-bottom: 80px;
   }
 `
