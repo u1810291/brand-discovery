@@ -100,6 +100,11 @@ const StyledDialog = styled(Dialog)`
 
   .MuiPaper-root {
     margin-inline: 0;
+    margin-bottom: 0;
     width: 100%;
+  }
+
+  .MuiDialogContent-root {
+    padding-bottom: 80px;
   }
 `
