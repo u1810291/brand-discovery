@@ -20,19 +20,46 @@ import { useRouter } from 'next/router'
 import { ROUTES } from 'src/constants/routes'
 import { useGeoLocation } from 'src/hooks/useGeoLocation'
 import { setLocation } from 'src/store/slices/user'
+import { useOneLocation, useStoreGeoLocation } from 'src/services/useGeoLocation'
+import { notify } from 'src/store/slices/notify'
+import { Type } from 'src/store/slices/notify/notify.slice'
 
 export const MainSettings = () => {
   const [distance, setDistance] = useState<number | number[]>(50)
   const { getLocation, location, error, loading } = useGeoLocation()
+  const [setUserGeoPosition, , , , storeLocationLoading, storeLocationSuccess, storeLocationError] =
+    useStoreGeoLocation()
   const dispatch = useDispatch()
   const router = useRouter()
 
+  const [data, errorFetching] = useOneLocation(
+    localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid,
+  )
+
+  console.error(data, errorFetching)
   useEffect(() => {
     if (!!location) {
+      const userId = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid
       dispatch(setLocation({ location: location }))
+      setUserGeoPosition({
+        uid: userId,
+        latitude: location.latitude,
+        longitude: location.longitude,
+        name: location.name,
+      })
+      dispatch(
+        notify({
+          type: storeLocationSuccess ? Type.success : Type.error,
+          message: storeLocationSuccess || storeLocationError,
+        }),
+      )
     }
-  }, [error, location])
-  console.error(loading)
+
+    if (storeLocationSuccess) {
+      dispatch(closeModal())
+    }
+  }, [error, location, storeLocationSuccess])
+
   const handleLocation = () => {
     dispatch(
       openModal({
@@ -42,7 +69,7 @@ export const MainSettings = () => {
         children: (
           <Stack display="flex" flexDirection="column" gap={2} width="100%">
             <Button variant="contained" onClick={getLocation}>
-              {loading ? <CircularProgress /> : `Allow Location`}
+              {storeLocationLoading ? <CircularProgress /> : `Allow Location`}
             </Button>
             <Button
               variant="outlined"

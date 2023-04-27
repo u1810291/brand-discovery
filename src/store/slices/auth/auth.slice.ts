@@ -7,6 +7,7 @@ export type UserData = {
   createdAt: number
   lastLoginAt: number
   isLoggedIn: boolean
+  uid: string
 }
 
 type AuthType = {
@@ -15,6 +16,7 @@ type AuthType = {
     expiresIn: number
   }
   user: {
+    uid: string
     emailVerified: boolean
     createdAt: number
     lastLoginAt: number
@@ -23,6 +25,7 @@ type AuthType = {
 
 const initialState = {
   user: {
+    uid: null,
     isLoggedIn: null,
     expiresIn: 0,
     createdAt: 0,
@@ -38,6 +41,7 @@ export const authSlice = createSlice({
   reducers: {
     login: (state, { payload }: { payload: AuthType }) => {
       const userData: UserData = {
+        uid: payload.user.uid,
         refreshToken: payload._tokenResponse.refreshToken,
         expiresIn: payload._tokenResponse.expiresIn,
         emailVerified: payload.user.emailVerified,
@@ -50,6 +54,7 @@ export const authSlice = createSlice({
     },
     signUp: (state, { payload }: { payload: AuthType }) => {
       const userData: UserData = {
+        uid: payload.user.uid,
         refreshToken: payload._tokenResponse.refreshToken,
         expiresIn: payload._tokenResponse.expiresIn,
         emailVerified: payload.user.emailVerified,

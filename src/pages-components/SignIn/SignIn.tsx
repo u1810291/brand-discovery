@@ -24,12 +24,14 @@ import { AppDispatch, useDispatch } from 'src/store'
 import { login } from 'src/store/slices/auth'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
+import { useRouter } from 'next/router'
 
 const auth = getAuth(firebaseApp())
 
 export const SignIn = () => {
   const dispatch: AppDispatch = useDispatch()
   const { palette } = useTheme()
+  const router = useRouter()
 
   const {
     handleSubmit,
@@ -48,6 +50,7 @@ export const SignIn = () => {
   useEffect(() => {
     if (user?.user?.uid) {
       dispatch(login(JSON.parse(JSON.stringify(user))))
+      router.push(user.user.emailVerified ? ROUTES.home : ROUTES.verifyEmail)
     }
   }, [user?.user?.uid])
 

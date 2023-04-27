@@ -27,6 +27,7 @@ import { AppDispatch, useDispatch } from 'src/store'
 import { useSendVerifyEmail } from 'src/services/useSendVerifyEmail'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { notify } from 'src/store/slices/notify'
+import { useUpdateUser } from 'src/services/useUpdateUser'
 
 const auth = getAuth(firebaseApp())
 
@@ -36,6 +37,7 @@ export const SignUpWithEmail = () => {
   const {
     control,
     handleSubmit,
+    getValues,
     formState: { isDirty, isValid, isSubmitting },
   } = useForm<SignUpWithEmailFormType>({
     defaultValues,
@@ -45,11 +47,20 @@ export const SignUpWithEmail = () => {
 
   const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
   const [sendVerifyEmail, sending, emailVerifyError] = useSendVerifyEmail(auth)
+  const [updateUser, updateLoading, success, updateError] = useUpdateUser()
 
   useEffect(() => {
     if (!!user?.user?.uid && !emailVerifyError?.message && !sending) {
+      updateUser({
+        uid: user.user.uid,
+        firstName: getValues().firstName,
+        lastName: getValues().lastName,
+        companyName: getValues().companyName,
+        spaceCount: getValues().spaceCount,
+      })
+      console.log(updateLoading, success, updateError)
       dispatch(signUp(JSON.parse(JSON.stringify(user))))
-      // router.push(ROUTES.verifyEmail)
+      router.push(ROUTES.verifyEmail)
     }
   }, [user?.user?.uid, sending])
 

@@ -11,10 +11,17 @@ export function InputField<T extends FieldValues>({
   const {
     field,
     fieldState: { error },
-  } = useController<T>({
-    name,
-    control,
-  })
+  } = control
+    ? useController<T>({
+        name,
+        control,
+      })
+    : {
+        field: null,
+        fieldState: {
+          error: null,
+        },
+      }
 
   return (
     <TextField
@@ -24,7 +31,7 @@ export function InputField<T extends FieldValues>({
       helperText={error?.message}
       margin={margin}
       {...props}
-      {...field}
+      {...(field && { ...field })}
     />
   )
 }

@@ -10,4 +10,5 @@ export const ROUTES = {
   thankYou: '/thank-you',
   location: '/location',
   brand: '/brand',
+  link: '/link',
 }

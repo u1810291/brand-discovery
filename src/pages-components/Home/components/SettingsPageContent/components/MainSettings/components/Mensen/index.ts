@@ -1,1 +1,0 @@
-export { Mensen } from './Mensen'

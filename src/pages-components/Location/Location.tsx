@@ -1,74 +1,104 @@
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import Stack from '@mui/material/Stack'
 import { MainLayout } from 'src/layouts/MainLayout'
-import { InputField } from 'src/components/InputField'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { useForm } from 'react-hook-form'
 import ListItemButton from '@mui/material/ListItemButton'
 import Box from '@mui/material/Box'
 import List from '@mui/material/List'
 import ListItemText from '@mui/material/ListItemText'
 import Divider from '@mui/material/Divider'
-import Typography from '@mui/material/Typography'
-import { styled } from '@mui/material'
+import { CircularProgress, styled, useMediaQuery } from '@mui/material'
 import { Search } from 'src/assets/icons/search'
 import { LocationIcon } from 'src/assets/icons/location'
+import { useStoreGeoLocation } from 'src/services/useGeoLocation'
+import { CityNames } from './components/CityNames/CityNames'
+import { LocationNavbar } from './components/LocationNavbar'
+import { useDispatch } from 'react-redux'
+import { notify } from 'src/store/slices/notify'
+import { Type } from 'src/store/slices/notify/notify.slice'
+import { ROUTES } from 'src/constants/routes'
+import { useRouter } from 'next/router'
 
 export type LocationType = {
   query: string
 }
 
-export const schema = yup.object({
-  query: yup.string(),
-})
-
-const data = [...new Array(20)]
-
 export const Location = () => {
-  const { control } = useForm<LocationType>({
-    defaultValues: { query: '' },
-    mode: 'onChange',
-    resolver: yupResolver(schema),
-  })
+  const isMiddleWidth = useMediaQuery('(min-width:550px)')
+  const isBigWidth = useMediaQuery('(min-width:800px)')
+  const router = useRouter()
+  const dispatch = useDispatch()
+  const cityNameCount = isBigWidth ? 7 : isMiddleWidth ? 5 : 1
+  const [setUserGeoPosition, query, setQuery, countries, loading, success, error] = useStoreGeoLocation()
+
+  const handleChange = useCallback((e) => {
+    setQuery(e)
+  }, [])
+
+  const handleChooseLocation = useCallback((e) => {
+    const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
+    setUserGeoPosition({
+      uid: user?.uid,
+      name: e.address?.city || e.address?.country,
+      latitude: Number(e.lat),
+      longitude: Number(e.lon),
+    })
+  }, [])
+  useEffect(() => {
+    if (success || error) {
+      dispatch(notify({ type: error ? Type.error : Type.success, message: error || success }))
+    }
+    if (success) {
+      router.push(ROUTES.home)
+    }
+  }, [error, success])
   return (
-    <MainLayout
-      showBackButton
-      navbar={
-        <Stack display="flex" alignItems="center" width="100%">
-          <InputField
-            variant="standard"
-            control={control}
-            name="query"
-            fullWidth
-            placeholder="Enter a query"
-            sx={{ borderBottom: '0px !important' }}
-          />
-        </Stack>
-      }
-    >
+    <MainLayout showBackButton navbar={<LocationNavbar field={query} updateField={handleChange} />}>
       <Stack>
         <List sx={{ width: '100%', bgcolor: 'white' }} component="nav" aria-labelledby="nested-list-subheader">
-          <ListItemButton sx={{ paddingLeft: 0 }} onClick={() => console.error('error')}>
-            <Search />
-            <Box sx={{ width: '100%', paddingLeft: 2 }}>
-              <ListItemTextStyled primary="Location" color="primary" sx={{ width: 'auto' }} />
-              <TypographyStyled>Some</TypographyStyled>
-            </Box>
-          </ListItemButton>
-          <StyledDivider sx={{ left: 20 }} />
-          {data.map((_el, i) => (
-            <React.Fragment key={i}>
+          {query && (
+            <>
               <ListItemButton sx={{ paddingLeft: 0 }} onClick={() => console.error('error')}>
-                <LocationIcon width="28px" height="28px" />
+                <Search />
                 <Box sx={{ width: '100%', paddingLeft: 2 }}>
-                  <ListItemTextStyled primary="Location" color="primary" sx={{ width: 'auto' }} />
-                  <TypographyStyled>Some</TypographyStyled>
+                  <ListItemTextStyled primary={query} color="primary" sx={{ width: 'auto' }} />
                 </Box>
               </ListItemButton>
               <StyledDivider sx={{ left: 20 }} />
-            </React.Fragment>
-          ))}
+            </>
+          )}
+          {loading || success ? (
+            <Stack display="flex" flexDirection="row" alignItems="center" justifyContent="center" height="100%">
+              <CircularProgress />
+            </Stack>
+          ) : (
+            countries?.map((country, i) => (
+              <React.Fragment key={`${country.display_name}-${i}`}>
+                <ListItemButton sx={{ paddingLeft: 0 }} onClick={() => handleChooseLocation(country)}>
+                  <LocationIcon width="28px" height="28px" />
+                  <Box sx={{ width: '100%', paddingLeft: 2 }}>
+                    <ListItemTextStyled
+                      primary={country.address.country || country.address.place}
+                      color="primary"
+                      sx={{ width: 'auto' }}
+                    />
+                    <Stack display="flex" flexDirection="row" gap={1}>
+                      <CityNames
+                        data={
+                          country.display_name.split(',') || [
+                            country.address.railway,
+                            country.address.region,
+                            country.address.suburb,
+                          ]
+                        }
+                        totalCount={cityNameCount}
+                      />
+                    </Stack>
+                  </Box>
+                </ListItemButton>
+                <StyledDivider sx={{ left: 20 }} />
+              </React.Fragment>
+            ))
+          )}
         </List>
       </Stack>
     </MainLayout>
@@ -96,18 +126,3 @@ const ListItemTextStyled = styled(ListItemText)`
   flex-grow: 1;
   color: ${(color) => (color.color === 'primary' ? '#000000' : '#9aa09e')};
 `
-
-const TypographyStyled = styled(Typography)(({ theme }) =>
-  theme.unstable_sx({
-    fontFamily: 'Manrope',
-    fontStyle: 'normal',
-    fontWeight: 500,
-    fontSize: '14px',
-    lineHeight: '147.7%',
-    color: '#9AA09E',
-    flex: 'none',
-    order: 1,
-    alignSelf: 'stretch',
-    flexGrow: 0,
-  }),
-)

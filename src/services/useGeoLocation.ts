@@ -1,0 +1,85 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useCallback, useEffect, useState } from 'react'
+import { query, getDocs, collection, where, addDoc, doc, getDoc } from 'firebase/firestore'
+import { db } from './firebase'
+
+type GeoType = {
+  uid: string
+  name: string
+  latitude: number
+  longitude: number
+}
+
+export const useStoreGeoLocation = () => {
+  const [error, setError] = useState<string>()
+  const [loading, setLoading] = useState<boolean>()
+  const [success, setSuccess] = useState<any>()
+  const [search, setSearch] = useState<string>('')
+  const [countries, setCountries] = useState<[]>()
+
+  useEffect(() => {
+    let timer = null
+    if (search) {
+      setLoading(true)
+      timer = setTimeout(async () => {
+        const res = await getLocations(search)
+        setCountries(res)
+        setLoading(false)
+      }, 500)
+    }
+    return () => clearTimeout(timer)
+  }, [search])
+
+  const setUserGeoPosition = useCallback(async (geo: GeoType) => {
+    try {
+      setLoading(true)
+      const q = query(collection(db(), 'settings'), where('uid', '==', geo.uid))
+      const docs = await getDocs(q)
+      if (docs.docs.length === 0) {
+        await addDoc(collection(db(), 'settings'), {
+          uid: geo.uid,
+          latitude: geo.latitude,
+          longitude: geo.longitude,
+          name: geo.name,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+      }
+      setLoading(false)
+      setSuccess('Successfully added!')
+    } catch (err) {
+      console.error(err)
+      setError(err)
+      setLoading(false)
+    }
+  }, [])
+  return [setUserGeoPosition, search, setSearch, countries, loading, success, error]
+}
+
+export const useOneLocation = (uid) => {
+  const [data, setData] = useState<any>()
+  const [error, setError] = useState();
+  (async function () {
+    try {
+      const q = query(collection(db(), 'settings'), where('uid', '==', uid))
+      const docs = await getDocs(q)
+      // data.docs.forEach(item => {
+      console.error(docs)
+      // setData([item.data()])
+      // })
+    } catch (err) {
+      console.error(err)
+      setError(err)
+    }
+  })()
+  return [data, error]
+}
+
+export async function getLocations(query) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_GET_COUNTRIES_AND_CITY_ENDPOINT}/?format=json&addressdetails=1&q=${query}&format=json&limit=5`,
+  )
+  const data = res.json()
+  return data
+}
