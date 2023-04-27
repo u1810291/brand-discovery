@@ -28,7 +28,10 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
   useEffect(() => {
     const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
     return () => {
-      if ([ROUTES.home, ROUTES.brand, ROUTES.location, ROUTES.thankYou].includes(router.pathname) && !user.isLoggedIn) {
+      if (
+        [ROUTES.home, ROUTES.brand, ROUTES.location, ROUTES.thankYou].includes(router.pathname) &&
+        !user?.isLoggedIn
+      ) {
         router.push(ROUTES.root)
       } else if (
         [ROUTES.home, ROUTES.brand, ROUTES.location, ROUTES.thankYou, ROUTES.link].includes(router.pathname) &&

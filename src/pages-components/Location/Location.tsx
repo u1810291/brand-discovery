@@ -45,7 +45,7 @@ export const Location = () => {
   }, [])
   useEffect(() => {
     if (success || error) {
-      dispatch(notify({ type: error ? Type.error : Type.success, message: error || success }))
+      dispatch(notify({ type: error ? Type.error : Type.success, message: error?.message || success }))
     }
     if (success) {
       router.push(ROUTES.home)
