@@ -1,18 +1,17 @@
-import { Typography, styled } from '@mui/material'
+import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
-import { animated } from '@react-spring/web'
+import { styled } from '@mui/material/styles'
 import Image from 'next/image'
 import { FC, useState } from 'react'
 import { GallerySwiper } from 'src/UI/GallerySwiper'
 import { Indicator } from 'src/components/Indicator'
 import { Swiper as SwiperCommon } from 'swiper'
 
-type CardProps = {
+type SliderProps = {
   images: string[]
-  isLike: boolean | null
-  isShowLabel: boolean
+  tag: string
 }
-export const Card: FC<CardProps> = ({ images, isShowLabel, isLike, ...props }) => {
+export const Slider: FC<SliderProps> = ({ images, tag }) => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [swiper, setSwiper] = useState<SwiperCommon>()
 
@@ -30,74 +29,36 @@ export const Card: FC<CardProps> = ({ images, isShowLabel, isLike, ...props }) =
   }
 
   return (
-    <Container {...props}>
+    <Stack position="relative">
       <Background />
       <Indicator count={images.length} activeIndex={activeIndex} />
       <Stack height="100%" width="40%" onClick={getPrevSlide} position="absolute" top={0} left={0} zIndex={2} />
       <Stack height="100%" width="40%" onClick={getNextSlide} position="absolute" top={0} right={0} zIndex={2} />
-      {isShowLabel &&
-        typeof isLike === 'boolean' &&
-        (isLike ? (
-          <Stack
-            border="4px solid #18BC9C"
-            color=" #18BC9C"
-            borderRadius={2}
-            paddingX={2}
-            paddingY={1}
-            position="absolute"
-            top={40}
-            zIndex={2}
-            left={8}
-          >
-            <Typography fontWeight={800} fontSize=" 40px" lineHeight="55px">
-              LIKE
-            </Typography>
-          </Stack>
-        ) : (
-          <Stack
-            border="4px solid #EC1B40"
-            color=" #EC1B40"
-            borderRadius={2}
-            paddingX={2}
-            paddingY={1}
-            position="absolute"
-            top={40}
-            zIndex={2}
-            right={8}
-          >
-            <Typography fontWeight={800} fontSize=" 40px" lineHeight="55px">
-              NOPE
-            </Typography>
-          </Stack>
-        ))}
       <GallerySwiper
         data={images}
         swiperOptions={{ spaceBetween: 0, slidesPerView: 1 }}
         setSwiper={setSwiper}
         renderElement={(item) => (
-          <ImageContainer width="100%" height="100%">
+          <ImageContainer width="100%" height={{ xs: '180px', sm: 500 }}>
             <Image
               placeholder="blur"
               blurDataURL={`${item}`}
               unoptimized
               src={item}
               alt="picture"
-              width={600}
-              height={400}
+              width={275}
+              height={180}
             />
           </ImageContainer>
         )}
       />
-    </Container>
+      <Chip
+        label={tag}
+        sx={{ position: 'absolute', bottom: '20px', right: '16px', zIndex: 1, background: '#FFE0CC' }}
+      />
+    </Stack>
   )
 }
-const Container = styled(animated.div)`
-  will-change: transform;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  touch-action: none;
-`
 
 const ImageContainer = styled(Stack)`
   border-radius: 16px;
@@ -115,13 +76,7 @@ const Background = styled(Stack)`
   height: 100%;
   z-index: 2;
   opacity: 0.8;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 0) 21%,
-    rgba(0, 0, 0, 0) 90%,
-    rgba(0, 0, 0, 1) 100%
-  );
+  background: linear-gradient(to top, rgba(0, 0, 0, 0) 90%, rgba(0, 0, 0, 1) 100%);
   box-shadow: 0px 16px 64px rgba(179, 180, 174, 0.25);
   border-radius: 16px;
 `

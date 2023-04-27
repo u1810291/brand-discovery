@@ -1,6 +1,5 @@
 'use client'
 import { styled } from '@mui/material'
-import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import Tab from '@mui/material/Tab'
 import Tabs, { TabsProps } from '@mui/material/Tabs'
@@ -22,17 +21,16 @@ export const TabsPanel: FC<TabsPanelProps> = ({ tabs, className, error, success,
   }
 
   return (
-    <Stack spacing={1} className={className} flex={1}>
-      <Stack flex={1}>
+    <Stack className={className} flex={1} maxHeight="100%">
+      <Wrapper>
         {tabs.map((tab, index) => (
           <Item key={index} value={value} index={index}>
             {tab.content}
           </Item>
         ))}
-      </Stack>
-      <StyledDivider />
-      <Stack>
-        <Tabs value={value} onChange={handleChange} {...props}>
+      </Wrapper>
+      <Stack borderTop="1px solid #EAEAE7" height={88} justifyContent="center">
+        <Tabs value={value} onChange={handleChange} {...props} sx={{ paddingInline: 3 }}>
           {tabs.map((tab, index) => (
             <Tab key={index} icon={tab.icon} sx={{ width: '25%' }} />
           ))}
@@ -43,10 +41,8 @@ export const TabsPanel: FC<TabsPanelProps> = ({ tabs, className, error, success,
   )
 }
 
-const StyledDivider = styled(Divider)`
-  margin-top: ${({ theme: { spacing } }) => spacing(2)};
-  margin-bottom: ${({ theme: { spacing } }) => spacing(2)};
-  position: relative;
-  width: calc(100% + 48px);
-  left: -24px;
+const Wrapper = styled(Stack)`
+  flex: 1;
+  max-height: 100%;
+  overflow-y: auto;
 `

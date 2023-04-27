@@ -17,7 +17,7 @@ import { ROUTES } from 'src/constants/routes'
 import { useToggle } from 'src/hooks'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
-import { HomePageContent } from './components'
+import { HomePageContent, LikedPageContent } from './components'
 import { companies } from './mock'
 
 const auth = getAuth(firebaseApp())
@@ -55,7 +55,7 @@ export const Home = () => {
         />
       ),
     },
-    { icon: <FavoriteBorderIcon />, content: <Box>Like</Box> },
+    { icon: <FavoriteBorderIcon />, content: <LikedPageContent data={companies} /> },
     { icon: <InfoIcon />, content: <Box>Info</Box> },
     {
       icon: <SettingsIcon />,
@@ -77,7 +77,7 @@ export const Home = () => {
     },
   ]
   return (
-    <MainLayout padding={3} paddingTop={5}>
+    <MainLayout padding={0}>
       <TabsPanel tabs={tabs} error={error} success={success} />
       <InitialModal open={initialModalOpen} onClose={initialModalClose} userName="Username" />
       <LimitModal open={isLimitModalOpen} />
