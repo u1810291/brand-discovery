@@ -9,7 +9,6 @@ import Image from 'next/image'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Notification from 'src/components/Notification'
 import CircularProgress from '@mui/material/CircularProgress'
 import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 import { useVerifyResetPassword } from 'src/services/useVerifyReset'
@@ -18,6 +17,9 @@ import { ROUTES } from 'src/constants/routes'
 import { getAuth } from 'firebase/auth'
 import firebaseApp from 'src/services/firebase'
 import { useEffect } from 'react'
+import { useDispatch } from 'src/store'
+import { notify } from 'src/store/slices/notify'
+import { Type } from 'src/store/slices/notify/notify.slice'
 
 const auth = getAuth(firebaseApp())
 
@@ -31,14 +33,23 @@ export const NewPassword = () => {
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
+  const dispatch = useDispatch()
   const router = useRouter()
   const [resetPassword, success, loading, error] = useVerifyResetPassword(auth)
 
   useEffect(() => {
+    if (error?.message || success) {
+      dispatch(
+        notify({
+          type: error?.message ? Type.error : Type.success,
+          message: error?.message || success,
+        }),
+      )
+    }
     if (success) {
       router.push(ROUTES.signIn)
     }
-  }, [success])
+  }, [success, error])
 
   const onSubmit = async (data: NewPasswordFormType) => {
     await resetPassword(router.query.oobCode, data.password)
@@ -84,7 +95,6 @@ export const NewPassword = () => {
             {loading ? <CircularProgress /> : 'Continue'}
           </Button>
         </Stack>
-        <Notification text={error?.message || success} type={error ? 'error' : 'success'} />
       </Stack>
     </MainLayout>
   )

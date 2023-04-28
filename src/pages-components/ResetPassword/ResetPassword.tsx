@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getAuth } from 'firebase/auth'
 import { useForm } from 'react-hook-form'
 import { MainLayout } from 'src/layouts/MainLayout'
@@ -13,14 +13,17 @@ import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import firebaseApp from 'src/services/firebase'
 import Typography from '@mui/material/Typography'
-import Notification from 'src/components/Notification'
 import CircularProgress from '@mui/material/CircularProgress'
 import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
+import { useDispatch } from 'src/store'
+import { notify } from 'src/store/slices/notify'
+import { Type } from 'src/store/slices/notify/notify.slice'
 
 const auth = getAuth(firebaseApp())
 
 export const ResetPassword = () => {
   const [success, setSuccess] = useState('')
+  const dispatch = useDispatch()
   const {
     handleSubmit,
     control,
@@ -38,6 +41,17 @@ export const ResetPassword = () => {
       setSuccess('Sent email')
     }
   }
+
+  useEffect(() => {
+    if (error?.message || success) {
+      dispatch(
+        notify({
+          type: error?.message ? Type.error : Type.success,
+          message: error?.message || success,
+        }),
+      )
+    }
+  }, [success, error])
 
   return (
     <MainLayout showBackButton>
@@ -73,7 +87,6 @@ export const ResetPassword = () => {
         <Button type="button" variant="text" sx={{ width: 'fit-content', alignSelf: 'center' }}>
           Reset via Phone Number
         </Button>
-        <Notification type={!!error ? 'error' : 'success'} text={error?.message || success} />
       </Stack>
     </MainLayout>
   )

@@ -10,6 +10,7 @@ export default () => {
     () => import('src/pages-components/NewPassword').then((component) => component.NewPassword),
     {
       suspense: true,
+      ssr: false,
     },
   )
   return (

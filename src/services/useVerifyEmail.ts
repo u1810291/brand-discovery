@@ -8,12 +8,10 @@ export const useVerifyEmail = (auth: Auth) => {
   const [success, setSuccess] = useState<any>()
   const verifyEmail = useCallback((actionCode: string, continueUrl?: () => void, lang?: string) => {
     setLoading(true)
-    console.error('oobCode', actionCode)
     applyActionCode(auth, actionCode)
       .then((res) => {
         setLoading(false)
         setSuccess(res)
-        console.error(res)
       })
       .catch((error) => {
         console.error(error)

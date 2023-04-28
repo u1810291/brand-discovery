@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
 
-export function Notification({ text, type, duration }: INotification) {
+export function Notification({ text, type, duration }: NotificationType) {
   const [open, setOpen] = useState(!!text)
   const handleClose = () => {
     setOpen(false)
@@ -19,7 +19,7 @@ export function Notification({ text, type, duration }: INotification) {
   )
 }
 
-interface INotification {
+type NotificationType = {
   text: string
   type: 'error' | 'warning' | 'info' | 'success'
   duration?: number

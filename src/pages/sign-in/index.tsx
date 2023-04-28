@@ -8,6 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 export default () => {
   const SignIn = dynamic(() => import('src/pages-components/SignIn').then((component) => component.SignIn), {
     suspense: true,
+    ssr: false,
   })
   return (
     <div>

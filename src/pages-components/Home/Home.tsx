@@ -1,42 +1,54 @@
 'use client'
 
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import HomeIcon from '@mui/icons-material/Home'
 import InfoIcon from '@mui/icons-material/Info'
 import SettingsIcon from '@mui/icons-material/Settings'
-import { CircularProgress } from '@mui/material'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import { getAuth } from 'firebase/auth'
 import { useRouter } from 'next/router'
+import { useDispatch } from 'src/store'
 import { useEffect, useState } from 'react'
-import { useSignOut } from 'react-firebase-hooks/auth'
-import { InitialModal, LimitModal } from 'src/components'
-import { TabsPanel } from 'src/components/TabsPanel'
 import { ROUTES } from 'src/constants/routes'
-import { useToggle } from 'src/hooks'
+import { TabsPanel } from 'src/components/TabsPanel'
+import { useSignOut } from 'react-firebase-hooks/auth'
+import { closeModal, openModal } from 'src/store/slices/modal'
+import { SettingsPageContent } from './components/SettingsPageContent'
+import { UserData } from 'src/store/slices/auth/auth.slice'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
 import { HomePageContent, LikedPageContent } from './components'
 import { companies } from './mock'
 
 const auth = getAuth(firebaseApp())
-// TODO: need global state for control limit and initial modal
-const isLimitModalOpen = false
+
 export const Home = () => {
-  const { push } = useRouter()
-  const [error, setError] = useState('')
+  const router = useRouter()
   const [success, setSuccess] = useState('')
   const [signOut, loading, errorMessage] = useSignOut(auth)
-  const { isOpen: initialModalOpen, close: initialModalClose } = useToggle(true)
-
+  const dispatch = useDispatch()
+  const user: UserData = JSON.parse(localStorage.getItem('user') || null)
   useEffect(() => {
-    setError(errorMessage?.message)
-  }, [errorMessage])
+    if (router.pathname === '/home' && Date.parse(new Date().toString()) - user?.lastLoginAt < 100) {
+      dispatch(
+        openModal({
+          title: `Hi Username, \n Welcome back`,
+          subTitle: `Now you can start working with \n Spacewise Brand Discovery`,
+          open: true,
+          children: (
+            <Button variant="contained" onClick={() => dispatch(closeModal())}>
+              Start Now
+            </Button>
+          ),
+        }),
+      )
+    }
+  }, [])
 
   useEffect(() => {
     if (success) {
-      setTimeout(() => push(ROUTES.root), 100)
+      setTimeout(() => router.push(ROUTES.root), 100)
     }
   }, [success])
 
@@ -59,28 +71,13 @@ export const Home = () => {
     { icon: <InfoIcon />, content: <Box>Info</Box> },
     {
       icon: <SettingsIcon />,
-      content: (
-        <Box>
-          <Button
-            onClick={async () => {
-              const success = await signOut()
-              if (success) {
-                setSuccess('You are signed out')
-              }
-              localStorage.setItem('token', '')
-            }}
-          >
-            {loading ? <CircularProgress /> : 'Logout'}
-          </Button>
-        </Box>
-      ),
+      content: <SettingsPageContent setSuccess={setSuccess} signOut={signOut} loading={loading} />,
     },
   ]
   return (
-    <MainLayout padding={0}>
-      <TabsPanel tabs={tabs} error={error} success={success} />
-      <InitialModal open={initialModalOpen} onClose={initialModalClose} userName="Username" />
-      <LimitModal open={isLimitModalOpen} />
+    <MainLayout padding={3} paddingTop={5} sx={{ background: '#F8F9FB' }}>
+      <TabsPanel tabs={tabs} error={errorMessage?.message} success={success} />
+      {/* <LimitModal open={isLimitModalOpen} /> */}
     </MainLayout>
   )
 }

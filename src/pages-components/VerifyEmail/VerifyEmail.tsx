@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTheme } from '@mui/material'
 import { getAuth } from 'firebase/auth'
 import { MainLayout } from 'src/layouts/MainLayout'
@@ -10,9 +10,11 @@ import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import firebaseApp from 'src/services/firebase'
 import Typography from '@mui/material/Typography'
-import Notification from 'src/components/Notification'
 import CircularProgress from '@mui/material/CircularProgress'
 import CheckMarkIcon from 'src/assets/svg/check-mark-icon.svg'
+import { useDispatch } from 'src/store'
+import { notify } from 'src/store/slices/notify'
+import { Type } from 'src/store/slices/notify/notify.slice'
 
 const auth = getAuth(firebaseApp())
 
@@ -20,6 +22,18 @@ export const VerifyEmail = () => {
   const { palette } = useTheme()
   const [sendEmailVerification, sending, error] = useSendEmailVerification(auth)
   const [success, setSuccess] = useState<string>()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (error?.message || success) {
+      dispatch(
+        notify({
+          type: error?.message ? Type.error : Type.success,
+          message: error?.message || success,
+        }),
+      )
+    }
+  }, [error])
 
   return (
     <MainLayout showBackButton>
@@ -61,7 +75,6 @@ export const VerifyEmail = () => {
             {sending ? <CircularProgress /> : 'Resend Email'}
           </Button>
         </Stack>
-        <Notification text={error?.message || success} type={error ? 'error' : 'success'} />
       </Stack>
     </MainLayout>
   )

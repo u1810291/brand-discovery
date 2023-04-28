@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app'
+import { getFirestore } from 'firebase/firestore'
 import 'firebase/compat/auth'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -15,12 +16,20 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASURMENT_ID,
 }
+let singleton = null,
+  database = null
 
 // Initialize Firebase
-let singleton = null
 export default function initFirebase() {
   if (!singleton) {
     singleton = initializeApp(firebaseConfig)
   }
   return singleton
+}
+
+export function db() {
+  if (!database) {
+    database = getFirestore(initFirebase())
+  }
+  return database
 }
