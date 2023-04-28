@@ -75,7 +75,7 @@ export const Home = () => {
     },
   ]
   return (
-    <MainLayout padding={3} paddingTop={5} sx={{ background: '#F8F9FB' }}>
+    <MainLayout sx={{ background: '#F8F9FB' }}>
       <TabsPanel tabs={tabs} error={errorMessage?.message} success={success} />
       {/* <LimitModal open={isLimitModalOpen} /> */}
     </MainLayout>
