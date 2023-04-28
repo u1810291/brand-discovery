@@ -19,7 +19,7 @@ export const LikedPageContent: FC<LikedPageContentProps> = ({ data }) => {
       </Button>
       <Stack component="ul" padding={0} gap={2}>
         {data.map((item, index) => (
-          <Card key={index}>
+          <Card key={`${item.company.title}-${index}`}>
             <LinkContainer href={`${ROUTES.brand}/${item.company.id}`}>
               <CompanyCard data={item.company} />
             </LinkContainer>

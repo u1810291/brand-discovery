@@ -48,8 +48,8 @@ export const MainSettings = () => {
       })
       dispatch(
         notify({
-          type: storeLocationSuccess ? Type.success : Type.error,
-          message: storeLocationSuccess || storeLocationError,
+          type: error || errorFetching ? Type.error : Type.error,
+          message: storeLocationError || errorFetching || storeLocationSuccess,
         }),
       )
     }
@@ -57,7 +57,7 @@ export const MainSettings = () => {
     if (storeLocationSuccess) {
       dispatch(closeModal())
     }
-  }, [error, location, storeLocationSuccess])
+  }, [error, location, storeLocationSuccess, errorFetching])
 
   const handleLocation = () => {
     dispatch(
@@ -104,7 +104,7 @@ export const MainSettings = () => {
       <ListItemButton onClick={handleLocation}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Location" color="primary" sx={{ width: 'auto' }} />
-          <TypographyStyled>Current location, New York, NY</TypographyStyled>
+          <TypographyStyled>{data && data.name}</TypographyStyled>
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
       </ListItemButton>
