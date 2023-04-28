@@ -4,7 +4,6 @@ import { useEffect } from 'react'
 import { getAuth } from 'firebase/auth'
 import { useTheme } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import { useRouter } from 'next/router'
 import { ROUTES } from 'src/constants/routes'
 import { SingInFormType, schema } from './helper'
 import { MainLayout } from 'src/layouts/MainLayout'
@@ -12,7 +11,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { InputField } from 'src/components/InputField'
 import { PasswordInput } from 'src/components/PasswordInput'
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth'
-import { Notification } from 'src/components/Notification/Notification'
 import Link from 'next/link'
 import Image from 'next/image'
 import Stack from '@mui/material/Stack'
@@ -22,11 +20,19 @@ import firebaseApp from 'src/services/firebase'
 import Typography from '@mui/material/Typography'
 import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 import CircularProgress from '@mui/material/CircularProgress'
+import { AppDispatch, useDispatch } from 'src/store'
+import { login } from 'src/store/slices/auth'
+import { notify } from 'src/store/slices/notify'
+import { Type } from 'src/store/slices/notify/notify.slice'
+import { useRouter } from 'next/router'
 
 const auth = getAuth(firebaseApp())
 
 export const SignIn = () => {
+  const dispatch: AppDispatch = useDispatch()
+  const { palette } = useTheme()
   const router = useRouter()
+
   const {
     handleSubmit,
     control,
@@ -42,15 +48,22 @@ export const SignIn = () => {
   }
 
   useEffect(() => {
-    if (!!user?.user?.uid) {
-      const token = JSON.stringify(user.user.toJSON())
-      localStorage.setItem('token', JSON.parse(token).stsTokenManager.accessToken)
-      router.push('/home')
+    if (user?.user?.uid) {
+      dispatch(login(JSON.parse(JSON.stringify(user))))
+      router.push(user.user.emailVerified ? ROUTES.home : ROUTES.verifyEmail)
     }
-  }, [user])
+  }, [user?.user?.uid])
 
-  const { palette } = useTheme()
-
+  useEffect(() => {
+    if (error?.message) {
+      dispatch(
+        notify({
+          type: Type.error,
+          message: error?.message,
+        }),
+      )
+    }
+  }, [error])
   return (
     <MainLayout id="main-layout">
       <Stack marginY="auto">
@@ -126,7 +139,6 @@ export const SignIn = () => {
           </Button>
         </Stack>
       </Stack>
-      <Notification text={error?.message} type="error" />
     </MainLayout>
   )
 }

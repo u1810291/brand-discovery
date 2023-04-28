@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography'
 import { getAuth } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import { useCreateUserWithEmailAndPassword, useSendEmailVerification } from 'react-firebase-hooks/auth'
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
 import { Controller, useForm } from 'react-hook-form'
 import { InputField } from 'src/components/InputField'
 import Notification from 'src/components/Notification'
@@ -22,14 +22,22 @@ import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
 import { SignUpWithEmailFormType, defaultValues, schema } from './helper'
 import 'firebase/firestore'
+import { signUp } from 'src/store/slices/auth'
+import { AppDispatch, useDispatch } from 'src/store'
+import { useSendVerifyEmail } from 'src/services/useSendVerifyEmail'
+import { Type } from 'src/store/slices/notify/notify.slice'
+import { notify } from 'src/store/slices/notify'
+import { useUpdateUser } from 'src/services/useUpdateUser'
 
 const auth = getAuth(firebaseApp())
 
 export const SignUpWithEmail = () => {
   const router = useRouter()
+  const dispatch: AppDispatch = useDispatch()
   const {
     control,
     handleSubmit,
+    getValues,
     formState: { isDirty, isValid, isSubmitting },
   } = useForm<SignUpWithEmailFormType>({
     defaultValues,
@@ -38,21 +46,39 @@ export const SignUpWithEmail = () => {
   })
 
   const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
-  const [sendEmailVerification, sending, emailVerifyError] = useSendEmailVerification(auth)
+  const [sendVerifyEmail, sending, emailVerifyError] = useSendVerifyEmail(auth)
+  const [updateUser, updateLoading, success, updateError] = useUpdateUser()
 
   useEffect(() => {
     if (!!user?.user?.uid && !emailVerifyError?.message && !sending) {
-      const token = JSON.stringify(user.user.toJSON())
-      localStorage.setItem('token', JSON.parse(token).stsTokenManager.accessToken)
+      updateUser({
+        uid: user.user.uid,
+        firstName: getValues().firstName,
+        lastName: getValues().lastName,
+        companyName: getValues().companyName,
+        spaceCount: getValues().spaceCount,
+      })
+      console.log(updateLoading, success, updateError)
+      dispatch(signUp(JSON.parse(JSON.stringify(user))))
       router.push(ROUTES.verifyEmail)
     }
   }, [user?.user?.uid, sending])
 
   const onSubmit = async (data: SignUpWithEmailFormType) => {
     await createUserWithEmailAndPassword(data.email, data.password)
-    await sendEmailVerification()
+    await sendVerifyEmail()
   }
 
+  useEffect(() => {
+    if (error?.message || emailVerifyError?.message) {
+      dispatch(
+        notify({
+          type: Type.error,
+          message: error?.message || emailVerifyError?.message,
+        }),
+      )
+    }
+  }, [error, emailVerifyError])
   return (
     <MainLayout showBackButton>
       <Stack marginY="auto" marginTop={{ xs: 0, sm: 'auto' }} spacing={3}>
@@ -102,7 +128,6 @@ export const SignUpWithEmail = () => {
             <Link>Privacy Policy</Link>.
           </Typography>
         </Stack>
-        <Notification type="error" text={error?.message || emailVerifyError?.message} />
       </Stack>
     </MainLayout>
   )

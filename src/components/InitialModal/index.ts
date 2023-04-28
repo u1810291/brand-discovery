@@ -1,1 +1,0 @@
-export { InitialModal } from './InitialModal'

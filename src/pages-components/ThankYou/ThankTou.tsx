@@ -21,11 +21,11 @@ export const ThankYou = () => {
   const router = useRouter()
   const query = router.query
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [verifyEmail, success, loading, error] = useVerifyEmail(auth)
 
   useEffect(() => {
     let timeout = null
-    console.error(loading, error)
     if (query?.oobCode) {
       verifyEmail(query.oobCode)
     }

@@ -10,6 +10,7 @@ export default () => {
     () =>
       dynamic(() => import('src/pages-components/VerifyEmail').then((component) => component.VerifyEmail), {
         suspense: true,
+        ssr: false,
       }),
     [],
   )

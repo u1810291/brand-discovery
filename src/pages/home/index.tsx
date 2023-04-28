@@ -8,6 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 export default () => {
   const Home = dynamic(() => import('src/pages-components/Home').then((component) => component.Home), {
     suspense: true,
+    ssr: false,
   })
   return (
     <div>
