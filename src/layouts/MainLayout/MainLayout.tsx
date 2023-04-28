@@ -20,6 +20,7 @@ type MainLayoutProps = {
 } & PropsWithChildren &
   StackProps
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasPadding = true, navbar, ...props }) => {
   const router = useRouter()
   const { height } = useWindowSize()
@@ -28,6 +29,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
   useEffect(() => {
     const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
     return () => {
+      console.error(user.isLoggedIn)
       if (
         [ROUTES.home, ROUTES.brand, ROUTES.location, ROUTES.thankYou].includes(router.pathname) &&
         !user?.isLoggedIn
@@ -38,12 +40,17 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
         !user.emailVerified
       ) {
         setTimeout(() => router.push(ROUTES.verifyEmail), 1000)
+      } else if (
+        ![ROUTES.home, ROUTES.brand, ROUTES.location, ROUTES.thankYou, ROUTES.link].includes(router.pathname) &&
+        user.isLoggedIn
+      ) {
+        router.push(ROUTES.home)
       }
     }
   }, [])
 
   return (
-    <Root padding={3} height={`${height}px`} {...props}>
+    <Root height={`${height}px`} {...props}>
       {showBackButton && (
         <Stack alignItems="center" marginBottom={{ xs: 2.5, sm: 5 }} display="flex" flexDirection="row">
           <IconButton onClick={() => router.back()}>

@@ -15,13 +15,8 @@ import { logout } from 'src/store/slices/auth'
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const dispatch: AppDispatch = useDispatch()
   return (
-    <Stack position="relative" width="100%" height="90%">
-      <Stack
-        position="absolute"
-        sx={{ background: 'transparent', height: 'calc(100% + 100px)', width: 'calc(100% + 50px)' }}
-        left={-25}
-        top={-40}
-      >
+    <Stack position="relative" width="100%" height="100%">
+      <Stack position="absolute" sx={{ background: 'transparent', height: '100%', width: '100%' }}>
         <Box sx={{ display: 'flex', flexGrow: 1, background: 'white', paddingBottom: 2, paddingTop: 2 }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
             Settings
@@ -31,7 +26,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
         <StyledDivider />
         <Box
           sx={{
-            height: 'calc(100% + 100px)',
+            height: '100%',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
@@ -62,6 +57,5 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
 
 const StyledDivider = styled(Divider)`
   position: relative;
-  width: calc(100% + 48px);
-  left: -24px;
+  width: 100%;
 `
