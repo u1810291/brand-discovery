@@ -24,7 +24,7 @@ export const GallerySwiper = <T,>({ data, renderElement, swiperOptions, setSwipe
       {...swiperOptions}
     >
       {data.map((item, index) => (
-        <SwiperSlide key={index}>{renderElement(item, index)}</SwiperSlide>
+        <SwiperSlide key={`${item}-${index}`}>{renderElement(item, index)}</SwiperSlide>
       ))}
     </StyledSwiper>
   )
