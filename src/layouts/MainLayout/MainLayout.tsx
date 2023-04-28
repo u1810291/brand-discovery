@@ -34,12 +34,14 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
         !user?.isLoggedIn
       ) {
         router.push(ROUTES.root)
-      } else if (
+      }
+      if (
         [ROUTES.home, ROUTES.brand, ROUTES.location, ROUTES.thankYou, ROUTES.link].includes(router.pathname) &&
         !user.emailVerified
       ) {
         setTimeout(() => router.push(ROUTES.verifyEmail), 1000)
-      } else if (
+      }
+      if (
         [
           ROUTES.link,
           ROUTES.newPassword,

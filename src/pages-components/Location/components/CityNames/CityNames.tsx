@@ -6,7 +6,6 @@ import React from 'react'
 export const CityNames = ({ data, totalCount }) => {
   if (data.length > totalCount) {
     const neededData = data.slice(0, totalCount)
-
     return (
       <Stack
         spacing={0.3}
@@ -19,7 +18,7 @@ export const CityNames = ({ data, totalCount }) => {
       >
         {neededData.map((item, index) => (
           <TypographyStyled key={index} color="primary" sx={{ display: 'flex', flexDirection: 'row' }}>
-            {item},
+            {neededData.length - 1 === index ? `${item}` : `${item},`}
           </TypographyStyled>
         ))}
       </Stack>
@@ -29,9 +28,9 @@ export const CityNames = ({ data, totalCount }) => {
   return (
     <Stack spacing={0.5} direction="row" width="100%" flexWrap="wrap" justifyContent="start">
       {data.map((item, index) => (
-        <Typography key={index} color="primary" sx={{ width: 'fit-content', marginTop: '4px !important' }}>
-          {item.name}
-        </Typography>
+        <TypographyStyled key={index} color="primary" sx={{ width: 'fit-content', marginTop: '4px !important' }}>
+          {data.length - 1 === index ? `${item}` : `${item},`}
+        </TypographyStyled>
       ))}
     </Stack>
   )
