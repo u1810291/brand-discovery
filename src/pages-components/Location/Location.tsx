@@ -27,7 +27,7 @@ export const Location = () => {
   const isBigWidth = useMediaQuery('(min-width:800px)')
   const router = useRouter()
   const dispatch = useDispatch()
-  const cityNameCount = isBigWidth ? 7 : isMiddleWidth ? 5 : 1
+  const cityNameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 2
   const [setUserGeoPosition, query, setQuery, countries, loading, success, error] = useStoreGeoLocation()
 
   const handleChange = useCallback((e) => {
