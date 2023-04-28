@@ -29,7 +29,6 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
   useEffect(() => {
     const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
     return () => {
-      console.error(user.isLoggedIn)
       if (
         [ROUTES.home, ROUTES.brand, ROUTES.location, ROUTES.thankYou].includes(router.pathname) &&
         !user?.isLoggedIn
@@ -41,8 +40,17 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
       ) {
         setTimeout(() => router.push(ROUTES.verifyEmail), 1000)
       } else if (
-        ![ROUTES.home, ROUTES.brand, ROUTES.location, ROUTES.thankYou, ROUTES.link].includes(router.pathname) &&
-        user.isLoggedIn
+        [
+          ROUTES.link,
+          ROUTES.newPassword,
+          ROUTES.resetPassword,
+          ROUTES.signIn,
+          ROUTES.signUp,
+          ROUTES.signUpWithEmail,
+          ROUTES.thankYou,
+          ROUTES.verifyEmail,
+        ].includes(router.pathname) &&
+        user?.isLoggedIn
       ) {
         router.push(ROUTES.home)
       }
@@ -50,7 +58,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
   }, [])
 
   return (
-    <Root height={`${height}px`} {...props}>
+    <Root padding={3} height={`${height}px`} {...props}>
       {showBackButton && (
         <Stack alignItems="center" marginBottom={{ xs: 2.5, sm: 5 }} display="flex" flexDirection="row">
           <IconButton onClick={() => router.back()}>

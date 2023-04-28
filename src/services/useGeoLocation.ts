@@ -62,8 +62,10 @@ export const useOneLocation = (uid) => {
   const [error, setError] = useState();
   (async function () {
     try {
-      const q = await getDoc(doc(collection(db(), 'settings'), uid))
-      setData(q.data())
+      if (uid) {
+        const q = await getDoc(doc(collection(db(), 'settings'), uid))
+        setData(q.data())
+      }
     } catch (err) {
       console.error(err)
       setError(err)
