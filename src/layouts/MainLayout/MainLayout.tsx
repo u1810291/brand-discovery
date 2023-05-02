@@ -5,11 +5,10 @@ import { styled } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
 import { useRouter } from 'next/router'
-import { FC, PropsWithChildren, ReactElement, useEffect } from 'react'
+import { FC, PropsWithChildren, ReactElement } from 'react'
 import { useSelector } from 'react-redux'
 import { Modal } from 'src/components'
 import Notification from 'src/components/Notification'
-import { ROUTES } from 'src/constants/routes'
 import { useWindowSize } from 'src/hooks'
 import { notifySelector } from 'src/store/slices/notify'
 
@@ -25,39 +24,6 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
   const router = useRouter()
   const { height } = useWindowSize()
   const { message, type } = useSelector(notifySelector)
-
-  useEffect(() => {
-    const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
-    return () => {
-      if (
-        [ROUTES.home, ROUTES.brand, ROUTES.location, ROUTES.thankYou].includes(router.pathname) &&
-        !user?.isLoggedIn
-      ) {
-        router.push(ROUTES.root)
-      }
-      if (
-        [ROUTES.home, ROUTES.brand, ROUTES.location, ROUTES.thankYou, ROUTES.link].includes(router.pathname) &&
-        !user?.emailVerified
-      ) {
-        setTimeout(() => router.push(ROUTES.verifyEmail), 1000)
-      }
-      if (
-        [
-          ROUTES.link,
-          ROUTES.newPassword,
-          ROUTES.resetPassword,
-          ROUTES.signIn,
-          ROUTES.signUp,
-          ROUTES.signUpWithEmail,
-          ROUTES.thankYou,
-          ROUTES.verifyEmail,
-        ].includes(router.pathname) &&
-        user?.isLoggedIn
-      ) {
-        router.push(ROUTES.home)
-      }
-    }
-  }, [])
 
   return (
     <Root padding={{ xs: 3, sm: 5 }} height={`${height}px`} {...props}>

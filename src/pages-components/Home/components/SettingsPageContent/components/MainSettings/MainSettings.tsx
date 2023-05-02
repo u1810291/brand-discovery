@@ -97,7 +97,7 @@ export const MainSettings = () => {
       aria-labelledby="nested-list-subheader"
       subheader={<ListSubheaderStyled id="nested-list-subheader">Discovery</ListSubheaderStyled>}
     >
-      <ListItemButton onClick={() => console.error('error')}>
+      <ListItemButton onClick={() => router.push(ROUTES.categories)}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Categories" color="primary" sx={{ width: 'auto' }} />
           <TypographyStyled>Sport, Health, +4 more</TypographyStyled>

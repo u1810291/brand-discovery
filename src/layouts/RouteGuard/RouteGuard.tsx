@@ -28,7 +28,6 @@ function RouteGuard({ children }) {
   }, [])
 
   function authCheck(url) {
-    // redirect to login page if accessing a private page and not logged in
     const publicPaths = [
       ROUTES.signIn,
       ROUTES.link,
@@ -37,13 +36,14 @@ function RouteGuard({ children }) {
       ROUTES.signUpWithEmail,
       ROUTES.verifyEmail,
       ROUTES.thankYou,
+      ROUTES.notFound,
     ]
     const path = url.split('?')[0]
     const user = localStorage.getItem('user') && JSON?.parse(localStorage.getItem('user'))
     if (!user.isLoggedIn && !publicPaths.includes(path)) {
       setAuthorized(false)
       router.push({
-        pathname: ROUTES.signIn,
+        pathname: ROUTES.notFound,
         query: { returnUrl: router.asPath },
       })
     } else {

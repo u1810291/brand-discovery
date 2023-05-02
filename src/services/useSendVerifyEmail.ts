@@ -9,7 +9,7 @@ export const useSendVerifyEmail = (auth: Auth) => {
 
   const sendVerifyEmail = useCallback(() => {
     const actionCodeSettings = {
-      url: `https://${process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}/?email=${auth.currentUser.email}`,
+      url: `https://${process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}/?email=${auth?.currentUser?.email}`,
       handleCodeInApp: true,
     }
     setLoading(true)
