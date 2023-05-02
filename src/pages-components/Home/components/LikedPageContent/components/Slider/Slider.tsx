@@ -38,8 +38,8 @@ export const Slider: FC<SliderProps> = ({ images, tag }) => {
         data={images}
         swiperOptions={{ spaceBetween: 0, slidesPerView: 1 }}
         setSwiper={setSwiper}
-        renderElement={(item) => (
-          <ImageContainer width="100%" height={{ xs: '180px', sm: 500 }}>
+        renderElement={(item, index) => (
+          <ImageContainer key={`${item}-${index}`} width="100%" height={{ xs: '180px', sm: 500 }}>
             <Image
               placeholder="blur"
               blurDataURL={`${item}`}

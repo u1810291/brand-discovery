@@ -13,13 +13,13 @@ type LikedPageContentProps = {
 
 export const LikedPageContent: FC<LikedPageContentProps> = ({ data }) => {
   return (
-    <Stack flex={1} overflow="auto" padding={3} paddingTop={5}>
+    <Stack flex={1} overflow="auto" padding={3} paddingTop={5} gap={{ sm: 5 }}>
       <Button variant="outlined" startIcon={<SyncIcon />}>
         Sync brands with Spacewise Platform
       </Button>
       <Stack component="ul" padding={0} gap={2}>
         {data.map((item, index) => (
-          <Card key={index}>
+          <Card key={`${item.company.title}-${index}`}>
             <LinkContainer href={`${ROUTES.brand}/${item.company.id}`}>
               <CompanyCard data={item.company} />
             </LinkContainer>

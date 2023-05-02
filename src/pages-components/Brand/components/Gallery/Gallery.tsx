@@ -19,8 +19,8 @@ export const Gallery = () => {
         />
       </FirstImageContainer>
       <Container>
-        {otherImages?.map((item) => (
-          <ImageContainer>
+        {otherImages?.map((item, index) => (
+          <ImageContainer key={`${item}-${index}`}>
             <FullScreenImage
               image={{ src: item, alt: 'Gallery image', height: 102, width: 102 }}
               company={currentCompany?.company}

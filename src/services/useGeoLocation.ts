@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useEffect, useState } from 'react'
-import { query, getDocs, collection, where, addDoc, doc, getDoc } from 'firebase/firestore'
+import { query, getDocs, collection, where, addDoc, getDocFromServer, doc, setDoc, getDoc } from 'firebase/firestore'
 import { db } from './firebase'
 
 type GeoType = {
@@ -36,8 +36,8 @@ export const useStoreGeoLocation = () => {
       setLoading(true)
       const q = query(collection(db(), 'settings'), where('uid', '==', geo.uid))
       const docs = await getDocs(q)
-      if (docs.docs.length === 0) {
-        await addDoc(collection(db(), 'settings'), {
+      if (docs.docs.length === 0 && geo.uid) {
+        await setDoc(doc(collection(db(), 'settings'), geo.uid), {
           uid: geo.uid,
           latitude: geo.latitude,
           longitude: geo.longitude,
@@ -62,12 +62,10 @@ export const useOneLocation = (uid) => {
   const [error, setError] = useState();
   (async function () {
     try {
-      const q = query(collection(db(), 'settings'), where('uid', '==', uid))
-      const docs = await getDocs(q)
-      // data.docs.forEach(item => {
-      console.error(q, docs)
-      // setData([item.data()])
-      // })
+      if (uid) {
+        const q = await getDoc(doc(collection(db(), 'settings'), uid))
+        setData(q.data())
+      }
     } catch (err) {
       console.error(err)
       setError(err)
