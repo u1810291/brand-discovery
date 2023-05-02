@@ -23,6 +23,7 @@ import { setLocation } from 'src/store/slices/user'
 import { useOneLocation, useStoreGeoLocation } from 'src/services/useGeoLocation'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
+import { useEffectOnce } from 'src/hooks/useEffectOnce'
 
 export const MainSettings = () => {
   const [distance, setDistance] = useState<number | number[]>(50)
@@ -32,7 +33,7 @@ export const MainSettings = () => {
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const [data, errorFetching] = useOneLocation(
+  const [fetchLocation, data, errorFetching] = useOneLocation(
     localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid,
   )
 
@@ -46,19 +47,22 @@ export const MainSettings = () => {
         longitude: location.longitude,
         name: location.name,
       })
-      dispatch(
-        notify({
-          type: error || errorFetching ? Type.error : Type.error,
-          message: storeLocationError || errorFetching || storeLocationSuccess,
-        }),
-      )
     }
+    dispatch(
+      notify({
+        type: error || errorFetching ? Type.error : Type.error,
+        message: storeLocationError || errorFetching || storeLocationSuccess,
+      }),
+    )
 
     if (storeLocationSuccess) {
       dispatch(closeModal())
     }
   }, [error, location, storeLocationSuccess, errorFetching])
 
+  useEffectOnce(() => {
+    fetchLocation()
+  })
   const handleLocation = () => {
     dispatch(
       openModal({

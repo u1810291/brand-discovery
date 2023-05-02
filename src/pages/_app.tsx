@@ -8,6 +8,7 @@ import { Provider } from 'react-redux'
 import type { AppProps } from 'next/app'
 import { theme } from '../styles/themes'
 import { ThemeProvider } from '@mui/material/styles'
+import { RouteGuard } from 'src/layouts/RouteGuard'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -15,7 +16,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <Head>{/* <link rel="icon" href="/favicon.svg" /> */}</Head>
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <Component {...pageProps} />
+          <RouteGuard>
+            <Component {...pageProps} />
+          </RouteGuard>
         </ThemeProvider>
       </Provider>
     </>
