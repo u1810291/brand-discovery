@@ -27,6 +27,7 @@ export const useUpdateUser = () => {
           spaceCount: user.spaceCount,
           createdAt: new Date(),
           updatedAt: new Date(),
+          modalShown: false,
         })
         setSuccess(res)
       } else {
