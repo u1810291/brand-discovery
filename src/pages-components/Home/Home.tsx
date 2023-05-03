@@ -16,8 +16,9 @@ import firebaseApp from 'src/services/firebase'
 import { useDispatch } from 'src/store'
 import { UserData } from 'src/store/slices/auth/auth.slice'
 import { closeModal, openModal } from 'src/store/slices/modal'
-import { HomePageContent, InfoPageContent, LikedPageContent, SettingsPageContent } from './components'
+import { EmptyState, HomePageContent, InfoPageContent, LikedPageContent, SettingsPageContent } from './components'
 import { companies } from './mock'
+import { useToggle } from 'src/hooks'
 
 const auth = getAuth(firebaseApp())
 
