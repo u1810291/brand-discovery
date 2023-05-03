@@ -1,11 +1,11 @@
-import Stack from '@mui/material/Stack'
+import Stack, { StackProps } from '@mui/material/Stack'
 import { FC } from 'react'
 
 type IndicatorProps = {
   activeIndex: number
   count: number
-}
-export const Indicator: FC<IndicatorProps> = ({ activeIndex, count }) => {
+} & StackProps
+export const Indicator: FC<IndicatorProps> = ({ activeIndex, count, ...props }) => {
   const blockArray = Array(count).fill('')
 
   return (
@@ -18,6 +18,7 @@ export const Indicator: FC<IndicatorProps> = ({ activeIndex, count }) => {
       left=" 16px"
       top="16px"
       zIndex={2}
+      {...props}
     >
       {blockArray.map((item, index) => (
         <Stack

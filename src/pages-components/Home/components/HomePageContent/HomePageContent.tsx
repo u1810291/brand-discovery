@@ -15,13 +15,15 @@ type ContentProps = {
   data: { company: CompanyType; images: string[] }[]
   likeAction: (id: string) => void | Promise<void>
   dislikeAction: (id: string) => void | Promise<void>
+  finishAction: () => void | Promise<void>
 }
 
-export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAction }) => {
+export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAction, finishAction }) => {
   const { animArray, isLike, isShowLabel, onDislikeClick, onLikeClick, currentIndex, trans, bind } = useHomePageAnim({
     data,
     likeAction,
     dislikeAction,
+    finishAction,
   })
 
   return (

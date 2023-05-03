@@ -38,9 +38,17 @@ export const SignUp = () => {
 
   return (
     <MainLayout showBackButton>
-      <Stack marginY="auto" marginTop={{ xs: 0, sm: 'auto' }} spacing={5}>
+      <Stack marginY="auto" marginTop={{ xs: 0, sm: 10 }} spacing={5}>
         <Stack alignSelf="center">
-          <Image placeholder="blur" blurDataURL={`${SpacewiseSVG}`} unoptimized src={SpacewiseSVG} alt="Spacewise" width={261} height={37} />
+          <Image
+            placeholder="blur"
+            blurDataURL={`${SpacewiseSVG}`}
+            unoptimized
+            src={SpacewiseSVG}
+            alt="Spacewise"
+            width={261}
+            height={37}
+          />
           <Typography component="h3" fontWeight={800} fontSize={24} marginTop={5} alignSelf="center">
             Sign Up
           </Typography>
@@ -81,7 +89,7 @@ export const SignUp = () => {
           </Button> */}
           <Button fullWidth sx={{ height: 48 }} variant="outlined">
             <Link href={ROUTES.signUpWithEmail} style={{ textDecoration: 'none', color: 'inherit' }}>
-                Sign up with Email
+              Sign up with Email
             </Link>
           </Button>
         </Stack>
