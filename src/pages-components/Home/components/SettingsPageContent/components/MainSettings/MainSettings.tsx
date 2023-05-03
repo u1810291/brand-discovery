@@ -50,7 +50,7 @@ export const MainSettings = () => {
     }
     dispatch(
       notify({
-        type: error || errorFetching ? Type.error : Type.error,
+        type: error || errorFetching ? Type.error : Type.success,
         message: storeLocationError || errorFetching || storeLocationSuccess,
       }),
     )
