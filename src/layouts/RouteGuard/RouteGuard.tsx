@@ -29,6 +29,7 @@ function RouteGuard({ children }) {
 
   function authCheck(url) {
     const publicPaths = [
+      ROUTES.root,
       ROUTES.signIn,
       ROUTES.link,
       ROUTES.newPassword,
