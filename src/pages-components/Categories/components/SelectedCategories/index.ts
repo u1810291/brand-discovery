@@ -1,0 +1,1 @@
+export { SelectedCategories } from './SelectedCategories'

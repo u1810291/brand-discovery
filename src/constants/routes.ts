@@ -12,4 +12,6 @@ export const ROUTES = {
   brand: '/brand',
   link: '/link',
   walkThrough: '/walk-through',
+  notFound: '/404',
+  categories: '/categories',
 }
