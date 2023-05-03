@@ -50,7 +50,7 @@ export const SignIn = () => {
   useEffect(() => {
     if (user?.user?.uid) {
       dispatch(login(JSON.parse(JSON.stringify(user))))
-      router.push(user.user.emailVerified ? ROUTES.home : ROUTES.verifyEmail)
+      router.push(user?.user?.emailVerified ? ROUTES.home : ROUTES.verifyEmail)
     }
   }, [user?.user?.uid])
 
