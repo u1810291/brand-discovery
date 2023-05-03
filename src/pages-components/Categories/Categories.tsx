@@ -7,40 +7,42 @@ import Box from '@mui/material/Box'
 import List from '@mui/material/List'
 import ListItemText from '@mui/material/ListItemText'
 import Divider from '@mui/material/Divider'
-import { CircularProgress, Typography, styled, useMediaQuery } from '@mui/material'
+import { CircularProgress, Typography, styled } from '@mui/material'
 import { Search } from 'src/assets/icons/search'
 import { CategoryNavbar } from './components/CategoryNavbar'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+import { SelectedCategories } from './components/SelectedCategories'
+import { useGetCategories, useSetCategory } from 'src/services/useCategories'
 import { useDispatch } from 'react-redux'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { ROUTES } from 'src/constants/routes'
 import { useRouter } from 'next/router'
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import { SelectedCategories } from './components/SelectedCategories'
-import { useGetCategories } from 'src/services/useCategories'
+
 export type CategoriesType = {
   query: string
 }
 
 export const Categories = () => {
-  const isMiddleWidth = useMediaQuery('(min-width:550px)')
-  const isBigWidth = useMediaQuery('(min-width:800px)')
-  const router = useRouter()
-  const dispatch = useDispatch()
-  const cityNameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 2
-  const [query, setQuery] = useState<string>()
   const [fetch, categories, loading, error] = useGetCategories()
-  const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
-  const [selectedCategories, setSelectedCategories] = useState<Array<string>>([
-    'Adult',
-    'Music',
-    'Health',
-    'Sport',
-    'Technology',
+  const [selected, setSelected] = useState<Array<string>>()
+  const [searchResult, setSearchResult] = useState<Array<Record<string, string | number>>>([
+    { id: Math.random() * 1000, categoryName: 'Technology' },
   ])
+  const [setCategory] = useSetCategory()
+  const [query, setQuery] = useState('')
+  const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
+  const selectedCategories = () => {
+    const categorySettings = JSON.parse(localStorage.getItem('settingUpdate')) || []
+    setSelected(categorySettings?.map((category) => category.categoryName))
+  }
 
   const handleChange = useCallback((e) => {
-    console.error('first')
+    setQuery(e)
+  }, [])
+
+  const handleSetCategory = useCallback((category) => {
+    setCategory(category)
   }, [])
 
   useEffect(() => {
@@ -49,30 +51,39 @@ export const Categories = () => {
 
   return (
     <MainLayout showBackButton navbar={<CategoryNavbar field={query} updateField={handleChange} />}>
-      <Stack>
+      <Stack sx={{ baclkground: 'red' }}>
         <List sx={{ width: '100%', bgcolor: 'white' }} component="nav" aria-labelledby="nested-list-subheader">
-          {query && (
-            <>
-              <ListItemButton sx={{ paddingLeft: 0 }} onClick={() => console.error('error')}>
-                <Search />
-                <Box sx={{ width: '100%', paddingLeft: 2 }}>
-                  <ListItemTextStyled primary={query} color="primary" sx={{ width: 'auto' }} />
-                </Box>
-              </ListItemButton>
-              <StyledDivider sx={{ left: 20 }} />
-            </>
-          )}
-          <SelectedCategories totalCount={categories?.length} data={selectedCategories} />
+          <Stack
+            spacing={0.5}
+            width="100%"
+            flexWrap="wrap"
+            justifyContent="start"
+            display="flex"
+            flexDirection="column"
+          >
+            <Stack>
+              <RegularTypographyStyled>Selected Categories ({3})</RegularTypographyStyled>
+            </Stack>
+            <SelectedCategories totalCount={categories?.length} data={selected} />
+          </Stack>
+
           {loading ? (
             <Stack display="flex" flexDirection="row" alignItems="center" justifyContent="center" height="100%">
               <CircularProgress />
             </Stack>
+          ) : query ? (
+            searchResult?.map((search) => <React.Fragment key={search.id}>{search.categoryName}</React.Fragment>)
           ) : (
             categories?.map((category, i) => (
               <React.Fragment key={`${category.createdAt}-${i}`}>
-                <ListItemButton onClick={() => console.error('error')}>
+                <ListItemButton
+                  onClick={() => {
+                    handleSetCategory(category)
+                    selectedCategories()
+                  }}
+                >
                   <Box sx={{ display: 'flex', width: '100%' }}>
-                    <ListItemTextStyled primary={category.name} color="primary" sx={{ width: 'auto' }} />
+                    <ListItemTextStyled primary={category.categoryName} color="primary" sx={{ width: 'auto' }} />
                   </Box>
                   <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
                 </ListItemButton>
@@ -97,6 +108,20 @@ const TypographyStyled = styled(Typography)(({ theme }) =>
     lineHeight: '32px',
   }),
 )
+
+const RegularTypographyStyled = styled(Typography)`
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 22px;
+  text-transform: capitalize;
+  color: #000000;
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+`
 
 const StyledDivider = styled(Divider)`
   position: relative;

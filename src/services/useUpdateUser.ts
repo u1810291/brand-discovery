@@ -38,5 +38,5 @@ export const useUpdateUser = () => {
       setLoading(false)
     }
   }
-  return [updateUser, loading, success, error]
+  return [updateUser, loading, success, error] as const
 }

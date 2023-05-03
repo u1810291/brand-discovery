@@ -11,16 +11,10 @@ function RouteGuard({ children }) {
   const [authorized, setAuthorized] = useState(false)
 
   useEffect(() => {
-    // on initial load - run auth check
     authCheck(router.asPath)
-
-    // on route change start - hide page content by setting authorized to false
     const hideContent = () => setAuthorized(false)
     router.events.on('routeChangeStart', hideContent)
-
-    // on route change complete - run auth check
     router.events.on('routeChangeComplete', authCheck)
-
     return () => {
       router.events.off('routeChangeStart', hideContent)
       router.events.off('routeChangeComplete', authCheck)
@@ -39,12 +33,19 @@ function RouteGuard({ children }) {
       ROUTES.thankYou,
       ROUTES.notFound,
     ]
+
     const path = url.split('?')[0]
     const user = localStorage.getItem('user') && JSON?.parse(localStorage.getItem('user'))
+    if (user?.isLoggedIn && !Object.values(ROUTES).includes(path)) {
+      router.push({
+        pathname: ROUTES.signIn,
+        query: { returnUrl: router.asPath },
+      })
+    }
     if (!user?.isLoggedIn && !publicPaths.includes(path)) {
       setAuthorized(false)
       router.push({
-        pathname: ROUTES.notFound,
+        pathname: ROUTES.signIn,
         query: { returnUrl: router.asPath },
       })
     } else {

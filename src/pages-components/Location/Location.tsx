@@ -27,7 +27,7 @@ export const Location = () => {
   const isBigWidth = useMediaQuery('(min-width:800px)')
   const router = useRouter()
   const dispatch = useDispatch()
-  const cityNameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 2
+  const cityNameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 3
   const [setUserGeoPosition, query, setQuery, countries, loading, success, error] = useStoreGeoLocation()
 
   const handleChange = useCallback((e) => {
@@ -51,6 +51,7 @@ export const Location = () => {
       router.push(ROUTES.home)
     }
   }, [error, success])
+  console.error(countries)
   return (
     <MainLayout showBackButton navbar={<LocationNavbar field={query} updateField={handleChange} />}>
       <Stack>
@@ -77,7 +78,7 @@ export const Location = () => {
                   <LocationIcon width="28px" height="28px" />
                   <Box sx={{ width: '100%', paddingLeft: 2 }}>
                     <ListItemTextStyled
-                      primary={country.address.country || country.address.place}
+                      primary={country.address.city || country.address.country || country.address.place}
                       color="primary"
                       sx={{ width: 'auto' }}
                     />
