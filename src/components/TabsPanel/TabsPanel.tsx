@@ -29,13 +29,13 @@ export const TabsPanel: FC<TabsPanelProps> = ({ tabs, className, error, success,
           </Item>
         ))}
       </Wrapper>
-      <Stack borderTop="1px solid #EAEAE7" height={88} justifyContent="center">
+      <Container borderTop="1px solid #EAEAE7" height={88} justifyContent="center">
         <Tabs value={value} onChange={handleChange} {...props} sx={{ paddingInline: 3 }}>
           {tabs.map((tab, index) => (
             <Tab key={index} icon={tab.icon} sx={{ width: '25%' }} />
           ))}
         </Tabs>
-      </Stack>
+      </Container>
       <Notification type={error ? 'error' : 'success'} text={error || success} />
     </Stack>
   )
@@ -45,4 +45,13 @@ const Wrapper = styled(Stack)`
   flex: 1;
   max-height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
+`
+
+const Container = styled(Stack)`
+  .MuiTabs-root {
+    @media (max-width: 413px) {
+      padding-inline: 0;
+    }
+  }
 `
