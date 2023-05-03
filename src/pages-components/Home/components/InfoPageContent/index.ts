@@ -1,0 +1,1 @@
+export { InfoPageContent } from './InfoPageContent'
