@@ -51,7 +51,6 @@ export const Location = () => {
       router.push(ROUTES.home)
     }
   }, [error, success])
-  console.error(countries)
   return (
     <MainLayout showBackButton navbar={<LocationNavbar field={query} updateField={handleChange} />}>
       <Stack>

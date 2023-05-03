@@ -1,3 +1,4 @@
+'use client'
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Stack from '@mui/material/Stack'
@@ -25,7 +26,10 @@ export type CategoriesType = {
 
 export const Categories = () => {
   const [fetch, categories, loading, error] = useGetCategories()
-  const [selected, setSelected] = useState<Array<string>>()
+  const [selected, setSelected] = useState<Array<string>>(() => {
+    const data = JSON.parse(localStorage.getItem('settingUpdate'))
+    return data?.length ? data?.map((category) => category.categoryName) : []
+  })
   const [searchResult, setSearchResult] = useState<Array<Record<string, string | number>>>([
     { id: Math.random() * 1000, categoryName: 'Technology' },
   ])
@@ -49,23 +53,33 @@ export const Categories = () => {
     fetch(user?.uid)
   }, [user?.uid])
 
+  console.log(selected)
+
   return (
     <MainLayout showBackButton navbar={<CategoryNavbar field={query} updateField={handleChange} />}>
-      <Stack sx={{ baclkground: 'red' }}>
+      <Stack>
         <List sx={{ width: '100%', bgcolor: 'white' }} component="nav" aria-labelledby="nested-list-subheader">
-          <Stack
-            spacing={0.5}
-            width="100%"
-            flexWrap="wrap"
-            justifyContent="start"
-            display="flex"
-            flexDirection="column"
-          >
-            <Stack>
-              <RegularTypographyStyled>Selected Categories ({3})</RegularTypographyStyled>
+          {selected?.length ? (
+            <Stack position="relative" height={selected && 100}>
+              <Stack
+                spacing={0.5}
+                width="calc(100% + 50px)"
+                flexWrap="wrap"
+                justifyContent="start"
+                display="flex"
+                flexDirection="column"
+                position="absolute"
+                left={-25}
+                padding="10px 20px"
+                bgcolor="#F8F9FB"
+              >
+                <Stack>
+                  <RegularTypographyStyled>Selected Categories ({selected?.length})</RegularTypographyStyled>
+                </Stack>
+                <SelectedCategories totalCount={selected?.length} data={selected} />
+              </Stack>
             </Stack>
-            <SelectedCategories totalCount={categories?.length} data={selected} />
-          </Stack>
+          ) : null}
 
           {loading ? (
             <Stack display="flex" flexDirection="row" alignItems="center" justifyContent="center" height="100%">
@@ -75,7 +89,7 @@ export const Categories = () => {
             searchResult?.map((search) => <React.Fragment key={search.id}>{search.categoryName}</React.Fragment>)
           ) : (
             categories?.map((category, i) => (
-              <React.Fragment key={`${category.createdAt}-${i}`}>
+              <React.Fragment key={`${category.categoryName}-${i}`}>
                 <ListItemButton
                   onClick={() => {
                     handleSetCategory(category)
