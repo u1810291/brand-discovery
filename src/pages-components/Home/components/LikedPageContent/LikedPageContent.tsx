@@ -13,7 +13,7 @@ type LikedPageContentProps = {
 
 export const LikedPageContent: FC<LikedPageContentProps> = ({ data }) => {
   return (
-    <Stack flex={1} overflow="auto" padding={3} paddingTop={5}>
+    <Stack flex={1} overflow="auto" padding={3} paddingTop={5} gap={{ sm: 5 }}>
       <Button variant="outlined" startIcon={<SyncIcon />}>
         Sync brands with Spacewise Platform
       </Button>

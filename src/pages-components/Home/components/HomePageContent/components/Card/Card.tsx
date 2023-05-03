@@ -75,7 +75,7 @@ export const Card: FC<CardProps> = ({ images, isShowLabel, isLike, ...props }) =
         swiperOptions={{ spaceBetween: 0, slidesPerView: 1 }}
         setSwiper={setSwiper}
         renderElement={(item) => (
-          <ImageContainer width="100%" height="100%">
+          <ImageContainer>
             <Image
               placeholder="blur"
               blurDataURL={`${item}`}
@@ -100,6 +100,8 @@ const Container = styled(animated.div)`
 `
 
 const ImageContainer = styled(Stack)`
+  width: 100%;
+  height: 100%;
   border-radius: 16px;
   overflow: hidden;
   img {

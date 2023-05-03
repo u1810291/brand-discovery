@@ -27,6 +27,8 @@ export const Home = () => {
   const [signOut, loading, errorMessage] = useSignOut(auth)
   const dispatch = useDispatch()
   const user: UserData = JSON.parse(localStorage.getItem('user') || null)
+  const { isOpen: isShowEmptyContent, open: showEmptyContent } = useToggle(false)
+
   useEffect(() => {
     if (router.pathname === '/home' && Date.parse(new Date().toString()) - user?.lastLoginAt < 100) {
       dispatch(
@@ -53,7 +55,13 @@ export const Home = () => {
   const tabs = [
     {
       icon: <HomeIcon />,
-      content: (
+      content: isShowEmptyContent ? (
+        <EmptyState
+          onClick={() => {
+            return
+          }}
+        />
+      ) : (
         <HomePageContent
           data={companies}
           likeAction={() => {
@@ -62,6 +70,7 @@ export const Home = () => {
           dislikeAction={() => {
             return
           }}
+          finishAction={showEmptyContent}
         />
       ),
     },

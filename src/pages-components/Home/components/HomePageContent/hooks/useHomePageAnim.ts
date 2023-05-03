@@ -17,8 +17,9 @@ type UseHomePageAnimParams = {
   data: { company: CompanyType }[]
   likeAction: (id: string) => void | Promise<void>
   dislikeAction: (id: string) => void | Promise<void>
+  finishAction: () => void | Promise<void>
 }
-export const useHomePageAnim = ({ data, likeAction, dislikeAction }: UseHomePageAnimParams) => {
+export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction }: UseHomePageAnimParams) => {
   const [isLike, setIsLike] = useState<boolean | null>(null)
   const [isShowLabel, setIsShowLabel] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
@@ -115,7 +116,7 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction }: UseHomePage
       }
     })
     if (!active && gone.size === data.length) {
-      alert('finish')
+      finishAction()
     }
   })
 

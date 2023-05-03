@@ -100,12 +100,14 @@ const StyledDialog = styled(Dialog)`
   }
 
   .MuiPaper-root {
-
     border-radius: 24px 24px 0px 0px;
     margin-inline: 0;
     margin-bottom: 0;
     width: 100%;
     margin-bottom: 0;
+    @media screen and (min-width: 450px) {
+      border-radius: 24px;
+    }
   }
 
   .MuiDialogContent-root {
