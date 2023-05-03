@@ -27,6 +27,7 @@ export const WalkThrough = () => {
       swiper?.slideNext()
       setActiveIndex((prev) => prev + 1)
     } else {
+      localStorage.setItem('walkthroughCompleted', true.toString())
       router.push(ROUTES.signIn)
     }
   }
