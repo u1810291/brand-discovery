@@ -4,6 +4,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import HomeIcon from '@mui/icons-material/Home'
 import InfoIcon from '@mui/icons-material/Info'
 import SettingsIcon from '@mui/icons-material/Settings'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { getAuth } from 'firebase/auth'
 import { useRouter } from 'next/router'
@@ -83,7 +84,7 @@ export const Home = () => {
     },
   ]
   return (
-    <MainLayout sx={{ background: '#F8F9FB' }} padding={0}>
+    <MainLayout padding={0} sx={{ background: '#F8F9FB' }}>
       <TabsPanel tabs={tabs} error={errorMessage?.message} success={success} />
       {/* <LimitModal open={isLimitModalOpen} /> */}
     </MainLayout>
