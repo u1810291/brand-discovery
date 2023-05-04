@@ -2,6 +2,9 @@ import { useSprings } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
 import { useState } from 'react'
 import { CompanyType } from 'src/types'
+import { UserData } from 'src/store/slices/auth/auth.slice'
+import { query, getDocs, collection, where, updateDoc } from 'firebase/firestore'
+import { db } from 'src/services/firebase'
 
 const to = (i: number) => ({
   x: 0,
@@ -24,15 +27,51 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
   const [isShowLabel, setIsShowLabel] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
   const trans = (r: number, s: number) => `rotateX(0deg) rotateY(${r}deg) rotateZ(${r}deg) scale(${s})`
+  const user: UserData = JSON.parse(localStorage.getItem('user') || null)
+
+  async function updateLikesLeft(uid: string) {
+    try {
+      const q = query(collection(db(), 'users'), where('uid', '==', uid))
+      const docs = await getDocs(q)
+
+      if (docs.docs.length === 0) {
+        throw new Error(`No user found with uid: ${uid}`)
+      }
+
+      const userData = docs.docs[0].data() as UserData
+
+      // Check if daily likes have been granted
+      const dailyLikesGranted = userData.dailyLikesGranted
+      const likesField = dailyLikesGranted ? 'dailyLikesLeft' : 'likesLeft'
+
+      // Check if likes are already depleted
+      if (userData[likesField] <= 0) {
+        throw new Error(`Out of likes`)
+      }
+
+      const updatedData = {
+        [likesField]: userData[likesField] - 1,
+        updatedAt: new Date(),
+      }
+
+      await updateDoc(docs.docs[0].ref, updatedData)
+      console.log(`Successfully updated likes for user with uid: ${uid}`)
+    } catch (err) {
+      console.error(err)
+      alert(`${err}`)
+    }
+  }
 
   const currentIndex = data.length - activeIndex - 1
 
   const handleLikeAction = () => {
     likeAction(data[currentIndex].company.id)
+    updateLikesLeft(user.uid)
   }
 
   const handleDislikeAction = () => {
     dislikeAction(data[currentIndex].company.id)
+    updateLikesLeft(user.uid)
   }
 
   const getNextSlide = (isLike: boolean) => {
