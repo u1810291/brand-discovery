@@ -19,7 +19,7 @@ import { closeModal, openModal } from 'src/store/slices/modal'
 import { EmptyState, HomePageContent, InfoPageContent, LikedPageContent, SettingsPageContent } from './components'
 import { companies } from './mock'
 import { useToggle } from 'src/hooks'
-import { query, getDocs, collection, where, updateDoc } from 'firebase/firestore'
+import { query, getDocs, collection, where, doc, updateDoc } from 'firebase/firestore'
 import { db } from 'src/services/firebase'
 
 const auth = getAuth(firebaseApp())
@@ -32,45 +32,62 @@ export const Home = () => {
   const user: UserData = JSON.parse(localStorage.getItem('user') || null)
   const { isOpen: isShowEmptyContent, open: showEmptyContent } = useToggle(false)
 
-  async function setEmail() {
-    try {
-      const q = query(collection(db(), 'users'), where('uid', '==', user.uid))
-      const docs = await getDocs(q)
-
-      if (docs.docs.length === 0) {
-        throw new Error(`No user found with uid: ${user.uid}`)
-      }
-      const updatedData = {
-        email: auth.currentUser.email,
-      }
-      await updateDoc(docs.docs[0].ref, updatedData)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
   useEffect(() => {
-    if (router.pathname === '/home') {
-      dispatch(
-        openModal({
-          title: `Hi Username, \n Welcome back`,
-          subTitle: `Now you can start working with \n Spacewise Brand Discovery`,
-          open: true,
-          children: (
-            <Button
-              variant="contained"
-              onClick={async () => {
-                await setEmail()
-                dispatch(closeModal())
-              }}
-            >
-              Start Now
-            </Button>
-          ),
-        }),
-      )
+    const handleClick = async (uid: string) => {
+      try {
+        const q = query(collection(db(), 'users'), where('uid', '==', uid))
+        const docs = await getDocs(q)
+        if (docs.docs.length === 0) {
+          console.log(`User with UID ${uid} not found.`)
+        } else {
+          const docId = docs.docs[0].id
+          const updatedData = {
+            email: auth.currentUser.email,
+          }
+          await updateDoc(docs.docs[0].ref, updatedData)
+          await updateDoc(doc(db(), 'users', docId), { modalShown: true })
+          console.log(`User with UID ${uid} updated successfully.`)
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
-  }, [])
+
+    const q = query(collection(db(), 'users'), where('uid', '==', user.uid))
+
+    getDocs(q)
+      .then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+          const userDoc = querySnapshot.docs[0]
+
+          const modalShown = userDoc.data().modalShown
+
+          if (!modalShown) {
+            dispatch(
+              openModal({
+                title: `Hi Username, \n Welcome back`,
+                subTitle: `Now you can start working with \n Spacewise Brand Discovery`,
+                open: true,
+                children: (
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      dispatch(closeModal())
+                      handleClick(user.uid)
+                    }}
+                  >
+                    Start Now
+                  </Button>
+                ),
+              }),
+            ) // Closing paranthesis of dispatch function was missing.
+          }
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }, [user])
 
   useEffect(() => {
     if (success) {

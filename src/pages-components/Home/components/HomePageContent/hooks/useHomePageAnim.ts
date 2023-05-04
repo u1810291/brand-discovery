@@ -35,8 +35,6 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
       const q = query(collection(db(), 'users'), where('uid', '==', user.uid))
       const docs = await getDocs(q)
 
-      alert(user.email)
-
       if (docs.docs.length === 0) {
         throw new Error(`No user found with uid: ${user.uid}`)
       }
