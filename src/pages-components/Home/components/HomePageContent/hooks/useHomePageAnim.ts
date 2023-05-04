@@ -1,9 +1,9 @@
 import { useSprings } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { CompanyType } from 'src/types'
 import { UserData } from 'src/store/slices/auth/auth.slice'
-import { query, getDocs, collection, where, addDoc, updateDoc } from 'firebase/firestore'
+import { query, getDocs, collection, where, updateDoc } from 'firebase/firestore'
 import { db } from 'src/services/firebase'
 
 const to = (i: number) => ({
@@ -30,6 +30,44 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
   const user: UserData = JSON.parse(localStorage.getItem('user') || null)
   const [likesLeft, setLikesLeft] = useState(user.dailyLikesGranted ? user.dailyLikesLeft : user.likesLeft)
 
+  async function dailyLikesAdd(): Promise<string> {
+    try {
+      const q = query(collection(db(), 'users'), where('uid', '==', user.uid))
+      const docs = await getDocs(q)
+
+      alert(user.email)
+
+      if (docs.docs.length === 0) {
+        throw new Error(`No user found with uid: ${user.uid}`)
+      }
+      const userData = docs.docs[0].data() as UserData
+
+      if (userData.dailyLikesGranted && !userData.likesUpdated) {
+        const updatedData = {
+          likesUpdated: new Date(),
+        }
+        await updateDoc(docs.docs[0].ref, updatedData)
+        return '-'
+      } else if (userData.dailyLikesGranted) {
+        const now = new Date()
+        //@ts-expect-error correct data Types
+        const diff = now.getTime() - userData.likesUpdated.toMillis()
+        const hoursPassed = diff / 3600000
+        if (hoursPassed > 24) {
+          const updatedData = {
+            likesUpdated: new Date(),
+            dailyLikesLeft: 100,
+          }
+          setLikesLeft(100)
+          await updateDoc(docs.docs[0].ref, updatedData)
+          return '+'
+        } else return '-'
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   async function updateLikesLeft(uid: string) {
     try {
       const q = query(collection(db(), 'users'), where('uid', '==', uid))
@@ -41,7 +79,6 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
 
       const userData = docs.docs[0].data() as UserData
 
-      // Check if daily likes have been granted
       const likesField = userData.dailyLikesGranted ? 'dailyLikesLeft' : 'likesLeft'
 
       setLikesLeft(userData[likesField])
@@ -121,6 +158,8 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
   }
 
   const onLikeClick = async () => {
+    const likesAdded = await dailyLikesAdd()
+    likesAdded === '+' ? setLikesLeft(100) : setLikesLeft(likesLeft)
     setIsLike(true)
     setIsShowLabel(true)
     await handleLikeAction()
@@ -128,6 +167,8 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
   }
 
   const onDislikeClick = async () => {
+    const likesAdded = await dailyLikesAdd()
+    likesAdded === '+' ? setLikesLeft(100) : setLikesLeft(likesLeft)
     setIsLike(false)
     setIsShowLabel(true)
     await handleDislikeAction()

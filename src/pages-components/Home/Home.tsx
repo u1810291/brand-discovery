@@ -19,7 +19,7 @@ import { closeModal, openModal } from 'src/store/slices/modal'
 import { EmptyState, HomePageContent, InfoPageContent, LikedPageContent, SettingsPageContent } from './components'
 import { companies } from './mock'
 import { useToggle } from 'src/hooks'
-import { collection, query, where, onSnapshot, getDocs } from 'firebase/firestore'
+import { query, getDocs, collection, where, updateDoc } from 'firebase/firestore'
 import { db } from 'src/services/firebase'
 
 const auth = getAuth(firebaseApp())
@@ -32,15 +32,38 @@ export const Home = () => {
   const user: UserData = JSON.parse(localStorage.getItem('user') || null)
   const { isOpen: isShowEmptyContent, open: showEmptyContent } = useToggle(false)
 
+  async function setEmail() {
+    try {
+      const q = query(collection(db(), 'users'), where('uid', '==', user.uid))
+      const docs = await getDocs(q)
+
+      if (docs.docs.length === 0) {
+        throw new Error(`No user found with uid: ${user.uid}`)
+      }
+      const updatedData = {
+        email: auth.currentUser.email,
+      }
+      await updateDoc(docs.docs[0].ref, updatedData)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   useEffect(() => {
-    if (router.pathname === '/home' && Date.parse(new Date().toString()) - user?.lastLoginAt < 100) {
+    if (router.pathname === '/home') {
       dispatch(
         openModal({
           title: `Hi Username, \n Welcome back`,
           subTitle: `Now you can start working with \n Spacewise Brand Discovery`,
           open: true,
           children: (
-            <Button variant="contained" onClick={() => dispatch(closeModal())}>
+            <Button
+              variant="contained"
+              onClick={async () => {
+                await setEmail()
+                dispatch(closeModal())
+              }}
+            >
               Start Now
             </Button>
           ),
