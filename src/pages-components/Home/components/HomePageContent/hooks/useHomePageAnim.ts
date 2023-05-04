@@ -1,9 +1,9 @@
 import { useSprings } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { CompanyType } from 'src/types'
 import { UserData } from 'src/store/slices/auth/auth.slice'
-import { query, getDocs, collection, where, updateDoc } from 'firebase/firestore'
+import { query, getDocs, collection, where, addDoc, updateDoc } from 'firebase/firestore'
 import { db } from 'src/services/firebase'
 
 const to = (i: number) => ({
@@ -28,6 +28,7 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
   const [activeIndex, setActiveIndex] = useState(0)
   const trans = (r: number, s: number) => `rotateX(0deg) rotateY(${r}deg) rotateZ(${r}deg) scale(${s})`
   const user: UserData = JSON.parse(localStorage.getItem('user') || null)
+  const [likesLeft, setLikesLeft] = useState(user.dailyLikesGranted ? user.dailyLikesLeft : user.likesLeft)
 
   async function updateLikesLeft(uid: string) {
     try {
@@ -41,12 +42,12 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
       const userData = docs.docs[0].data() as UserData
 
       // Check if daily likes have been granted
-      const dailyLikesGranted = userData.dailyLikesGranted
-      const likesField = dailyLikesGranted ? 'dailyLikesLeft' : 'likesLeft'
+      const likesField = userData.dailyLikesGranted ? 'dailyLikesLeft' : 'likesLeft'
 
-      // Check if likes are already depleted
+      setLikesLeft(userData[likesField])
+
       if (userData[likesField] <= 0) {
-        throw new Error(`Out of likes`)
+        return
       }
 
       const updatedData = {
@@ -58,25 +59,43 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
       console.log(`Successfully updated likes for user with uid: ${uid}`)
     } catch (err) {
       console.error(err)
-      alert(`${err}`)
     }
   }
 
   const currentIndex = data.length - activeIndex - 1
 
   const handleLikeAction = () => {
-    likeAction(data[currentIndex].company.id)
+    setLikesLeft(likesLeft - 1)
     updateLikesLeft(user.uid)
+    likeAction(data[currentIndex].company.id)
   }
 
   const handleDislikeAction = () => {
-    dislikeAction(data[currentIndex].company.id)
+    setLikesLeft(likesLeft - 1)
     updateLikesLeft(user.uid)
+    dislikeAction(data[currentIndex].company.id)
   }
 
-  const getNextSlide = (isLike: boolean) => {
+  async function getNextSlide(isLike: boolean) {
     gone.add(currentIndex)
     setIsShowLabel(false)
+
+    const q = query(collection(db(), 'users'), where('uid', '==', user.uid))
+    const docs = await getDocs(q)
+
+    if (docs.docs.length === 0) {
+      throw new Error(`No user found with uid: ${user.uid}`)
+    }
+
+    const userData = docs.docs[0].data() as UserData
+
+    const dailyLikesGranted = userData.dailyLikesGranted
+    const likesField = dailyLikesGranted ? 'dailyLikesLeft' : 'likesLeft'
+
+    if (userData[likesField] <= 0) {
+      return
+    }
+
     api.start((i) => {
       if (currentIndex !== i) return
 
@@ -123,6 +142,7 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
   const bind = useDrag(({ args: [index], active, movement: [mx], direction: [xDir], velocity: [vx] }) => {
     const trigger = vx > 0.1
 
+    if (likesLeft >= 0) return
     if (xDir > 0) {
       setIsLike(true)
       setIsShowLabel(true)
@@ -159,5 +179,5 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
     }
   })
 
-  return { isLike, isShowLabel, onLikeClick, onDislikeClick, animArray, currentIndex, trans, bind }
+  return { isLike, isShowLabel, onLikeClick, onDislikeClick, animArray, currentIndex, trans, bind, likesLeft }
 }

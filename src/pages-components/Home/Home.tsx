@@ -19,6 +19,8 @@ import { closeModal, openModal } from 'src/store/slices/modal'
 import { EmptyState, HomePageContent, InfoPageContent, LikedPageContent, SettingsPageContent } from './components'
 import { companies } from './mock'
 import { useToggle } from 'src/hooks'
+import { collection, query, where, onSnapshot, getDocs } from 'firebase/firestore'
+import { db } from 'src/services/firebase'
 
 const auth = getAuth(firebaseApp())
 

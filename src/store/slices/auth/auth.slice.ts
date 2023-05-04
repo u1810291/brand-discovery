@@ -10,7 +10,7 @@ export type UserData = {
   uid: string
   likesUpdated: Date
   likesLeft: number
-  dailyLikesleft: number
+  dailyLikesLeft: number
   dailyLikesGranted: boolean
 }
 
@@ -26,7 +26,7 @@ type AuthType = {
     lastLoginAt: number
     likesUpdated: Date
     likesLeft: number
-    dailyLikesleft: number
+    dailyLikesLeft: number
     dailyLikesGranted: boolean
   }
 }
@@ -43,7 +43,7 @@ const initialState = {
     likesUpdated: new Date(),
     likesLeft: 50,
     dailyLikesGranted: null,
-    dailyLikesleft: null,
+    dailyLikesLeft: null,
   },
 } satisfies { user: UserData }
 // create a slice
@@ -62,7 +62,7 @@ export const authSlice = createSlice({
         likesUpdated: payload.user.likesUpdated,
         likesLeft: payload.user.likesLeft,
         dailyLikesGranted: payload.user.dailyLikesGranted,
-        dailyLikesleft: payload.user.dailyLikesleft,
+        dailyLikesLeft: payload.user.dailyLikesLeft,
         isLoggedIn: true,
       }
       localStorage.setItem('user', JSON.stringify(userData))
@@ -79,7 +79,7 @@ export const authSlice = createSlice({
         likesUpdated: new Date(),
         likesLeft: 50,
         dailyLikesGranted: false,
-        dailyLikesleft: null,
+        dailyLikesLeft: null,
         isLoggedIn: false,
       }
       localStorage.setItem('user', JSON.stringify(userData))
