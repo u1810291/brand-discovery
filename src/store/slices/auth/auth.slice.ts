@@ -8,6 +8,7 @@ export type UserData = {
   lastLoginAt: number
   isLoggedIn: boolean
   uid: string
+  modalShown: boolean
 }
 
 type AuthType = {
@@ -23,17 +24,10 @@ type AuthType = {
   }
 }
 
-const initialState = {
-  user: {
-    uid: null,
-    isLoggedIn: null,
-    expiresIn: 0,
-    createdAt: 0,
-    lastLoginAt: 0,
-    refreshToken: '',
-    emailVerified: null,
-  },
-} satisfies { user: UserData }
+const initialState: { user: UserData | null } = {
+  user: null,
+}
+
 // create a slice
 export const authSlice = createSlice({
   name: 'auth',
@@ -47,6 +41,7 @@ export const authSlice = createSlice({
         emailVerified: payload.user.emailVerified,
         createdAt: payload.user.createdAt,
         lastLoginAt: payload.user.lastLoginAt,
+        modalShown: false,
         isLoggedIn: true,
       }
       localStorage.setItem('user', JSON.stringify(userData))
@@ -61,12 +56,13 @@ export const authSlice = createSlice({
         createdAt: payload.user.createdAt,
         lastLoginAt: payload.user.lastLoginAt,
         isLoggedIn: false,
+        modalShown: false,
       }
       localStorage.setItem('user', JSON.stringify(userData))
       state.user = userData
     },
     logout: (state) => {
-      localStorage.setItem('user', '')
+      localStorage.removeItem('user')
       state.user = null
     },
   },
