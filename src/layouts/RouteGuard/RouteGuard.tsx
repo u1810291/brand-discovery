@@ -32,19 +32,20 @@ function RouteGuard({ children }) {
       ROUTES.verifyEmail,
       ROUTES.thankYou,
       ROUTES.notFound,
+      ROUTES.walkThrough,
     ]
 
     const path = url.split('?')[0]
     const user = localStorage.getItem('user') && JSON?.parse(localStorage.getItem('user'))
     if (user?.isLoggedIn && !Object.values(ROUTES).includes(path)) {
-      router.push({
-        pathname: ROUTES.signIn,
+      router.replace({
+        pathname: ROUTES.notFound,
         query: { returnUrl: router.asPath },
       })
     }
     if (!user?.isLoggedIn && !publicPaths.includes(path)) {
       setAuthorized(false)
-      router.push({
+      router.replace({
         pathname: ROUTES.signIn,
         query: { returnUrl: router.asPath },
       })
