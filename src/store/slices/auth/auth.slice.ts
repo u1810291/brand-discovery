@@ -8,6 +8,10 @@ export type UserData = {
   lastLoginAt: number
   isLoggedIn: boolean
   uid: string
+  likesUpdated: Date
+  likesLeft: number
+  dailyLikesLeft: number
+  dailyLikesGranted: boolean
   modalShown: boolean
 }
 
@@ -21,13 +25,29 @@ type AuthType = {
     emailVerified: boolean
     createdAt: number
     lastLoginAt: number
+    likesUpdated: Date
+    likesLeft: number
+    dailyLikesLeft: number
+    dailyLikesGranted: boolean
   }
 }
 
-const initialState: { user: UserData | null } = {
-  user: null,
-}
-
+const initialState = {
+  user: {
+    uid: null,
+    isLoggedIn: null,
+    expiresIn: 0,
+    createdAt: 0,
+    lastLoginAt: 0,
+    refreshToken: '',
+    emailVerified: null,
+    likesUpdated: new Date(),
+    likesLeft: 50,
+    dailyLikesGranted: null,
+    dailyLikesLeft: null,
+    modalShown: null,
+  },
+} satisfies { user: UserData }
 // create a slice
 export const authSlice = createSlice({
   name: 'auth',
@@ -41,6 +61,10 @@ export const authSlice = createSlice({
         emailVerified: payload.user.emailVerified,
         createdAt: payload.user.createdAt,
         lastLoginAt: payload.user.lastLoginAt,
+        likesUpdated: payload.user.likesUpdated,
+        likesLeft: payload.user.likesLeft,
+        dailyLikesGranted: payload.user.dailyLikesGranted,
+        dailyLikesLeft: payload.user.dailyLikesLeft,
         modalShown: false,
         isLoggedIn: true,
       }
@@ -55,6 +79,10 @@ export const authSlice = createSlice({
         emailVerified: payload.user.emailVerified,
         createdAt: payload.user.createdAt,
         lastLoginAt: payload.user.lastLoginAt,
+        likesUpdated: new Date(),
+        likesLeft: 50,
+        dailyLikesGranted: false,
+        dailyLikesLeft: null,
         isLoggedIn: false,
         modalShown: false,
       }
