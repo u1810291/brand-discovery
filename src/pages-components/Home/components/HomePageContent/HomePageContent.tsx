@@ -10,10 +10,6 @@ import { ROUTES } from 'src/constants/routes'
 import { CompanyType } from 'src/types'
 import { Card, CompanyCard } from './components'
 import { useHomePageAnim } from './hooks'
-import { useDispatch } from 'react-redux'
-import { closeModal, openModal } from 'src/store/slices/modal'
-import { useEffect } from 'react'
-import Button from '@mui/material/Button'
 
 type ContentProps = {
   data: { company: CompanyType; images: string[] }[]
@@ -23,33 +19,12 @@ type ContentProps = {
 }
 
 export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAction, finishAction }) => {
-  const { animArray, isLike, isShowLabel, onDislikeClick, onLikeClick, currentIndex, trans, bind, likesLeft } =
-    useHomePageAnim({
-      data,
-      likeAction,
-      dislikeAction,
-      finishAction,
-    })
-
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    if (likesLeft <= 0) {
-      dispatch(
-        openModal({
-          title: `You’re all out of like.`,
-          subTitle: `You are only have 100 likes per day.
-    More likes are coming soon. `,
-          open: true,
-          children: (
-            <Button variant="contained" onClick={() => dispatch(closeModal())}>
-              Start Now
-            </Button>
-          ),
-        }),
-      )
-    }
-  }, [likesLeft])
+  const { animArray, isLike, isShowLabel, onDislikeClick, onLikeClick, currentIndex, trans, bind } = useHomePageAnim({
+    data,
+    likeAction,
+    dislikeAction,
+    finishAction,
+  })
 
   return (
     <Stack flex={1} position="relative" marginX={3} marginTop={5} marginBottom={4}>
