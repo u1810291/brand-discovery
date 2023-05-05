@@ -21,6 +21,8 @@
     "@react-spring/web": "^9.7.2",
     "@reduxjs/toolkit": "^1.9.5",
     "@use-gesture/react": "^10.2.26",
+    "emailjs": "^4.0.1",
+    "emailjs-com": "^3.2.0",
     "firebase": "^9.19.1",
     "firebase-functions": "^4.2.1",
     "next": "13.2.4",
