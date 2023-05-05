@@ -8,6 +8,11 @@ export type UserData = {
   lastLoginAt: number
   isLoggedIn: boolean
   uid: string
+  likesUpdated: Date
+  likesLeft: number
+  dailyLikesLeft: number
+  dailyLikesGranted: boolean
+  modalShown: boolean
 }
 
 type AuthType = {
@@ -20,6 +25,10 @@ type AuthType = {
     emailVerified: boolean
     createdAt: number
     lastLoginAt: number
+    likesUpdated: Date
+    likesLeft: number
+    dailyLikesLeft: number
+    dailyLikesGranted: boolean
   }
 }
 
@@ -32,6 +41,11 @@ const initialState = {
     lastLoginAt: 0,
     refreshToken: '',
     emailVerified: null,
+    likesUpdated: new Date(),
+    likesLeft: 50,
+    dailyLikesGranted: null,
+    dailyLikesLeft: null,
+    modalShown: null,
   },
 } satisfies { user: UserData }
 // create a slice
@@ -47,6 +61,11 @@ export const authSlice = createSlice({
         emailVerified: payload.user.emailVerified,
         createdAt: payload.user.createdAt,
         lastLoginAt: payload.user.lastLoginAt,
+        likesUpdated: payload.user.likesUpdated,
+        likesLeft: payload.user.likesLeft,
+        dailyLikesGranted: payload.user.dailyLikesGranted,
+        dailyLikesLeft: payload.user.dailyLikesLeft,
+        modalShown: false,
         isLoggedIn: true,
       }
       localStorage.setItem('user', JSON.stringify(userData))
@@ -60,13 +79,18 @@ export const authSlice = createSlice({
         emailVerified: payload.user.emailVerified,
         createdAt: payload.user.createdAt,
         lastLoginAt: payload.user.lastLoginAt,
+        likesUpdated: new Date(),
+        likesLeft: 50,
+        dailyLikesGranted: false,
+        dailyLikesLeft: null,
         isLoggedIn: false,
+        modalShown: false,
       }
       localStorage.setItem('user', JSON.stringify(userData))
       state.user = userData
     },
     logout: (state) => {
-      localStorage.setItem('user', '')
+      localStorage.removeItem('user')
       state.user = null
     },
   },
