@@ -27,6 +27,8 @@ import { signUp } from 'src/store/slices/auth'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { SignUpWithEmailFormType, defaultValues, schema } from './helper'
+import { addDoc, collection } from 'firebase/firestore'
+import { db } from 'src/services/firebase'
 
 const auth = getAuth(firebaseApp())
 
