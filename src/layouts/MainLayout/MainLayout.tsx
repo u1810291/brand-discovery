@@ -5,13 +5,14 @@ import { styled } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
 import { useRouter } from 'next/router'
-import { FC, PropsWithChildren, ReactElement, useLayoutEffect, useState } from 'react'
+import { FC, PropsWithChildren, ReactElement, useLayoutEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Modal } from 'src/components'
 import Notification from 'src/components/Notification'
-import { useWindowSize } from 'src/hooks'
-import { notify, notifySelector } from 'src/store/slices/notify'
+import { useClickOutside, useWindowSize } from 'src/hooks'
 import { useDispatch } from 'src/store'
+import { closeModal } from 'src/store/slices/modal'
+import { notify, notifySelector } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 
 type MainLayoutProps = {
@@ -28,6 +29,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
   const { message, type } = useSelector(notifySelector)
   const dispatch = useDispatch()
   const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine)
+  const modalRef = useRef<HTMLDivElement | null>(null)
 
   window.addEventListener('online', () => {
     setIsOnline(true)
@@ -41,6 +43,8 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
     }
   }, [navigator.onLine])
 
+  useClickOutside(modalRef, () => dispatch(closeModal()))
+
   return (
     <Root padding={{ xs: 3, sm: 5 }} height={`${height}px`} {...props}>
       {showBackButton && (
@@ -52,7 +56,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
         </Stack>
       )}
       {children}
-      <Modal />
+      <Modal modalRef={modalRef} />
       <Notification text={message} type={type} />
     </Root>
   )
