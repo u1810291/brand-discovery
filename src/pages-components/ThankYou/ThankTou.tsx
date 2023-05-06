@@ -27,7 +27,7 @@ export const ThankYou = () => {
   useEffect(() => {
     let timeout = null
     if (query?.oobCode) {
-      verifyEmail(query.oobCode)
+      verifyEmail(query?.oobCode)
     }
     if (success) {
       timeout = setTimeout(() => {

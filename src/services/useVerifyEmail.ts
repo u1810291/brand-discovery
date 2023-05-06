@@ -6,9 +6,9 @@ export const useVerifyEmail = (auth: Auth) => {
   const [error, setError] = useState<any>()
   const [loading, setLoading] = useState<boolean>()
   const [success, setSuccess] = useState<any>()
-  const verifyEmail = useCallback((actionCode: string, continueUrl?: () => void, lang?: string) => {
+  const verifyEmail = useCallback((actionCode: string | string[], continueUrl?: () => void, lang?: string) => {
     setLoading(true)
-    applyActionCode(auth, actionCode)
+    applyActionCode(auth, actionCode as string)
       .then((res) => {
         setLoading(false)
         setSuccess(res)
@@ -19,5 +19,5 @@ export const useVerifyEmail = (auth: Auth) => {
         setError(error)
       })
   }, [])
-  return [verifyEmail, success, loading, error]
+  return [verifyEmail, success, loading, error] as const
 }

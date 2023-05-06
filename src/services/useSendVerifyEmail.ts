@@ -24,5 +24,5 @@ export const useSendVerifyEmail = (auth: Auth) => {
         setError(error)
       })
   }, [])
-  return [sendVerifyEmail, loading, error, success]
+  return [sendVerifyEmail, loading, error, success] as const
 }

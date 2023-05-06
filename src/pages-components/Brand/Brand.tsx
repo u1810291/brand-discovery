@@ -1,3 +1,5 @@
+'use client'
+
 import { Stack, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { ChipsList } from 'src/UI/ChipList'

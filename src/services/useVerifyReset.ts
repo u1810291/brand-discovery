@@ -6,12 +6,12 @@ export const useVerifyResetPassword = (auth: Auth) => {
   const [error, setError] = useState<any>()
   const [success, setSuccess] = useState<string>()
   const verifyPassword = useCallback(
-    (code: string, newPassword: string) => {
+    (code: string | string[], newPassword: string) => {
       setLoading(true)
-      verifyPasswordResetCode(auth, code)
+      verifyPasswordResetCode(auth, code as string)
         .then((email: string) => {
           if (!!email) {
-            confirmPasswordReset(auth, code, newPassword)
+            confirmPasswordReset(auth, code as string, newPassword)
               .then(() => {
                 setLoading(false)
                 setSuccess('Successfully reset')
@@ -34,5 +34,5 @@ export const useVerifyResetPassword = (auth: Auth) => {
     [auth],
   )
 
-  return [verifyPassword, success, loading, error]
+  return [verifyPassword, success, loading, error] as const
 }

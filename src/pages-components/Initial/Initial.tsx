@@ -19,14 +19,13 @@ export const Initial = () => {
   const router = useRouter()
   const whiteListRoutes = ['resetPassword', 'verifyEmail']
   // TODO: needs to be updated more smart way for redirects
-  const params = new URLSearchParams(window.location.search).get('mode')
 
-  if (!!window.localStorage.getItem('token')) {
-    router.push(ROUTES.home)
-  } else if(whiteListRoutes.includes(params)) {
-    router.push(`/link${window.location.search}`)
+  if (!!localStorage.getItem('user')) {
+    router.replace(ROUTES.home)
+  } else if(whiteListRoutes.includes(router.query.mode as string)) {
+    router.replace(`/link${window.location.search}`)
   } else {
-    setTimeout(() => router.push(ROUTES.signIn), 2000)
+    setTimeout(() => router.replace(ROUTES.signIn), 2000)
   }
 
   return (

@@ -52,7 +52,7 @@ export const NewPassword = () => {
   }, [success, error])
 
   const onSubmit = async (data: NewPasswordFormType) => {
-    await resetPassword(router.query.oobCode, data.password)
+    await resetPassword(router?.query?.oobCode, data.password)
   }
 
   return (
