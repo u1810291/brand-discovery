@@ -58,6 +58,7 @@ function RouteGuard({ children }) {
     } else if (matchRoute(path, privatePaths, 'loggedIn')) {
       router.replace({
         pathname: ROUTES.home,
+        query: router.query,
       })
     } else if (matchRoute(path, publicPaths, 'loggedOut')) {
       setAuthorized(false)

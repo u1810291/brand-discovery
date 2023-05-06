@@ -30,7 +30,8 @@ export const Location = () => {
   const dispatch = useDispatch()
   const cityNameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 3
   const [chosenLocation, setChosenLocation] = useState()
-  const [setUserGeoPosition, query, setQuery, countries, loading, success, error] = useStoreGeoLocation()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, query, setQuery, countries, loading, success, error] = useStoreGeoLocation()
 
   const handleChange = useCallback((e) => {
     setQuery(e)
@@ -38,7 +39,6 @@ export const Location = () => {
 
   const handleChooseLocation = useCallback((e) => {
     const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
-    console.error(countries)
     localStorage.setItem(
       'location',
       JSON.stringify({

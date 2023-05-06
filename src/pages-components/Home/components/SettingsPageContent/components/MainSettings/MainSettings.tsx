@@ -28,6 +28,7 @@ import { setLocation } from 'src/store/slices/user'
 export const MainSettings = () => {
   const [distance, setDistance] = useState<number | number[]>(50)
   const { getLocation, location, error, loading } = useGeoLocation()
+  const [filterByDistance, setFilterByDistance] = useState(false)
   const [setUserGeoPosition, , , , storeLocationLoading, storeLocationSuccess, storeLocationError] =
     useStoreGeoLocation()
   const dispatch = useDispatch()
@@ -63,7 +64,6 @@ export const MainSettings = () => {
   useEffectOnce(() => {
     fetchLocation()
   })
-  console.error(data)
   const handleLocation = () => {
     dispatch(
       openModal({
@@ -114,25 +114,22 @@ export const MainSettings = () => {
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
       </ListItemButton>
       <StyledDivider sx={{ left: 20 }} />
-      <ListItemButton
-        onClick={() => console.error('error')}
-        sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-      >
+      <ListItemButton sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <ListItemTextStyled primary="Distance preference" sx={{ textAlign: 'start' }} color="primary" />
           <TypographyStyled>{distance} km</TypographyStyled>
         </Box>
         <Slider
-          defaultValue={distance}
           value={distance}
-          onChange={(e: any) => setDistance(e.target.value)} // this annoying type needs to be fixed with this kind of approach
           aria-label="Default"
+          defaultValue={distance}
           valueLabelDisplay="auto"
+          onChange={(e: any) => setDistance(e.target.value)}
         />
       </ListItemButton>
-      <ListItemButton onClick={() => console.error('error')}>
+      <ListItemButton>
         <ListItemTextStyled primary="Only show brands in this range" />
-        <Switch />
+        <Switch value={filterByDistance} onChange={() => setFilterByDistance((prev) => !prev)} />
       </ListItemButton>
     </List>
   )
