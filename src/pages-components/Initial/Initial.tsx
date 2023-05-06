@@ -20,7 +20,6 @@ export const Initial = () => {
   const whiteListRoutes = ['resetPassword', 'verifyEmail']
   // TODO: needs to be updated more smart way for redirects
 
-  console.log('I`m in initial component')
   if (!!localStorage.getItem('user')) {
     router.replace(ROUTES.home)
   } else if(whiteListRoutes.includes(router.query.mode as string)) {

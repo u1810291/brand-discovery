@@ -13,12 +13,9 @@ export default () => {
   const router = useRouter()
   const [verifyEmail] = useVerifyEmail(auth)
   useEffect(() => {
-    console.error('First render 1', router.query)
     if (router.query.mode === 'verifyEmail') {
-      console.error('First if statement')
       if (router?.query?.oobCode) {
         verifyEmail(router?.query?.oobCode)
-        console.error('Second if statement')
         router.replace(ROUTES.signIn)
       }
     }

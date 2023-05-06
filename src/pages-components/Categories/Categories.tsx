@@ -53,8 +53,6 @@ export const Categories = () => {
     fetch(user?.uid)
   }, [user?.uid])
 
-  console.log(selected)
-
   return (
     <MainLayout showBackButton navbar={<CategoryNavbar field={query} updateField={handleChange} />}>
       <Stack>

@@ -1,3 +1,4 @@
+'use client'
 import React, { useCallback, useEffect } from 'react'
 import Stack from '@mui/material/Stack'
 import { MainLayout } from 'src/layouts/MainLayout'
@@ -38,7 +39,7 @@ export const Location = () => {
     const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
     setUserGeoPosition({
       uid: user?.uid,
-      name: e.address?.city || e.address?.country,
+      name: e.address?.city || e.address?.country || e?.address?.place,
       latitude: Number(e.lat),
       longitude: Number(e.lon),
     })

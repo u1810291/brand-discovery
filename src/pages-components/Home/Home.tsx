@@ -48,7 +48,7 @@ export const Home = () => {
           console.log(`User with UID ${uid} updated successfully.`)
         }
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     }
 
