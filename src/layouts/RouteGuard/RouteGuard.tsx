@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import { ROUTES } from 'src/constants/routes'
 
 export { RouteGuard }
@@ -44,8 +44,7 @@ function RouteGuard({ children }) {
     if (!user?.isLoggedIn && !publicPaths.includes(path)) {
       setAuthorized(false)
       router.push({
-        pathname: ROUTES.notFound,
-        query: { returnUrl: router.asPath },
+        pathname: ROUTES.signIn,
       })
     } else {
       setAuthorized(true)
