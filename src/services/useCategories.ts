@@ -1,7 +1,5 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useState } from 'react'
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
+import { collection, getDocs } from 'firebase/firestore'
 import { db } from './firebase'
 
 export const useGetCategories = () => {
@@ -15,8 +13,8 @@ export const useGetCategories = () => {
       if (uid) {
         const docs = await getDocs(collection(db(), 'categories'))
         const temp = []
-        await docs.forEach((doc) => {
-          temp.push(doc.data())
+        docs.forEach((doc) => {
+          temp.push({ id: doc.id, ...doc.data() })
         })
         setData(temp)
       }
@@ -29,3 +27,37 @@ export const useGetCategories = () => {
   }, [])
   return [fetchCategories, data, loading, error] as const
 }
+
+export const useSetCategory = () => {
+  const setCategory = useCallback(async (category) => {
+    if (!!localStorage.getItem('settingUpdate')) {
+      const settings = JSON.parse(localStorage.getItem('settingUpdate'))
+      const updatedSettings = [category, ...settings.filter((el) => el.id !== category.id)]
+      localStorage.setItem('settingUpdate', JSON.stringify(updatedSettings))
+    } else {
+      localStorage.setItem('settingUpdate', JSON.stringify([category]))
+    }
+  }, [])
+  return [setCategory] as const
+}
+
+// TODO: Create or update
+// try {
+//   setLoading(true)
+//   const q = query(collection(db(), 'settings'), where('uid', '==', category.uid))
+//   const docs = await getDocs(q)
+//   if (docs.docs.length !== 0 && category.uid) {
+//     const docRef = doc(collection(db(), 'settings'), category.uid)
+//     await updateDoc(docRef, category)
+//   } else {
+//     const docRef = doc(collection(db(), 'settings'), category.uid)
+//     await setDoc(docRef, category)
+//   }
+//   setSuccess('Successfully updated!')
+// } catch (err) {
+//   console.error(err)
+//   setError(err)
+//   setLoading(false)
+// } finally {
+//   setLoading(false)
+// }

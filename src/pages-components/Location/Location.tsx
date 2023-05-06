@@ -1,3 +1,4 @@
+'use client'
 import React, { useCallback, useEffect } from 'react'
 import Stack from '@mui/material/Stack'
 import { MainLayout } from 'src/layouts/MainLayout'
@@ -27,7 +28,7 @@ export const Location = () => {
   const isBigWidth = useMediaQuery('(min-width:800px)')
   const router = useRouter()
   const dispatch = useDispatch()
-  const cityNameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 2
+  const cityNameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 3
   const [setUserGeoPosition, query, setQuery, countries, loading, success, error] = useStoreGeoLocation()
 
   const handleChange = useCallback((e) => {
@@ -38,7 +39,7 @@ export const Location = () => {
     const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
     setUserGeoPosition({
       uid: user?.uid,
-      name: e.address?.city || e.address?.country,
+      name: e.address?.city || e.address?.country || e?.address?.place,
       latitude: Number(e.lat),
       longitude: Number(e.lon),
     })
@@ -77,7 +78,7 @@ export const Location = () => {
                   <LocationIcon width="28px" height="28px" />
                   <Box sx={{ width: '100%', paddingLeft: 2 }}>
                     <ListItemTextStyled
-                      primary={country.address.country || country.address.place}
+                      primary={country.address.city || country.address.country || country.address.place}
                       color="primary"
                       sx={{ width: 'auto' }}
                     />

@@ -48,7 +48,7 @@ export const SignUpWithEmail = () => {
 
   const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
   const [sendVerifyEmail, sending, emailVerifyError] = useSendVerifyEmail(auth)
-  const [updateUser, updateLoading, success, updateError] = useUpdateUser()
+  const [updateUser] = useUpdateUser()
 
   useEffect(() => {
     if (!!user?.user?.uid && !emailVerifyError?.message && !sending) {
@@ -59,7 +59,6 @@ export const SignUpWithEmail = () => {
         companyName: getValues().companyName,
         spaceCount: getValues().spaceCount,
       })
-      console.log(updateLoading, success, updateError)
       dispatch(signUp(JSON.parse(JSON.stringify(user))))
       router.push(ROUTES.verifyEmail)
     }

@@ -45,7 +45,7 @@ export const LikedPageContent: FC<LikedPageContentProps> = ({ data }) => {
       })
       console.log(result)
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
   return (

@@ -20,9 +20,6 @@ import { UserData } from 'src/store/slices/auth/auth.slice'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { EmptyState, HomePageContent, InfoPageContent, LikedPageContent, SettingsPageContent } from './components'
 import { companies } from './mock'
-import { useToggle } from 'src/hooks'
-import { query, getDocs, collection, where, doc, updateDoc } from 'firebase/firestore'
-import { db } from 'src/services/firebase'
 
 const auth = getAuth(firebaseApp())
 
@@ -51,44 +48,45 @@ export const Home = () => {
           console.log(`User with UID ${uid} updated successfully.`)
         }
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     }
 
-    const q = query(collection(db(), 'users'), where('uid', '==', user?.uid))
+    if (user?.uid) {
+      const q = query(collection(db(), 'users'), where('uid', '==', user?.uid))
 
-    getDocs(q)
-      .then((querySnapshot) => {
-        if (!querySnapshot.empty) {
-          const userDoc = querySnapshot.docs[0]
+      getDocs(q)
+        .then((querySnapshot) => {
+          if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0]
 
-          const modalShown = userDoc.data().modalShown
-
-          if (!modalShown) {
-            dispatch(
-              openModal({
-                title: `Hi Username, \n Welcome back`,
-                subTitle: `Now you can start working with \n Spacewise Brand Discovery`,
-                open: true,
-                children: (
-                  <Button
-                    variant="contained"
-                    onClick={() => {
-                      dispatch(closeModal())
-                      handleClick(user?.uid)
-                    }}
-                  >
-                    Start Now
-                  </Button>
-                ),
-              }),
-            ) // Closing paranthesis of dispatch function was missing.
+            const modalShown = userDoc.data().modalShown
+            if (!modalShown) {
+              dispatch(
+                openModal({
+                  title: `Hi Username, \n Welcome back`,
+                  subTitle: `Now you can start working with \n Spacewise Brand Discovery`,
+                  open: true,
+                  children: (
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        dispatch(closeModal())
+                        handleClick(user.uid)
+                      }}
+                    >
+                      Start Now
+                    </Button>
+                  ),
+                }),
+              ) // Closing paranthesis of dispatch function was missing.
+            }
           }
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }
   }, [user])
 
   useEffect(() => {
@@ -127,7 +125,7 @@ export const Home = () => {
     },
   ]
   return (
-    <MainLayout sx={{ background: '#F8F9FB' }} padding={0}>
+    <MainLayout padding={0} sx={{ background: '#F8F9FB' }}>
       <TabsPanel tabs={tabs} error={errorMessage?.message} success={success} />
       {/* <LimitModal open={isLimitModalOpen} /> */}
     </MainLayout>

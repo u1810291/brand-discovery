@@ -71,7 +71,7 @@ export const useOneLocation = (uid) => {
       setError(err.message)
     }
   }, [])
-  return [fetchLocation, data, error]
+  return [fetchLocation, data, error] as const
 }
 
 export async function getLocations(query) {
