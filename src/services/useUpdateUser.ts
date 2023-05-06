@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from 'react'
 import { db } from './firebase'
+import { useState } from 'react'
 import { query, getDocs, collection, where, addDoc, updateDoc } from 'firebase/firestore'
 
-type UserType = {
+export type UserType = {
   uid: string
-  firstName: string
-  lastName: string
-  companyName: string
-  spaceCount: string
+  firstName?: string
+  lastName?: string
+  companyName?: string
+  spaceCount?: string
+  email?: string
 }
 
 export const useUpdateUser = () => {
@@ -18,6 +19,7 @@ export const useUpdateUser = () => {
 
   const updateUser = async (user: UserType) => {
     try {
+      setLoading(true)
       const q = query(collection(db(), 'users'), where('uid', '==', user.uid))
       const docs = await getDocs(q)
 
@@ -40,8 +42,8 @@ export const useUpdateUser = () => {
       } else {
         // check if 24 hours have passed since last likes update
         const now = new Date()
-        const lastUpdate = docs.docs[0].data().likesUpdated.toDate()
-        const diff = now.getTime() - lastUpdate.getTime()
+        const lastUpdate = docs.docs[0].data().likesUpdated?.toDate()
+        const diff = now?.getTime() - lastUpdate?.getTime()
         const hoursDiff = diff / (1000 * 60 * 60)
 
         const updatedData = {
@@ -49,7 +51,8 @@ export const useUpdateUser = () => {
           firstName: user.firstName,
           lastName: user.lastName,
           companyName: user.companyName,
-          spaceCount: user.spaceCount,
+          email: user.email,
+          ...(user.spaceCount && { spaceCount: user.spaceCount }),
           updatedAt: now,
           modalShown: false,
           likesLeft: docs.docs[0].data().likesLeft,
@@ -57,13 +60,13 @@ export const useUpdateUser = () => {
           dailyLikesleft: docs.docs[0].data().dailyLikesleft,
           likesUpdated: hoursDiff >= 24 ? now : docs.docs[0].data().likesUpdated,
         }
-
         await updateDoc(docs.docs[0].ref, updatedData)
         setSuccess(updatedData)
       }
     } catch (err) {
       console.error(err)
-      setError(err)
+      setError(err.message)
+    } finally {
       setLoading(false)
     }
   }
