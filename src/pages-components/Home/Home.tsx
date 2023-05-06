@@ -97,6 +97,7 @@ export const Home = () => {
 
   const tabs = [
     {
+      name: 'home',
       icon: <HomeIcon />,
       content: isShowEmptyContent ? (
         <EmptyState
@@ -117,9 +118,10 @@ export const Home = () => {
         />
       ),
     },
-    { icon: <FavoriteBorderIcon />, content: <LikedPageContent data={companies} /> },
-    { icon: <InfoIcon />, content: <InfoPageContent /> },
+    { name: 'liked', icon: <FavoriteBorderIcon />, content: <LikedPageContent data={companies} /> },
+    { name: 'info', icon: <InfoIcon />, content: <InfoPageContent /> },
     {
+      name: 'settings',
       icon: <SettingsIcon />,
       content: <SettingsPageContent setSuccess={setSuccess} signOut={signOut} loading={loading} />,
     },
