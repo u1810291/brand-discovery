@@ -63,6 +63,7 @@ export const MainSettings = () => {
   useEffectOnce(() => {
     fetchLocation()
   })
+  console.error(data)
   const handleLocation = () => {
     dispatch(
       openModal({
