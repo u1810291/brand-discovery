@@ -6,15 +6,51 @@ import { FC } from 'react'
 import { ROUTES } from 'src/constants/routes'
 import { CompanyType } from 'src/types'
 import { CompanyCard, Slider } from './components'
+import { UserData } from 'src/store/slices/auth/auth.slice'
+import 'firebase/functions'
+import { query, getDocs, collection, where } from 'firebase/firestore'
+import { db } from 'src/services/firebase'
+import emailjs from 'emailjs-com'
+
+export const generateEmail = async (data: { to: string; subject: string; body: string }) => {
+  try {
+    await emailjs.send('service_ml3efig', 'template_g2tlyfk', data, 'dl1eXeogprxy04wG4')
+    return {
+      message: 'Email sent successfully',
+    }
+  } catch (error) {
+    console.error('Error sending email:', error)
+    throw new Error('Error sending email')
+  }
+}
 
 type LikedPageContentProps = {
   data: { company: CompanyType; images: string[] }[]
 }
 
 export const LikedPageContent: FC<LikedPageContentProps> = ({ data }) => {
+  const user: UserData = JSON.parse(localStorage.getItem('user') || null)
+
+  async function handleEmailGeneration() {
+    try {
+      const q = query(collection(db(), 'users'), where('uid', '==', user.uid))
+      const docs = await getDocs(q)
+      const userData = docs.docs[0].data()
+      const result = await generateEmail({
+        subject: 'Landlord wants to get connected to brands',
+        body: `This is automatically generated e-mail from Spacewise Discovery App.
+               Landlord ${userData.firstName} ${userData.lastName} ${userData.email} wants to get connected to the following brands:
+               brand Id's`,
+        to: 'accountmanagement@spacewise.net',
+      })
+      console.log(result)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <Stack flex={1} overflow="auto" padding={3} paddingTop={5} gap={{ sm: 5 }}>
-      <Button variant="outlined" startIcon={<SyncIcon />}>
+      <Button variant="outlined" onClick={handleEmailGeneration} startIcon={<SyncIcon />}>
         Sync brands with Spacewise Platform
       </Button>
       <Stack component="ul" padding={0} gap={2}>
