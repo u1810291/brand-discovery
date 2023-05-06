@@ -21,7 +21,7 @@ export const Initial = () => {
   // TODO: needs to be updated more smart way for redirects
   const params = new URLSearchParams(window.location.search).get('mode')
 
-  if (!!window.localStorage.getItem('token')) {
+  if (!!window.localStorage.getItem('user')) {
     router.push(ROUTES.home)
   } else if(whiteListRoutes.includes(params)) {
     router.push(`/link${window.location.search}`)

@@ -53,40 +53,41 @@ export const Home = () => {
       }
     }
 
-    const q = query(collection(db(), 'users'), where('uid', '==', user.uid))
+    if (user?.uid) {
+      const q = query(collection(db(), 'users'), where('uid', '==', user?.uid))
 
-    getDocs(q)
-      .then((querySnapshot) => {
-        if (!querySnapshot.empty) {
-          const userDoc = querySnapshot.docs[0]
+      getDocs(q)
+        .then((querySnapshot) => {
+          if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0]
 
-          const modalShown = userDoc.data().modalShown
-
-          if (!modalShown) {
-            dispatch(
-              openModal({
-                title: `Hi Username, \n Welcome back`,
-                subTitle: `Now you can start working with \n Spacewise Brand Discovery`,
-                open: true,
-                children: (
-                  <Button
-                    variant="contained"
-                    onClick={() => {
-                      dispatch(closeModal())
-                      handleClick(user.uid)
-                    }}
-                  >
-                    Start Now
-                  </Button>
-                ),
-              }),
-            ) // Closing paranthesis of dispatch function was missing.
+            const modalShown = userDoc.data().modalShown
+            if (!modalShown) {
+              dispatch(
+                openModal({
+                  title: `Hi Username, \n Welcome back`,
+                  subTitle: `Now you can start working with \n Spacewise Brand Discovery`,
+                  open: true,
+                  children: (
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        dispatch(closeModal())
+                        handleClick(user.uid)
+                      }}
+                    >
+                      Start Now
+                    </Button>
+                  ),
+                }),
+              ) // Closing paranthesis of dispatch function was missing.
+            }
           }
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }
   }, [user])
 
   useEffect(() => {

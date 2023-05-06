@@ -40,7 +40,7 @@ function RouteGuard({ children }) {
     if (user?.isLoggedIn && !Object.values(ROUTES).includes(path)) {
       router.replace({
         pathname: ROUTES.notFound,
-        query: { returnUrl: router.asPath },
+        query: { returnUrl: path },
       })
     }
     if (!user?.isLoggedIn && !publicPaths.includes(path)) {
