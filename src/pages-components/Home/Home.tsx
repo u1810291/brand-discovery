@@ -20,6 +20,9 @@ import { UserData } from 'src/store/slices/auth/auth.slice'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { EmptyState, HomePageContent, InfoPageContent, LikedPageContent, SettingsPageContent } from './components'
 import { companies } from './mock'
+import { useToggle } from 'src/hooks'
+import { query, getDocs, collection, where, doc, updateDoc } from 'firebase/firestore'
+import { db } from 'src/services/firebase'
 
 const auth = getAuth(firebaseApp())
 
@@ -40,6 +43,10 @@ export const Home = () => {
           console.log(`User with UID ${uid} not found.`)
         } else {
           const docId = docs.docs[0].id
+          const updatedData = {
+            email: auth.currentUser.email,
+          }
+          await updateDoc(docs.docs[0].ref, updatedData)
           await updateDoc(doc(db(), 'users', docId), { modalShown: true })
           console.log(`User with UID ${uid} updated successfully.`)
         }
