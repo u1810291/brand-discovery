@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Stack from '@mui/material/Stack'
 import { MainLayout } from 'src/layouts/MainLayout'
 import ListItemButton from '@mui/material/ListItemButton'
@@ -29,6 +29,7 @@ export const Location = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const cityNameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 3
+  const [chosenLocation, setChosenLocation] = useState()
   const [setUserGeoPosition, query, setQuery, countries, loading, success, error] = useStoreGeoLocation()
 
   const handleChange = useCallback((e) => {
@@ -37,12 +38,25 @@ export const Location = () => {
 
   const handleChooseLocation = useCallback((e) => {
     const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
-    setUserGeoPosition({
-      uid: user?.uid,
-      name: e.address?.city || e.address?.country || e?.address?.place,
-      latitude: Number(e.lat),
-      longitude: Number(e.lon),
-    })
+    console.error(countries)
+    localStorage.setItem(
+      'location',
+      JSON.stringify({
+        uid: user?.uid,
+        name: e.address?.city || e.address?.country || e?.address?.place,
+        latitude: Number(e.lat),
+        longitude: Number(e.lon),
+        placeId: Number(e.place_id),
+      }),
+    )
+    setChosenLocation(e.place_id)
+
+    // setUserGeoPosition({
+    //   uid: user?.uid,
+    //   name: e.address?.city || e.address?.country || e?.address?.place,
+    //   latitude: Number(e.lat),
+    //   longitude: Number(e.lon),
+    // })
   }, [])
   useEffect(() => {
     if (success || error) {
@@ -64,7 +78,7 @@ export const Location = () => {
                   <ListItemTextStyled primary={query} color="primary" sx={{ width: 'auto' }} />
                 </Box>
               </ListItemButton>
-              <StyledDivider sx={{ left: 20 }} />
+              <StyledDivider sx={{ left: '0px' }} />
             </>
           )}
           {loading || success ? (
@@ -74,7 +88,11 @@ export const Location = () => {
           ) : (
             countries?.map((country, i) => (
               <React.Fragment key={`${country.display_name}-${i}`}>
-                <ListItemButton sx={{ paddingLeft: 0 }} onClick={() => handleChooseLocation(country)}>
+                <ListItemButton
+                  sx={{ paddingLeft: 0 }}
+                  onClick={() => handleChooseLocation(country)}
+                  style={{ background: chosenLocation === country.place_id && '#E4F4F1', width: 'calc(100% + 7%)' }}
+                >
                   <LocationIcon width="28px" height="28px" />
                   <Box sx={{ width: '100%', paddingLeft: 2 }}>
                     <ListItemTextStyled
@@ -96,7 +114,7 @@ export const Location = () => {
                     </Stack>
                   </Box>
                 </ListItemButton>
-                <StyledDivider sx={{ left: 20 }} />
+                <StyledDivider sx={{ left: '0px' }} />
               </React.Fragment>
             ))
           )}
@@ -109,7 +127,6 @@ export const Location = () => {
 const StyledDivider = styled(Divider)`
   position: relative;
   width: calc(100% + 48px);
-  left: -24px;
   color: #dae3e1;
 `
 
