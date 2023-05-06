@@ -48,10 +48,10 @@ export const useUpdateUser = () => {
 
         const updatedData = {
           uid: user.uid,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          companyName: user.companyName,
-          email: user.email,
+          ...(user.firstName && { firstName: user.firstName }),
+          ...(user.lastName && { lastName: user.lastName }),
+          ...(user.companyName && { companyName: user.companyName }),
+          ...(user.email && { email: user.email }),
           ...(user.spaceCount && { spaceCount: user.spaceCount }),
           updatedAt: now,
           modalShown: false,
