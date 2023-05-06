@@ -1,11 +1,9 @@
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { styled } from '@mui/material/styles'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { GallerySwiper } from 'src/UI/GallerySwiper'
-import { Indicator } from 'src/components/Indicator'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { Swiper as SwiperCommon } from 'swiper'
@@ -27,6 +25,7 @@ export const WalkThrough = () => {
       swiper?.slideNext()
       setActiveIndex((prev) => prev + 1)
     } else {
+      localStorage.setItem('walkthroughCompleted', true.toString())
       router.push(ROUTES.signIn)
     }
   }
@@ -39,7 +38,7 @@ export const WalkThrough = () => {
 
   return (
     <MainLayout position="relative" padding={0}>
-      <Indicator count={data.length} activeIndex={activeIndex} top="35px" />
+      {/* <Indicator count={data.length} activeIndex={activeIndex} top="35px" /> */}
       <Stack height="100%" width="40%" onClick={getPrevSlide} position="absolute" top={0} left={0} zIndex={2} />
       <Stack height="100%" width="40%" onClick={getNextSlide} position="absolute" top={0} right={0} zIndex={2} />
       <GallerySwiper
@@ -59,14 +58,14 @@ export const WalkThrough = () => {
                 height={400}
               />
             </ImageContainer>
-            <Wrapper spacing={1}>
+            {/* <Wrapper spacing={1}>
               <Typography fontWeight={700} fontSize={40} lineHeight="55px">
                 {item.title}
               </Typography>
               <Typography fontWeight={700} fontSize={18} lineHeight="25px">
                 {item.subtitle}
               </Typography>
-            </Wrapper>
+            </Wrapper> */}
           </>
         )}
       />
@@ -75,20 +74,26 @@ export const WalkThrough = () => {
 }
 
 const ImageContainer = styled(Stack)`
+  align-items: center;
   img {
-    width: 100%;
     height: 100%;
     object-fit: cover;
+
+    @media (min-width: 450px) {
+      max-width: 470px;
+      border: 1px solid lightgray;
+      object-fit: fill;
+    }
   }
 `
 
-const Wrapper = styled(Stack)`
-  position: absolute;
-  width: 100%;
-  bottom: 120px;
-  z-index: 2;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #fff;
-  text-align: center;
-`
+// const Wrapper = styled(Stack)`
+//   position: absolute;
+//   width: 100%;
+//   bottom: 120px;
+//   z-index: 2;s
+//   left: 50%;
+//   transform: translateX(-50%);
+//   color: #fff;
+//   text-align: center;
+// `

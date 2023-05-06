@@ -5,13 +5,15 @@ import { styled } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
 import { useRouter } from 'next/router'
-import { FC, PropsWithChildren, ReactElement, useEffect } from 'react'
+import { FC, PropsWithChildren, ReactElement, useLayoutEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Modal } from 'src/components'
 import Notification from 'src/components/Notification'
-import { ROUTES } from 'src/constants/routes'
-import { useWindowSize } from 'src/hooks'
-import { notifySelector } from 'src/store/slices/notify'
+import { useClickOutside, useWindowSize } from 'src/hooks'
+import { useDispatch } from 'src/store'
+import { closeModal } from 'src/store/slices/modal'
+import { notify, notifySelector } from 'src/store/slices/notify'
+import { Type } from 'src/store/slices/notify/notify.slice'
 
 type MainLayoutProps = {
   showBackButton?: boolean
@@ -25,39 +27,23 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
   const router = useRouter()
   const { height } = useWindowSize()
   const { message, type } = useSelector(notifySelector)
+  const dispatch = useDispatch()
+  const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine)
+  const modalRef = useRef<HTMLDivElement | null>(null)
 
-  useEffect(() => {
-    const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
-    return () => {
-      if (
-        [ROUTES.home, ROUTES.brand, ROUTES.location, ROUTES.thankYou].includes(router.pathname) &&
-        !user?.isLoggedIn
-      ) {
-        router.push(ROUTES.root)
-      }
-      if (
-        [ROUTES.home, ROUTES.brand, ROUTES.location, ROUTES.thankYou, ROUTES.link].includes(router.pathname) &&
-        !user?.emailVerified
-      ) {
-        setTimeout(() => router.push(ROUTES.verifyEmail), 1000)
-      }
-      if (
-        [
-          ROUTES.link,
-          ROUTES.newPassword,
-          ROUTES.resetPassword,
-          ROUTES.signIn,
-          ROUTES.signUp,
-          ROUTES.signUpWithEmail,
-          ROUTES.thankYou,
-          ROUTES.verifyEmail,
-        ].includes(router.pathname) &&
-        user?.isLoggedIn
-      ) {
-        router.push(ROUTES.home)
-      }
+  window.addEventListener('online', () => {
+    setIsOnline(true)
+  })
+  window.addEventListener('offline', () => [setIsOnline(false)])
+
+  useLayoutEffect(() => {
+    setIsOnline(navigator.onLine)
+    if (!isOnline) {
+      dispatch(notify({ type: Type.error, message: 'You are in offline mode' }))
     }
-  }, [])
+  }, [navigator.onLine])
+
+  useClickOutside(modalRef, () => dispatch(closeModal()))
 
   return (
     <Root padding={{ xs: 3, sm: 5 }} height={`${height}px`} {...props}>
@@ -70,7 +56,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
         </Stack>
       )}
       {children}
-      <Modal />
+      <Modal modalRef={modalRef} />
       <Notification text={message} type={type} />
     </Root>
   )

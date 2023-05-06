@@ -28,6 +28,12 @@ dependencies:
   '@use-gesture/react':
     specifier: ^10.2.26
     version: 10.2.26(react@18.2.0)
+  emailjs:
+    specifier: ^4.0.1
+    version: 4.0.1(typescript@5.0.2)
+  emailjs-com:
+    specifier: ^3.2.0
+    version: 3.2.0
   firebase:
     specifier: ^9.19.1
     version: 9.19.1
@@ -4520,6 +4526,24 @@ packages:
 
   /electron-to-chromium@1.4.342:
     resolution: {integrity: sha512-dTei3VResi5bINDENswBxhL+N0Mw5YnfWyTqO75KGsVldurEkhC9+CelJVAse8jycWyP8pv3VSj4BSyP8wTWJA==}
+    dev: false
+
+  /emailjs-com@3.2.0:
+    resolution: {integrity: sha512-Prbz3E1usiAwGjMNYRv6EsJ5c373cX7/AGnZQwOfrpNJrygQJ15+E9OOq4pU8yC977Z5xMetRfc3WmDX6RcjAA==}
+    engines: {node: '>=12.0.0'}
+    deprecated: The SDK name changed to @emailjs/browser
+    dev: false
+
+  /emailjs@4.0.1(typescript@5.0.2):
+    resolution: {integrity: sha512-rTN/LDvlqwU79E367ovB7FIziImzimhQcZiGmC20VcDPbf0mv3l9c3aavtMcEFaFBsycjGB5aMIhz4ZbKNeLWw==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      typescript: '>=4.3.5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      typescript: 5.0.2
     dev: false
 
   /emoji-regex@8.0.0:

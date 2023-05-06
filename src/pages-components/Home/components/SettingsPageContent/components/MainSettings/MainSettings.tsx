@@ -1,28 +1,29 @@
 'use client'
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+import { CircularProgress, Typography, styled } from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 import Slider from '@mui/material/Slider'
-import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Switch from '@mui/material/Switch'
-import Button from '@mui/material/Button'
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import { CircularProgress, Typography, styled } from '@mui/material'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { LocationIcon } from 'src/assets/icons/location'
+import { ROUTES } from 'src/constants/routes'
+import { useEffectOnce } from 'src/hooks/useEffectOnce'
+import { useGeoLocation } from 'src/hooks/useGeoLocation'
+import { useOneLocation, useStoreGeoLocation } from 'src/services/useGeoLocation'
 import { useDispatch } from 'src/store'
 import { closeModal, openModal } from 'src/store/slices/modal'
-import { LocationIcon } from 'src/assets/icons/location'
-import { useRouter } from 'next/router'
-import { ROUTES } from 'src/constants/routes'
-import { useGeoLocation } from 'src/hooks/useGeoLocation'
-import { setLocation } from 'src/store/slices/user'
-import { useOneLocation, useStoreGeoLocation } from 'src/services/useGeoLocation'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
+import { setLocation } from 'src/store/slices/user'
 
 export const MainSettings = () => {
   const [distance, setDistance] = useState<number | number[]>(50)
@@ -32,7 +33,7 @@ export const MainSettings = () => {
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const [data, errorFetching] = useOneLocation(
+  const [fetchLocation, data, errorFetching] = useOneLocation(
     localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid,
   )
 
@@ -46,19 +47,22 @@ export const MainSettings = () => {
         longitude: location.longitude,
         name: location.name,
       })
-      dispatch(
-        notify({
-          type: error || errorFetching ? Type.error : Type.error,
-          message: storeLocationError || errorFetching || storeLocationSuccess,
-        }),
-      )
     }
+    dispatch(
+      notify({
+        type: error || errorFetching ? Type.error : Type.success,
+        message: storeLocationError || errorFetching || storeLocationSuccess,
+      }),
+    )
 
     if (storeLocationSuccess) {
       dispatch(closeModal())
     }
   }, [error, location, storeLocationSuccess, errorFetching])
 
+  useEffectOnce(() => {
+    fetchLocation()
+  })
   const handleLocation = () => {
     dispatch(
       openModal({
@@ -88,12 +92,12 @@ export const MainSettings = () => {
 
   return (
     <List
-      sx={{ width: '100%', bgcolor: 'white' }}
+      sx={{ width: '100%', bgcolor: 'white', paddingBottom: 0 }}
       component="nav"
       aria-labelledby="nested-list-subheader"
       subheader={<ListSubheaderStyled id="nested-list-subheader">Discovery</ListSubheaderStyled>}
     >
-      <ListItemButton onClick={() => console.error('error')}>
+      <ListItemButton onClick={() => router.push(ROUTES.categories)}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Categories" color="primary" sx={{ width: 'auto' }} />
           <TypographyStyled>Sport, Health, +4 more</TypographyStyled>

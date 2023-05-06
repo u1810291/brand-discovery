@@ -34,10 +34,13 @@ export const ThankYou = () => {
         router.push(ROUTES.home)
       }, 5000)
     }
+    if (error) {
+      router.push(ROUTES.signIn)
+    }
     return () => {
       clearInterval(timeout)
     }
-  }, [query?.apiKey, success])
+  }, [query?.apiKey, success, error])
   return (
     <MainLayout padding={0}>
       <Stack direction="column" bgcolor="#D1EAF1" flex={1} position="relative" alignItems="center">
