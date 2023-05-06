@@ -1,16 +1,15 @@
 'use client'
 
+import { styled } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import React from 'react'
-import { styled } from '@mui/material'
-import { AccountSettings, LegalSettings, MainSettings } from './components'
 import { AppDispatch, useDispatch } from 'src/store'
 import { logout } from 'src/store/slices/auth'
+import { AccountSettings, LegalSettings, MainSettings } from './components'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const dispatch: AppDispatch = useDispatch()
