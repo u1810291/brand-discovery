@@ -2,10 +2,16 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { Button, Typography, styled } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 
 export const NotFoundPage = () => {
+  const router = useRouter()
+
+  const handleClick = () => {
+    router.push({ pathname: ROUTES.home, query: { activeTab: 'home' } })
+  }
   return (
     <MainLayout
       padding={0}
@@ -36,7 +42,7 @@ export const NotFoundPage = () => {
             An out-of-date link
           </Typography>
         </Stack>
-        <Button size="large" variant="contained" href={ROUTES.home} sx={{ width: 'fit-content', marginTop: 5 }}>
+        <Button size="large" variant="contained" onClick={handleClick} sx={{ width: 'fit-content', marginTop: 5 }}>
           Back to Homepage
         </Button>
       </Stack>

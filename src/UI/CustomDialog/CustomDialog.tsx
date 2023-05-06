@@ -6,13 +6,15 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { styled } from '@mui/material/styles'
 import Image from 'next/image'
-import { FC, PropsWithChildren, ReactNode } from 'react'
+import { FC, PropsWithChildren, ReactNode, Ref } from 'react'
 import { HeartIcon } from 'src/assets/icons/heart'
 import ModalBackground from 'src/assets/svg/modal-background.svg'
+
 interface CustomDialogProps extends DialogProps, PropsWithChildren {
   title: string
   subtitle: string
   icon?: ReactNode
+  modalRef: Ref<HTMLDivElement | null>
 }
 
 export const CustomDialog: FC<CustomDialogProps> = ({
@@ -24,10 +26,12 @@ export const CustomDialog: FC<CustomDialogProps> = ({
   maxWidth = 'sm',
   icon = <HeartIcon />,
   children,
+  modalRef,
+  ...props
 }) => {
   return (
-    <StyledDialog open={open} onClose={onClose} fullWidth={fullWidth} maxWidth={maxWidth}>
-      <DialogContent>
+    <StyledDialog open={open} onClose={onClose} fullWidth={fullWidth} maxWidth={maxWidth} {...props}>
+      <DialogContent ref={modalRef}>
         <Stack
           sx={{
             position: 'absolute',

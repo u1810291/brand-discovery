@@ -6,21 +6,20 @@ import InfoIcon from '@mui/icons-material/Info'
 import SettingsIcon from '@mui/icons-material/Settings'
 import Button from '@mui/material/Button'
 import { getAuth } from 'firebase/auth'
+import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useSignOut } from 'react-firebase-hooks/auth'
 import { TabsPanel } from 'src/components/TabsPanel'
 import { ROUTES } from 'src/constants/routes'
+import { useToggle } from 'src/hooks'
 import { MainLayout } from 'src/layouts/MainLayout'
-import firebaseApp from 'src/services/firebase'
+import firebaseApp, { db } from 'src/services/firebase'
 import { useDispatch } from 'src/store'
 import { UserData } from 'src/store/slices/auth/auth.slice'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { EmptyState, HomePageContent, InfoPageContent, LikedPageContent, SettingsPageContent } from './components'
 import { companies } from './mock'
-import { query, getDocs, collection, where, doc, updateDoc } from 'firebase/firestore'
-import { db } from 'src/services/firebase'
-import { useToggle } from 'src/hooks'
 
 const auth = getAuth(firebaseApp())
 
@@ -49,7 +48,7 @@ export const Home = () => {
       }
     }
 
-    const q = query(collection(db(), 'users'), where('uid', '==', user.uid))
+    const q = query(collection(db(), 'users'), where('uid', '==', user?.uid))
 
     getDocs(q)
       .then((querySnapshot) => {
@@ -69,7 +68,7 @@ export const Home = () => {
                     variant="contained"
                     onClick={() => {
                       dispatch(closeModal())
-                      handleClick(user.uid)
+                      handleClick(user?.uid)
                     }}
                   >
                     Start Now

@@ -1,15 +1,14 @@
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+import { styled } from '@mui/material'
 import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
-import React from 'react'
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
-import { styled } from '@mui/material'
 
 export const AccountSettings = () => {
   return (
     <List
-      sx={{ width: '100%', bgcolor: 'white' }}
+      sx={{ width: '100%', bgcolor: 'white', paddingBottom: 0 }}
       component="nav"
       aria-labelledby="nested-list-subheader"
       subheader={<ListSubheaderStyled id="nested-list-subheader">Account settings</ListSubheaderStyled>}
