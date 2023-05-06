@@ -30,20 +30,29 @@ function RouteGuard({ children }) {
       ROUTES.resetPassword,
       ROUTES.signUpWithEmail,
       ROUTES.verifyEmail,
-      ROUTES.thankYou,
       ROUTES.notFound,
       ROUTES.walkThrough,
     ]
+    const privatePaths = [ROUTES.brand, ROUTES.categories, ROUTES.home, ROUTES.location, ROUTES.notFound]
 
     const path = url.split('?')[0]
-    const user = localStorage.getItem('user') && JSON?.parse(localStorage.getItem('user'))
-    if (user?.isLoggedIn && !Object.values(ROUTES).includes(path)) {
+
+    if (matchRoute(path, ROUTES, '404')) {
       router.replace({
         pathname: ROUTES.notFound,
-        query: { returnUrl: path },
+        query: {
+          attemptUrl: router.asPath,
+          returnUrl:
+            localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).isLoggedIn
+              ? ROUTES.home
+              : ROUTES.signIn,
+        },
       })
-    }
-    if (!user?.isLoggedIn && !publicPaths.includes(path)) {
+    } else if (matchRoute(path, privatePaths, 'loggedIn')) {
+      router.replace({
+        pathname: ROUTES.home,
+      })
+    } else if (matchRoute(path, publicPaths, 'loggedOut')) {
       setAuthorized(false)
       router.replace({
         pathname: ROUTES.signIn,
@@ -55,4 +64,15 @@ function RouteGuard({ children }) {
   }
 
   return authorized && children
+}
+
+const matchRoute = (url, routes, action) => {
+  const user = localStorage.getItem('user') && JSON?.parse(localStorage.getItem('user'))
+
+  const map = {
+    loggedIn: () => user?.isLoggedIn && !routes.includes(`/${url.split('/')[1]}`),
+    loggedOut: () => !user?.isLoggedIn && !routes.includes(url),
+    '404': () => !(Object.values(routes).includes(url) || Object.values(routes).includes(`/${url.split('/')[1]}`)),
+  }
+  return map[action]()
 }

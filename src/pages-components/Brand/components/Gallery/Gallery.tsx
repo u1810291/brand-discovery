@@ -1,3 +1,5 @@
+'use client'
+
 import { Stack, styled } from '@mui/material'
 import { useRouter } from 'next/router'
 import { FullScreenImage } from 'src/components/FullScreenImage'
