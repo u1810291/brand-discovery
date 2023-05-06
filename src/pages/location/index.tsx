@@ -11,8 +11,8 @@ export default () => {
   })
   return (
     <div>
-      <Header title="New password">
-        <meta name="description" content="New password page" />
+      <Header title="Location">
+        <meta name="description" content="Location page" />
       </Header>
       <Suspense fallback={<CircularProgress />}>
         <Location />

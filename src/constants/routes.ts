@@ -14,4 +14,5 @@ export const ROUTES = {
   walkThrough: '/walk-through',
   notFound: '/404',
   categories: '/categories',
+  account: '/account',
 }

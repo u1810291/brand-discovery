@@ -33,7 +33,14 @@ function RouteGuard({ children }) {
       ROUTES.notFound,
       ROUTES.walkThrough,
     ]
-    const privatePaths = [ROUTES.brand, ROUTES.categories, ROUTES.home, ROUTES.location, ROUTES.notFound]
+    const privatePaths = [
+      ROUTES.brand,
+      ROUTES.categories,
+      ROUTES.home,
+      ROUTES.location,
+      ROUTES.notFound,
+      ROUTES.account,
+    ]
 
     const path = url.split('?')[0]
 

@@ -14,8 +14,8 @@ export default () => {
   )
   return (
     <div>
-      <Header title="Home">
-        <meta name="description" content="Home page" />
+      <Header title="Not found">
+        <meta name="description" content="Not found page" />
       </Header>
       <Suspense fallback={<CircularProgress />}>
         <NotFoundPage />
