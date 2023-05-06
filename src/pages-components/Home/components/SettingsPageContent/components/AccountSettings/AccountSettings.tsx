@@ -16,7 +16,7 @@ export const AccountSettings = () => {
       aria-labelledby="nested-list-subheader"
       subheader={<ListSubheaderStyled id="nested-list-subheader">Account settings</ListSubheaderStyled>}
     >
-      <ListItemButton onClick={() => router.replace(ROUTES.account)}>
+      <ListItemButton onClick={() => router.push(ROUTES.account)}>
         <ListItemTextStyled primary="My Account" color="primary" />
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
       </ListItemButton>

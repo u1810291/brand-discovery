@@ -14,6 +14,7 @@ export const AccountNavbar = () => (
     flex="none"
     flexGrow={0}
     left="-8%"
+    zIndex={-1}
     position="relative"
   >
     My account
