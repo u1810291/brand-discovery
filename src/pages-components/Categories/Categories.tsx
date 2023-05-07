@@ -27,7 +27,7 @@ export type CategoriesType = {
 export const Categories = () => {
   const [fetch, categories, loading, error] = useGetCategories()
   const [selected, setSelected] = useState<Array<string>>(() => {
-    const data = JSON.parse(localStorage.getItem('settingUpdate'))
+    const data = JSON.parse(localStorage.getItem('categories'))
     return data?.length ? data?.map((category) => category.categoryName) : []
   })
   const [searchResult, setSearchResult] = useState<Array<Record<string, string | number>>>([
@@ -37,7 +37,7 @@ export const Categories = () => {
   const [query, setQuery] = useState('')
   const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
   const selectedCategories = () => {
-    const categorySettings = JSON.parse(localStorage.getItem('settingUpdate')) || []
+    const categorySettings = JSON.parse(localStorage.getItem('categories')) || []
     setSelected(categorySettings?.map((category) => category.categoryName))
   }
 
