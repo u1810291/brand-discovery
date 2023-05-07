@@ -60,7 +60,7 @@ export const Home = () => {
           if (!querySnapshot.empty) {
             const userDoc = querySnapshot.docs[0]
 
-            const modalShown = userDoc.data().modalShown
+            const modalShown = userDoc.data().modalShown || true
             if (!modalShown) {
               dispatch(
                 openModal({
@@ -97,12 +97,18 @@ export const Home = () => {
 
   const tabs = [
     {
+      name: 'home',
       icon: <HomeIcon />,
       content: isShowEmptyContent ? (
         <EmptyState
-          onClick={() => {
-            return
-          }}
+          onClick={() =>
+            router.push({
+              pathname: ROUTES.home,
+              query: {
+                activeTab: 'settings',
+              },
+            })
+          }
         />
       ) : (
         <HomePageContent
@@ -117,9 +123,10 @@ export const Home = () => {
         />
       ),
     },
-    { icon: <FavoriteBorderIcon />, content: <LikedPageContent data={companies} /> },
-    { icon: <InfoIcon />, content: <InfoPageContent /> },
+    { name: 'liked', icon: <FavoriteBorderIcon />, content: <LikedPageContent data={companies} /> },
+    { name: 'info', icon: <InfoIcon />, content: <InfoPageContent /> },
     {
+      name: 'settings',
       icon: <SettingsIcon />,
       content: <SettingsPageContent setSuccess={setSuccess} signOut={signOut} loading={loading} />,
     },

@@ -6,18 +6,23 @@ import Tabs, { TabsProps } from '@mui/material/Tabs'
 import { FC, ReactNode, SyntheticEvent, useState } from 'react'
 import { Notification } from '../Notification/Notification'
 import { Item } from './Item'
+import { useRouter } from 'next/router'
 
 type TabsPanelProps = {
-  tabs: Array<{ icon: string | React.ReactElement; content: ReactNode }>
+  tabs: Array<{ icon: string | React.ReactElement; content: ReactNode; name: string }>
   error: string
   success: string
 } & TabsProps
 
 export const TabsPanel: FC<TabsPanelProps> = ({ tabs, className, error, success, ...props }) => {
-  const [value, setValue] = useState(0)
+  const router = useRouter()
+  const [value, setValue] = useState(
+    router.query.activeTab ? tabs.map((el) => el.name).indexOf(router.query.activeTab as string) : 0,
+  )
 
   const handleChange = (event: SyntheticEvent, newValue: number) => {
     setValue(newValue)
+    router.push({ query: { activeTab: tabs[newValue].name } })
   }
 
   return (
@@ -32,7 +37,7 @@ export const TabsPanel: FC<TabsPanelProps> = ({ tabs, className, error, success,
       <Container borderTop="1px solid #EAEAE7" height={88} justifyContent="center">
         <Tabs value={value} onChange={handleChange} {...props} sx={{ paddingInline: 3 }}>
           {tabs.map((tab, index) => (
-            <Tab key={index} icon={tab.icon} sx={{ width: '25%' }} />
+            <Tab key={`${tab.name}-${index}`} icon={tab.icon} sx={{ width: '25%' }} />
           ))}
         </Tabs>
       </Container>

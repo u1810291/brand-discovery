@@ -13,7 +13,7 @@ type EmptyStateProps = {
 export const EmptyState: FC<EmptyStateProps> = ({ onClick }) => {
   return (
     <Root paddingTop={{ xs: 11, sm: 17 }}>
-      <Stack paddingX={{ xs: 6, sm: 17 }}>
+      <Stack paddingX={{ xs: 6, sm: 17 }} zIndex={10}>
         <Typography fontSize={40} lineHeight="55px" fontWeight={800} color="rgba(1, 169, 136, 1)">
           Ops, sorry!
         </Typography>
@@ -28,15 +28,7 @@ export const EmptyState: FC<EmptyStateProps> = ({ onClick }) => {
         </Button>
       </Stack>
       <ImageContainer>
-        <Image
-          placeholder="blur"
-          blurDataURL={`${EmptyStateBackground}`}
-          unoptimized
-          src={EmptyStateBackground}
-          alt="Spacewise"
-          width={261}
-          height={37}
-        />
+        <Image unoptimized src={EmptyStateBackground} alt="Spacewise" width={261} height={37} />
       </ImageContainer>
     </Root>
   )
@@ -44,9 +36,9 @@ export const EmptyState: FC<EmptyStateProps> = ({ onClick }) => {
 const ImageContainer = styled(Stack)`
   position: absolute;
   bottom: 0;
-  z-index: -1;
+  z-index: 1;
   width: 100%;
-  max-height: 55%;
+  max-height: 70%;
   overflow: hidden;
   img {
     width: 100%;

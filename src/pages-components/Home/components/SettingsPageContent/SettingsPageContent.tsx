@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import { styled } from '@mui/material'
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
@@ -10,28 +10,41 @@ import Typography from '@mui/material/Typography'
 import { AppDispatch, useDispatch } from 'src/store'
 import { logout } from 'src/store/slices/auth'
 import { AccountSettings, LegalSettings, MainSettings } from './components'
+import { SettingsPageFormType, defaultValues, schema } from './helper'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const dispatch: AppDispatch = useDispatch()
+
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    formState: { isDirty, isValid, isSubmitting },
+  } = useForm<SettingsPageFormType>({
+    defaultValues,
+    mode: 'onChange',
+    resolver: yupResolver(schema),
+  })
+
+  const onSubmit = async (data) => {
+    console.error('first')
+  }
+
   return (
-    <Stack position="relative" width="100%" height="100%">
+    <Stack position="relative" width="100%" height="100%" onSubmit={handleSubmit(onSubmit)}>
       <Stack position="absolute" sx={{ background: 'transparent', height: '100%', width: '100%' }}>
-        <Box sx={{ display: 'flex', flexGrow: 1, background: 'white', paddingBottom: 2, paddingTop: 2 }}>
+        <Stack display="flex" flexGrow={1} bgcolor="white" paddingBottom={2} paddingTop={2} flexDirection="row">
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
             Settings
           </Typography>
-          <Button>Save</Button>
-        </Box>
+          <Button type="submit" disabled={!isDirty || !isValid || isSubmitting}>
+            Save
+          </Button>
+        </Stack>
         <StyledDivider />
-        <Box
-          sx={{
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            overflowY: 'scroll',
-          }}
-        >
+        <Stack display="flex" flexDirection="column" overflow="hidden" height="100%" sx={{ overflowY: 'scroll' }}>
           <MainSettings />
           <AccountSettings />
           <LegalSettings />
@@ -48,7 +61,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
           >
             {loading ? <CircularProgress /> : 'Logout'}
           </Button>
-        </Box>
+        </Stack>
       </Stack>
     </Stack>
   )

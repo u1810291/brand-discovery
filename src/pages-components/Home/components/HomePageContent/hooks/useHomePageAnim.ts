@@ -146,6 +146,9 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
       }
     })
     setActiveIndex((prev) => prev + 1)
+    if (gone.size === data.length) {
+      finishAction()
+    }
   }
   const getDragResult = async (direction: number) => {
     if (direction > 0) {
@@ -213,9 +216,6 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
         config: { friction: 50, tension: active ? 800 : isGone ? 200 : 500 },
       }
     })
-    if (!active && gone.size === data.length) {
-      finishAction()
-    }
   })
 
   return { isLike, isShowLabel, onLikeClick, onDislikeClick, animArray, currentIndex, trans, bind, likesLeft }

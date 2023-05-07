@@ -30,12 +30,12 @@ export const useGetCategories = () => {
 
 export const useSetCategory = () => {
   const setCategory = useCallback(async (category) => {
-    if (!!localStorage.getItem('settingUpdate')) {
-      const settings = JSON.parse(localStorage.getItem('settingUpdate'))
+    if (!!localStorage.getItem('categories')) {
+      const settings = JSON.parse(localStorage.getItem('categories'))
       const updatedSettings = [category, ...settings.filter((el) => el.id !== category.id)]
-      localStorage.setItem('settingUpdate', JSON.stringify(updatedSettings))
+      localStorage.setItem('categories', JSON.stringify(updatedSettings))
     } else {
-      localStorage.setItem('settingUpdate', JSON.stringify([category]))
+      localStorage.setItem('categories', JSON.stringify([category]))
     }
   }, [])
   return [setCategory] as const
