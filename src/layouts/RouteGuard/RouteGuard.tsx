@@ -40,6 +40,7 @@ function RouteGuard({ children }) {
       ROUTES.location,
       ROUTES.notFound,
       ROUTES.account,
+      ROUTES.termsOfUse,
     ]
 
     const path = url.split('?')[0]

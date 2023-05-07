@@ -17,13 +17,13 @@ import { Type } from 'src/store/slices/notify/notify.slice'
 
 type MainLayoutProps = {
   showBackButton?: boolean
-  hasPadding?: boolean
   navbar?: ReactElement | null
+  headerProps?: StackProps
 } & PropsWithChildren &
   StackProps
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasPadding = true, navbar, ...props }) => {
+export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, navbar, headerProps, ...props }) => {
   const router = useRouter()
   const { height } = useWindowSize()
   const { message, type } = useSelector(notifySelector)
@@ -48,7 +48,13 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, hasP
   return (
     <Root padding={{ xs: 3, sm: 5 }} height={`${height}px`} {...props}>
       {showBackButton && (
-        <Stack alignItems="center" marginBottom={{ xs: 2.5, sm: 5 }} display="flex" flexDirection="row">
+        <Stack
+          alignItems="center"
+          marginBottom={{ xs: 2.5, sm: 5 }}
+          display="flex"
+          flexDirection="row"
+          {...headerProps}
+        >
           <IconButton onClick={() => router.back()}>
             <ArrowBack />
           </IconButton>

@@ -15,4 +15,5 @@ export const ROUTES = {
   notFound: '/404',
   categories: '/categories',
   account: '/account',
+  termsOfUse: '/terms-of-use',
 }
