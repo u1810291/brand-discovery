@@ -23,5 +23,9 @@ export const notifySlice = createSlice({
       state.message = payload.message
       state.type = payload.type
     },
+    notifyClose: (state) => {
+      state.message = ''
+      state.type = null
+    },
   },
 })

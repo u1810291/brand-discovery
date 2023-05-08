@@ -7,13 +7,6 @@ export type UpdateAccountFormType = {
   lastName: string
 }
 
-export const defaultValues = {
-  email: '',
-  companyName: '',
-  firstName: '',
-  lastName: '',
-}
-
 export const schema = yup.object({
   email: yup.string().optional().email(),
   companyName: yup.string().optional(),

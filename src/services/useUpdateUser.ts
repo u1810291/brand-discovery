@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { db } from './firebase'
-import { useState } from 'react'
-import { query, getDocs, collection, where, addDoc, updateDoc } from 'firebase/firestore'
+import { useCallback, useState } from 'react'
+import { updateEmail } from 'firebase/auth'
+import { query, getDocs, collection, where, addDoc, updateDoc, getDoc, doc } from 'firebase/firestore'
 
 export type UserType = {
   uid: string
@@ -12,12 +13,12 @@ export type UserType = {
   email?: string
 }
 
-export const useUpdateUser = () => {
+export const useUpdateUser = (auth) => {
   const [error, setError] = useState<string>()
   const [loading, setLoading] = useState<boolean>()
   const [success, setSuccess] = useState<any>()
 
-  const updateUser = async (user: UserType) => {
+  const updateUser = useCallback(async (user: UserType) => {
     try {
       setLoading(true)
       const q = query(collection(db(), 'users'), where('uid', '==', user.uid))
@@ -46,6 +47,16 @@ export const useUpdateUser = () => {
         const diff = now?.getTime() - lastUpdate?.getTime()
         const hoursDiff = diff / (1000 * 60 * 60)
 
+        if (user.email) {
+          updateEmail(auth.currentUser, user.email)
+            .then(() => {
+              setSuccess('Email updated successfully!')
+            })
+            .catch((error) => {
+              setError(error.message)
+              console.error(error)
+            })
+        }
         const updatedData = {
           uid: user.uid,
           ...(user.firstName && { firstName: user.firstName }),
@@ -54,7 +65,7 @@ export const useUpdateUser = () => {
           ...(user.email && { email: user.email }),
           ...(user.spaceCount && { spaceCount: user.spaceCount }),
           updatedAt: now,
-          modalShown: false,
+          modalShown: docs.docs[0].data().modalShown || false,
           likesLeft: docs.docs[0].data().likesLeft,
           dailyLikesGranted: docs.docs[0].data().dailyLikesGranted,
           dailyLikesleft: docs.docs[0].data().dailyLikesleft,
@@ -69,6 +80,29 @@ export const useUpdateUser = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
   return [updateUser, loading, success, error] as const
+}
+
+export const useGetUser = () => {
+  const [data, setData] = useState<any>()
+  const [error, setError] = useState()
+  const fetchUser = useCallback(async (uid) => {
+    try {
+      if (uid) {
+        let docId
+        const q = query(collection(db(), 'users'), where('uid', '==', uid))
+        const querySnapshot = await getDocs(q)
+        querySnapshot.forEach((doc) => {
+          docId = doc.id
+        })
+        const document = await getDoc(doc(collection(db(), 'users'), docId))
+        setData(document.data())
+      }
+    } catch (err) {
+      console.error(err)
+      setError(err.message)
+    }
+  }, [])
+  return [fetchUser, data, error] as const
 }
