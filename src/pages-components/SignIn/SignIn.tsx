@@ -1,30 +1,30 @@
 'use client'
 
-import { useEffect } from 'react'
-import { getAuth } from 'firebase/auth'
-import { useTheme } from '@mui/material'
-import { useForm } from 'react-hook-form'
-import { ROUTES } from 'src/constants/routes'
-import { SingInFormType, schema } from './helper'
-import { MainLayout } from 'src/layouts/MainLayout'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { styled, useTheme } from '@mui/material'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import Divider from '@mui/material/Divider'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { getAuth } from 'firebase/auth'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth'
+import { useForm } from 'react-hook-form'
+import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 import { InputField } from 'src/components/InputField'
 import { PasswordInput } from 'src/components/PasswordInput'
-import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth'
-import Link from 'next/link'
-import Image from 'next/image'
-import Stack from '@mui/material/Stack'
-import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
+import { ROUTES } from 'src/constants/routes'
+import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
-import Typography from '@mui/material/Typography'
-import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
-import CircularProgress from '@mui/material/CircularProgress'
 import { AppDispatch, useDispatch } from 'src/store'
 import { login } from 'src/store/slices/auth'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
-import { useRouter } from 'next/router'
+import { SingInFormType, schema } from './helper'
 
 const auth = getAuth(firebaseApp())
 
@@ -121,7 +121,7 @@ export const SignIn = () => {
               {loading ? <CircularProgress color="success" /> : 'Login'}
             </Button>
           </Stack>
-          <Divider sx={{ marginBlock: { xs: 4, sm: 6 } }}>OR</Divider>
+          <StyledDivider sx={{ marginBlock: { xs: 4, sm: 6 } }}>OR</StyledDivider>
           <Stack spacing={{ xs: 2, sm: 4 }}>
             <Typography component="h5" fontWeight={500} fontSize={14} color={palette.grey[600]} alignSelf="center">
               Are you new to Spacewise?
@@ -145,3 +145,10 @@ export const SignIn = () => {
       </MainLayout>
     )
 }
+
+const StyledDivider = styled(Divider)`
+  ::after,
+  ::before {
+    transform: translateY(0);
+  }
+`

@@ -4,8 +4,11 @@ import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
+import { useRouter } from 'next/router'
+import { ROUTES } from 'src/constants/routes'
 
 export const LegalSettings = () => {
+  const router = useRouter()
   return (
     <List
       sx={{ width: '100%', bgcolor: 'white', paddingBottom: 0 }}
@@ -13,7 +16,7 @@ export const LegalSettings = () => {
       aria-labelledby="nested-list-subheader"
       subheader={<ListSubheaderStyled id="nested-list-subheader">Legal</ListSubheaderStyled>}
     >
-      <ListItemButton onClick={() => console.error('error')}>
+      <ListItemButton onClick={() => router.push(ROUTES.termsOfUse)}>
         <ListItemTextStyled primary="Terms of Service" color="primary" />
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
       </ListItemButton>

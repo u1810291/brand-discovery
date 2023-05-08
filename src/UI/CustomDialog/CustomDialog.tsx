@@ -43,7 +43,7 @@ export const CustomDialog: FC<CustomDialogProps> = ({
           }}
         >
           <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-            <Image
+            <StyledImage
               placeholder="blur"
               blurDataURL={`${ModalBackground}`}
               unoptimized
@@ -116,5 +116,11 @@ const StyledDialog = styled(Dialog)`
 
   .MuiDialogContent-root {
     padding-bottom: 80px;
+  }
+`
+
+const StyledImage = styled(Image)`
+  @media screen and (max-width: 450px) {
+    height: auto !important;
   }
 `
