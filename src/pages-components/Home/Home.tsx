@@ -60,11 +60,10 @@ export const Home = () => {
           if (!querySnapshot.empty) {
             const userDoc = querySnapshot.docs[0]
 
-            const modalShown = userDoc.data().modalShown || true
-            if (!modalShown) {
+            if (!userDoc.data().modalShown) {
               dispatch(
                 openModal({
-                  title: `Hi Username, \n Welcome back`,
+                  title: `Hi ${userDoc.data().firstName}, \n Welcome back`,
                   subTitle: `Now you can start working with \n Spacewise Brand Discovery`,
                   open: true,
                   children: (

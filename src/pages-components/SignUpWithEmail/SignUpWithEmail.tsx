@@ -48,7 +48,7 @@ export const SignUpWithEmail = () => {
 
   const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
   const [sendVerifyEmail, sending, emailVerifyError] = useSendVerifyEmail(auth)
-  const [updateUser] = useUpdateUser()
+  const [updateUser] = useUpdateUser(auth)
 
   useEffect(() => {
     if (!!user?.user?.uid && !emailVerifyError?.message && !sending) {
