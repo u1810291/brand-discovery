@@ -65,7 +65,6 @@ export const Account = () => {
     }
   }, [success, error])
 
-  console.error(data)
   return (
     <MainLayout showBackButton navbar={<AccountNavbar />}>
       <Stack spacing={{ xs: 2, sm: 4 }} component="form" onSubmit={handleSubmit(onSubmit)}>

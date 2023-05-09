@@ -16,14 +16,18 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const dispatch: AppDispatch = useDispatch()
-
   const {
-    control,
     handleSubmit,
+    setValue,
     getValues,
     formState: { isDirty, isValid, isSubmitting },
   } = useForm<SettingsPageFormType>({
     defaultValues,
+    values: {
+      coordinates: localStorage.getItem('user') && JSON.parse(localStorage.getItem('coordinates')),
+      distance: 50,
+      filterByDistance: false,
+    },
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
@@ -45,7 +49,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
         </Stack>
         <StyledDivider />
         <Stack display="flex" flexDirection="column" overflow="hidden" height="100%" sx={{ overflowY: 'scroll' }}>
-          <MainSettings />
+          <MainSettings setValue={setValue} values={getValues} />
           <AccountSettings />
           <LegalSettings />
           <Button

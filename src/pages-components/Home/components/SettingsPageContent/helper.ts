@@ -1,28 +1,19 @@
 import * as yup from 'yup'
 
 export type SettingsPageFormType = {
-  email: string
-  companyName: string
-  firstName: string
-  lastName: string
-  password: string
-  spaceCount: string
+  coordinates: Array<Record<string, string | number>>
+  distance: number
+  filterByDistance: boolean
 }
 
 export const defaultValues = {
-  email: '',
-  companyName: '',
-  firstName: '',
-  lastName: '',
-  password: '',
-  spaceCount: '',
+  coordinates: [],
+  distance: null,
+  filterByDistance: false,
 }
 
 export const schema = yup.object({
-  email: yup.string().required().email(),
-  companyName: yup.string().required(),
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
-  password: yup.string().required(),
-  spaceCount: yup.string().notRequired(),
+  coordinates: yup.array(),
+  distance: yup.number(),
+  filterByDistance: yup.bool(),
 })
