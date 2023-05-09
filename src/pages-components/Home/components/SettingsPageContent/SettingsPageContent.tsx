@@ -18,7 +18,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const dispatch: AppDispatch = useDispatch()
   const {
     handleSubmit,
-    setValue,
+    control,
     getValues,
     formState: { isDirty, isValid, isSubmitting },
   } = useForm<SettingsPageFormType>({
@@ -49,7 +49,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
         </Stack>
         <StyledDivider />
         <Stack display="flex" flexDirection="column" overflow="hidden" height="100%" sx={{ overflowY: 'scroll' }}>
-          <MainSettings setValue={setValue} values={getValues} />
+          <MainSettings control={control} values={getValues} />
           <AccountSettings />
           <LegalSettings />
           <Button

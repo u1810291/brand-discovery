@@ -9,12 +9,12 @@ import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
-import Slider from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
-import Switch from '@mui/material/Switch'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { LocationIcon } from 'src/assets/icons/location'
+import { SliderField } from 'src/components/SliderField'
+import { SwitchField } from 'src/components/SwitchField'
 import { ROUTES } from 'src/constants/routes'
 import { useEffectOnce } from 'src/hooks/useEffectOnce'
 import { useGeoLocation } from 'src/hooks/useGeoLocation'
@@ -25,8 +25,9 @@ import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { setLocation } from 'src/store/slices/user'
 
-export const MainSettings = ({ setValue, values }) => {
+export const MainSettings = ({ control, values }) => {
   const { getLocation, location, error, loading } = useGeoLocation()
+  const [distance, setDistance] = useState(50)
   const [setUserGeoPosition, , , , storeLocationLoading, storeLocationSuccess, storeLocationError] =
     useStoreGeoLocation()
   const dispatch = useDispatch()
@@ -115,20 +116,21 @@ export const MainSettings = ({ setValue, values }) => {
       <ListItemButton sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <ListItemTextStyled primary="Distance preference" sx={{ textAlign: 'start' }} color="primary" />
-          <TypographyStyled>{values('distance')} km</TypographyStyled>
+          <TypographyStyled>{distance} km</TypographyStyled>
         </Box>
-        <Slider
-          value={values('distance')}
+        <SliderField
           aria-label="Default"
           name="distance"
-          defaultValue={values('distance')}
+          defaultValue={distance}
           valueLabelDisplay="auto"
-          onChange={(e: any) => setValue(e.target.value)}
+          control={control}
+          value={distance}
+          handleChange={setDistance}
         />
       </ListItemButton>
       <ListItemButton>
         <ListItemTextStyled primary="Only show brands in this range" />
-        <Switch name="filterByDistance" value={values('filterByDistance')} onChange={() => setValue((prev) => !prev)} />
+        <SwitchField name="filterByDistance" control={control} />
       </ListItemButton>
     </List>
   )
