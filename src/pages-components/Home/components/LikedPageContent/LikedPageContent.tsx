@@ -1,16 +1,18 @@
 import SyncIcon from '@mui/icons-material/Sync'
-import { Button, styled } from '@mui/material'
+import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import { styled } from '@mui/material/styles'
+import emailjs from 'emailjs-com'
+import { collection, getDocs, query, where } from 'firebase/firestore'
+import 'firebase/functions'
 import Link from 'next/link'
 import { FC } from 'react'
+import { LikedCardSkeleton } from 'src/components/Skeletons'
 import { ROUTES } from 'src/constants/routes'
+import { db } from 'src/services/firebase'
+import { UserData } from 'src/store/slices/auth/auth.slice'
 import { CompanyType } from 'src/types'
 import { CompanyCard, Slider } from './components'
-import { UserData } from 'src/store/slices/auth/auth.slice'
-import 'firebase/functions'
-import { query, getDocs, collection, where } from 'firebase/firestore'
-import { db } from 'src/services/firebase'
-import emailjs from 'emailjs-com'
 
 export const generateEmail = async (data: { to: string; subject: string; body: string }) => {
   try {
@@ -48,20 +50,30 @@ export const LikedPageContent: FC<LikedPageContentProps> = ({ data }) => {
       console.error(error)
     }
   }
+  // TODO: CHANGE TO LOADING DATA FROM API
+  const isLoading = false
   return (
     <Stack flex={1} overflow="auto" padding={3} paddingTop={5} gap={{ sm: 5 }}>
       <Button variant="outlined" onClick={handleEmailGeneration} startIcon={<SyncIcon />}>
         Sync brands with Spacewise Platform
       </Button>
       <Stack component="ul" padding={0} gap={2}>
-        {data.map((item, index) => (
-          <Card key={`${item.company.title}-${index}`}>
-            <LinkContainer href={`${ROUTES.brand}/${item.company.id}`}>
-              <CompanyCard data={item.company} />
-            </LinkContainer>
-            <Slider images={item.images.slice(0, 5)} tag={item.company.tags[0]} />
-          </Card>
-        ))}
+        {isLoading ? (
+          <>
+            <LikedCardSkeleton />
+            <LikedCardSkeleton />
+            <LikedCardSkeleton />
+          </>
+        ) : (
+          data.map((item, index) => (
+            <Card key={`${item.company.title}-${index}`}>
+              <LinkContainer href={`${ROUTES.brand}/${item.company.id}`}>
+                <CompanyCard data={item.company} />
+              </LinkContainer>
+              <Slider images={item.images.slice(0, 5)} tag={item.company.tags[0]} />
+            </Card>
+          ))
+        )}
       </Stack>
     </Stack>
   )
