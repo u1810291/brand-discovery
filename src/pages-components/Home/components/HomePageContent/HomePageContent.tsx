@@ -1,19 +1,20 @@
 import CloseIcon from '@mui/icons-material/Close'
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined'
-import { styled } from '@mui/material'
+import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
+import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
+import { styled } from '@mui/material/styles'
 import { animated, interpolate } from '@react-spring/web'
 import Link from 'next/link'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { CompanyCardSkeleton } from 'src/components/Skeletons'
 import { ROUTES } from 'src/constants/routes'
+import { closeModal, openModal } from 'src/store/slices/modal'
 import { CompanyType } from 'src/types'
 import { Card, CompanyCard } from './components'
 import { useHomePageAnim } from './hooks'
-import { useDispatch } from 'react-redux'
-import { closeModal, openModal } from 'src/store/slices/modal'
-import { useEffect } from 'react'
-import Button from '@mui/material/Button'
 
 type ContentProps = {
   data: { company: CompanyType; images: string[] }[]
@@ -50,39 +51,58 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
       )
     }
   }, [likesLeft])
+  // TODO: CHANGE TO LOADING DATA FROM API
+  const isLoading = false
 
   return (
     <Stack flex={1} position="relative" marginX={3} marginTop={5} marginBottom={4}>
       <Stack flex={1}>
-        {animArray.map(({ x, y, rot, scale }, i) => (
-          <Animated key={i} style={{ x, y }}>
-            <Card
-              isLike={isLike}
-              isShowLabel={i === currentIndex && isShowLabel}
-              images={data[i]?.images.slice(0, 5) || []}
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              //@ts-ignore
-              {...bind(i)}
-              style={{
-                transform: interpolate([rot, scale], trans),
-              }}
-            />
-          </Animated>
-        ))}
+        {isLoading ? (
+          <Skeleton variant="rectangular" sx={{ flex: 1, opacity: 0.7 }} />
+        ) : (
+          animArray.map(({ x, y, rot, scale }, i) => (
+            <Animated key={i} style={{ x, y }}>
+              <Card
+                isLike={isLike}
+                isShowLabel={i === currentIndex && isShowLabel}
+                images={data[i]?.images.slice(0, 5) || []}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                //@ts-ignore
+                {...bind(i)}
+                style={{
+                  transform: interpolate([rot, scale], trans),
+                }}
+              />
+            </Animated>
+          ))
+        )}
       </Stack>
 
       {currentIndex >= 0 && (
         <Wrapper>
-          <LinkContainer href={`${ROUTES.brand}/${data[currentIndex].company.id}`}>
-            <CompanyCard data={data[currentIndex]?.company} />
-          </LinkContainer>
+          {isLoading ? (
+            <CompanyCardSkeleton />
+          ) : (
+            <LinkContainer href={`${ROUTES.brand}/${data[currentIndex].company.id}`}>
+              <CompanyCard data={data[currentIndex]?.company} />
+            </LinkContainer>
+          )}
           <Stack direction="row" justifyContent="space-between" width="100%" paddingX={9}>
-            <StyledButton onClick={onDislikeClick} sx={{ borderColor: '#EC1B40' }} size="large">
-              <CloseIcon color="error" />
-            </StyledButton>
-            <StyledButton onClick={onLikeClick} size="large" sx={{ borderColor: '#18bc9c' }}>
-              <FavoriteOutlinedIcon color="primary" />
-            </StyledButton>
+            {isLoading ? (
+              <>
+                <Skeleton variant="circular" width={40} height={40} />
+                <Skeleton variant="circular" width={40} height={40} />
+              </>
+            ) : (
+              <>
+                <StyledButton onClick={onDislikeClick} sx={{ borderColor: '#EC1B40' }} size="large">
+                  <CloseIcon color="error" />
+                </StyledButton>
+                <StyledButton onClick={onLikeClick} size="large" sx={{ borderColor: '#18bc9c' }}>
+                  <FavoriteOutlinedIcon color="primary" />
+                </StyledButton>
+              </>
+            )}
           </Stack>
         </Wrapper>
       )}

@@ -9,6 +9,7 @@ import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
+import Skeleton from '@mui/material/Skeleton'
 import Slider from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
 import Switch from '@mui/material/Switch'
@@ -88,7 +89,8 @@ export const MainSettings = ({ setValue, values }) => {
       }),
     )
   }
-
+  // TODO: CHANGE TO LOADING DATA FROM API
+  const isLoading = true
   return (
     <List
       sx={{ width: '100%', bgcolor: 'white', paddingBottom: 0 }}
@@ -99,7 +101,11 @@ export const MainSettings = ({ setValue, values }) => {
       <ListItemButton onClick={() => router.push(ROUTES.categories)}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Categories" color="primary" sx={{ width: 'auto' }} />
-          <TypographyStyled>Sport, Health, +4 more</TypographyStyled>
+          {isLoading ? (
+            <Skeleton variant="text" width={200} />
+          ) : (
+            <TypographyStyled>Sport, Health, +4 more</TypographyStyled>
+          )}
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
       </ListItemButton>
@@ -107,7 +113,11 @@ export const MainSettings = ({ setValue, values }) => {
       <ListItemButton onClick={handleLocation}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Location" color="primary" sx={{ width: 'auto' }} />
-          <TypographyStyled>{data && data.name}</TypographyStyled>
+          {isLoading ? (
+            <Skeleton variant="text" width={200} />
+          ) : (
+            <TypographyStyled>{data && data.name}</TypographyStyled>
+          )}
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
       </ListItemButton>
@@ -115,7 +125,12 @@ export const MainSettings = ({ setValue, values }) => {
       <ListItemButton sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <ListItemTextStyled primary="Distance preference" sx={{ textAlign: 'start' }} color="primary" />
-          <TypographyStyled>{values('distance')} km</TypographyStyled>
+
+          {isLoading ? (
+            <Skeleton variant="text" width={50} />
+          ) : (
+            <TypographyStyled>{values('distance')} km</TypographyStyled>
+          )}
         </Box>
         <Slider
           value={values('distance')}
@@ -128,7 +143,16 @@ export const MainSettings = ({ setValue, values }) => {
       </ListItemButton>
       <ListItemButton>
         <ListItemTextStyled primary="Only show brands in this range" />
-        <Switch name="filterByDistance" value={values('filterByDistance')} onChange={() => setValue((prev) => !prev)} />
+
+        {isLoading ? (
+          <Skeleton width={50} height={32} />
+        ) : (
+          <Switch
+            name="filterByDistance"
+            value={values('filterByDistance')}
+            onChange={() => setValue((prev) => !prev)}
+          />
+        )}
       </ListItemButton>
     </List>
   )
