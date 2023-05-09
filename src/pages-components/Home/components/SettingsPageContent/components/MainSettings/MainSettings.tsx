@@ -27,14 +27,14 @@ import { Type } from 'src/store/slices/notify/notify.slice'
 import { setLocation } from 'src/store/slices/user'
 
 export const MainSettings = ({ control, values }) => {
-  const { getLocation, location, error, loading } = useGeoLocation()
+  const { getLocation, location, error } = useGeoLocation()
   const [distance, setDistance] = useState(50)
   const [setUserGeoPosition, , , , storeLocationLoading, storeLocationSuccess, storeLocationError] =
     useStoreGeoLocation()
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const [fetchLocation, data, errorFetching] = useOneLocation(
+  const [fetchLocation, data, loading, errorFetching] = useOneLocation(
     localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid,
   )
 
@@ -90,8 +90,6 @@ export const MainSettings = ({ control, values }) => {
       }),
     )
   }
-  // TODO: CHANGE TO LOADING DATA FROM API
-  const isLoading = true
   return (
     <List
       sx={{ width: '100%', bgcolor: 'white', paddingBottom: 0 }}
@@ -102,7 +100,7 @@ export const MainSettings = ({ control, values }) => {
       <ListItemButton onClick={() => router.push(ROUTES.categories)}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Categories" color="primary" sx={{ width: 'auto' }} />
-          {isLoading ? (
+          {loading ? (
             <Skeleton variant="text" width={200} />
           ) : (
             <TypographyStyled>Sport, Health, +4 more</TypographyStyled>
@@ -114,11 +112,7 @@ export const MainSettings = ({ control, values }) => {
       <ListItemButton onClick={handleLocation}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Location" color="primary" sx={{ width: 'auto' }} />
-          {isLoading ? (
-            <Skeleton variant="text" width={200} />
-          ) : (
-            <TypographyStyled>{data && data.name}</TypographyStyled>
-          )}
+          {loading ? <Skeleton variant="text" width={200} /> : <TypographyStyled>{data && data.name}</TypographyStyled>}
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
       </ListItemButton>
@@ -127,29 +121,19 @@ export const MainSettings = ({ control, values }) => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <ListItemTextStyled primary="Distance preference" sx={{ textAlign: 'start' }} color="primary" />
 
-          {isLoading ? (
-            <Skeleton variant="text" width={50} />
-          ) : (
-            <TypographyStyled>{values('distance')} km</TypographyStyled>
-          )}
+          {loading ? <Skeleton variant="text" width={50} /> : <TypographyStyled>{distance} km</TypographyStyled>}
         </Box>
         <SliderField
           aria-label="Default"
           name="distance"
-          defaultValue={distance}
           valueLabelDisplay="auto"
           control={control}
-          value={distance}
           handleChange={setDistance}
         />
       </ListItemButton>
       <ListItemButton>
         <ListItemTextStyled primary="Only show brands in this range" />
-        {isLoading ? (
-          <Skeleton width={50} height={32} />
-        ) : (
-          <SwitchField name="filterByDistance" value={values('filterByDistance')} control={control} />
-        )}
+        {loading ? <Skeleton width={50} height={32} /> : <SwitchField name="filterByDistance" control={control} />}
       </ListItemButton>
     </List>
   )

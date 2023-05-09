@@ -1,11 +1,11 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Slider, { SliderProps } from '@mui/material/Slider'
 import { FieldValues, useController, UseControllerProps } from 'react-hook-form'
 
 type SliderPropsType = {
-  handleChange: (el: number) => void
+  handleChange?: (el: number) => void
 }
 
 export const SliderField = React.memo(
@@ -23,7 +23,9 @@ export const SliderField = React.memo(
       : {
           field: null,
         }
-    handleChange(field.value)
+    useEffect(() => {
+      handleChange(field?.value)
+    }, [field])
     return <Slider {...props} {...(field && { ...field })} />
   },
 )
