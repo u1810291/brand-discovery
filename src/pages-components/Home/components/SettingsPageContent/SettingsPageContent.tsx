@@ -18,7 +18,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const dispatch: AppDispatch = useDispatch()
   const {
     handleSubmit,
-    setValue,
+    control,
     getValues,
     formState: { isDirty, isValid, isSubmitting },
   } = useForm<SettingsPageFormType>({
@@ -27,13 +27,15 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
       coordinates: localStorage.getItem('user') && JSON.parse(localStorage.getItem('coordinates')),
       distance: 50,
       filterByDistance: false,
+      location: localStorage.getItem('location') && JSON.parse(localStorage.getItem('location')),
     },
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
 
+  console.error(!isDirty || !isValid || isSubmitting)
   const onSubmit = async (data) => {
-    console.error('first')
+    console.error(data)
   }
 
   return (
@@ -49,7 +51,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
         </Stack>
         <StyledDivider />
         <Stack display="flex" flexDirection="column" overflow="hidden" height="100%" sx={{ overflowY: 'scroll' }}>
-          <MainSettings setValue={setValue} values={getValues} />
+          <MainSettings control={control} values={getValues} />
           <AccountSettings />
           <LegalSettings />
           <Button

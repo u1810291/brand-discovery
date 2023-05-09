@@ -57,6 +57,7 @@ export const Location = () => {
     //   latitude: Number(e.lat),
     //   longitude: Number(e.lon),
     // })
+    router.back()
   }, [])
   useEffect(() => {
     if (success || error) {
