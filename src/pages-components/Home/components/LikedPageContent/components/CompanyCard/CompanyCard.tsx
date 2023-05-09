@@ -34,7 +34,7 @@ export const CompanyCard: FC<CompanyCardProps> = ({ data, ...props }) => {
           <Typography fontWeight={800} fontSize={'14px'} lineHeight={'20px'} alignItems="center">
             {data?.followers}
           </Typography>
-          <Typography marginLeft={0.5} component="span" fontSize={'12px'} lineHeight={'16px'} fontWeight={500}>
+          <Typography component="span" fontSize={'12px'} lineHeight={'16px'} fontWeight={500}>
             Followers
           </Typography>
         </Stack>

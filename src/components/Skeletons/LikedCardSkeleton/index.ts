@@ -1,0 +1,1 @@
+export { LikedCardSkeleton } from './LikedCardSkeleton'
