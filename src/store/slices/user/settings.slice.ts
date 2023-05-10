@@ -9,8 +9,8 @@ const initialState = {
   location: null,
 } satisfies SettingsType
 
-export const settingsSlice = createSlice({
-  name: 'settings',
+export const userSlice = createSlice({
+  name: 'user',
   initialState,
   reducers: {
     setLocation: (state, { payload }: { payload: SettingsType }) => {

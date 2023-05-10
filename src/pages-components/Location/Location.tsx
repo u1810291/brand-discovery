@@ -31,18 +31,16 @@ export const Location = () => {
   const cityNameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 3
   const [chosenLocation, setChosenLocation] = useState()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, query, setQuery, countries, loading, success, error] = useUpdateSettings()
+  const { search, setSearch, countries, loading, success, error } = useUpdateSettings()
 
   const handleChange = useCallback((e) => {
-    setQuery(e)
+    setSearch(e)
   }, [])
 
   const handleChooseLocation = useCallback((e) => {
-    const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
     localStorage.setItem(
       'location',
       JSON.stringify({
-        uid: user?.uid,
         name: e.address?.city || e.address?.country || e?.address?.place,
         latitude: Number(e.lat),
         longitude: Number(e.lon),
@@ -55,22 +53,22 @@ export const Location = () => {
   }, [])
   useEffect(() => {
     if (success || error) {
-      dispatch(notify({ type: error ? Type.error : Type.success, message: error?.message || success }))
+      dispatch(notify({ type: error ? Type.error : Type.success, message: error || success }))
     }
     if (success) {
       router.push(ROUTES.home)
     }
   }, [error, success])
   return (
-    <MainLayout showBackButton navbar={<LocationNavbar field={query} updateField={handleChange} />}>
+    <MainLayout showBackButton navbar={<LocationNavbar field={search} updateField={handleChange} />}>
       <Stack>
         <List sx={{ width: '100%', bgcolor: 'white' }} component="nav" aria-labelledby="nested-list-subheader">
-          {query && (
+          {search && (
             <>
               <ListItemButton sx={{ paddingLeft: 0 }} onClick={() => console.error('error')}>
                 <Search />
                 <Box sx={{ width: '100%', paddingLeft: 2 }}>
-                  <ListItemTextStyled primary={query} color="primary" sx={{ width: 'auto' }} />
+                  <ListItemTextStyled primary={search} color="primary" sx={{ width: 'auto' }} />
                 </Box>
               </ListItemButton>
               <StyledDivider sx={{ left: '0px' }} />

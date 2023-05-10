@@ -15,44 +15,75 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useCallback, useEffect } from 'react'
 import { useUpdateSettings } from 'src/services/useGeoLocation'
+import { settingsSelector } from 'src/store/slices/settings'
+import { useSelector } from 'react-redux'
+import { notify } from 'src/store/slices/notify'
+import { Type } from 'src/store/slices/notify/notify.slice'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const dispatch: AppDispatch = useDispatch()
+  const { updateSettings, fetchSettings, success, error } = useUpdateSettings()
+  const settings = useSelector(settingsSelector)
   const {
     handleSubmit,
     control,
     formState: { isValid, isSubmitting },
   } = useForm<SettingsPageFormType>({
     defaultValues: {
-      categories: localStorage.getItem('categories') && JSON.parse(localStorage.getItem('categories')),
-      distance: 50,
-      filterByDistance: true,
-      location: localStorage.getItem('location') && JSON.parse(localStorage.getItem('location')),
+      categories: settings?.categories?.length
+        ? settings?.categories
+        : JSON.parse(localStorage.getItem('categories' || null)),
+      distance: settings?.distance || 50,
+      filterByDistance: settings?.filterByDistance || false,
+      location:
+        JSON.parse(localStorage.getItem('location' || null)) &&
+        Object.keys(JSON.parse(localStorage.getItem('location' || null))).length !== 0
+          ? JSON.parse(localStorage.getItem('location' || null))
+          : settings?.location,
     },
     values: {
-      categories: localStorage.getItem('categories') && JSON.parse(localStorage.getItem('categories')),
-      distance: 80,
-      filterByDistance: true,
-      location: localStorage.getItem('location') && JSON.parse(localStorage.getItem('location')),
+      categories: settings?.categories?.length
+        ? settings?.categories
+        : JSON.parse(localStorage.getItem('categories' || null)),
+      distance: settings?.distance || 50,
+      filterByDistance: settings?.filterByDistance || false,
+      location:
+        JSON.parse(localStorage.getItem('location' || null)) &&
+        Object.keys(JSON.parse(localStorage.getItem('location' || null))).length !== 0
+          ? JSON.parse(localStorage.getItem('location' || null))
+          : settings?.location,
     },
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
-  const [updateSettings, success, error] = useUpdateSettings()
-
   const onSubmit = async (data) => {
-    const userId = JSON.parse(localStorage.getItem('user' || null)).uid
+    const userId = JSON.parse(localStorage.getItem('user')).uid
 
     updateSettings({
       uid: userId,
-      name: data.location.name,
-      latitude: data.location.latitude,
-      longitude: data.location.longitude,
+      location: data.location,
       categories: data.categories,
       distance: data.distance,
       filterByDistance: data.filterByDistance,
     })
+    localStorage.removeItem('categories')
+    localStorage.removeItem('location')
   }
+  useEffect(() => {
+    const userId = JSON.parse(localStorage.getItem('user')).uid
+    fetchSettings(userId)
+  }, [])
+
+  useEffect(() => {
+    if (typeof success !== 'object' || error) {
+      dispatch(
+        notify({
+          type: error ? Type.error : Type.success,
+          message: error ? error : success,
+        }),
+      )
+    }
+  }, [success, error])
 
   return (
     <Stack position="relative" width="100%" height="100%">

@@ -3,7 +3,7 @@ import { useDispatch as useBasicDispatch } from 'react-redux'
 import modalSlice from './slices/modal'
 import authSlice from './slices/auth'
 import notifySlice from './slices/notify'
-import settingsSlice from './slices/user'
+import settingsSlice from './slices/settings'
 
 const store = configureStore({
   reducer: {

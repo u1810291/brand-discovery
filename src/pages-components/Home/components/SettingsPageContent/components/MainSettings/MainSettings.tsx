@@ -1,7 +1,7 @@
 'use client'
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import { CircularProgress, Typography, styled } from '@mui/material'
+import { Typography, styled } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -13,6 +13,7 @@ import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { LocationIcon } from 'src/assets/icons/location'
 import { SliderField } from 'src/components/SliderField'
 import { SwitchField } from 'src/components/SwitchField'
@@ -24,18 +25,22 @@ import { useDispatch } from 'src/store'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
+import { settingsSelector } from 'src/store/slices/settings'
 import { setLocation } from 'src/store/slices/user'
 
 export const MainSettings = ({ control }) => {
   const { getLocation, location, error } = useGeoLocation()
   const [distance, setDistance] = useState(50)
-  const [, , , , storeLocationLoading, storeLocationSuccess, storeLocationError] = useUpdateSettings()
+  const settings = useSelector(settingsSelector)
+  const { success: storeLocationSuccess, error: storeLocationError } = useUpdateSettings()
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const [fetchLocation, data, loading, errorFetching] = useOneLocation(
-    localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid,
-  )
+  const {
+    fetchLocation,
+    loading,
+    error: errorFetching,
+  } = useOneLocation(localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid)
 
   useEffect(() => {
     if (!!location) {
@@ -59,7 +64,7 @@ export const MainSettings = ({ control }) => {
       }),
     )
 
-    if (storeLocationSuccess) {
+    if (!error) {
       dispatch(closeModal())
     }
   }, [error, location, storeLocationSuccess, errorFetching])
@@ -67,6 +72,7 @@ export const MainSettings = ({ control }) => {
   useEffectOnce(() => {
     fetchLocation()
   })
+
   const handleLocation = () => {
     dispatch(
       openModal({
@@ -76,7 +82,7 @@ export const MainSettings = ({ control }) => {
         children: (
           <Stack display="flex" flexDirection="column" gap={2} width="100%">
             <Button variant="contained" onClick={getLocation}>
-              {storeLocationLoading || loading ? <CircularProgress /> : `Allow Location`}
+              Allow Location
             </Button>
             <Button
               variant="outlined"
@@ -93,6 +99,7 @@ export const MainSettings = ({ control }) => {
       }),
     )
   }
+
   return (
     <List
       sx={{ width: '100%', bgcolor: 'white', paddingBottom: 0 }}
@@ -106,7 +113,7 @@ export const MainSettings = ({ control }) => {
           {loading ? (
             <Skeleton variant="text" width={200} />
           ) : (
-            <TypographyStyled>Sport, Health, +4 more</TypographyStyled>
+            <TypographyStyled>{settings?.categories?.map((el) => el?.categoryName).join(',')}</TypographyStyled>
           )}
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
@@ -115,7 +122,11 @@ export const MainSettings = ({ control }) => {
       <ListItemButton onClick={handleLocation}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Location" color="primary" sx={{ width: 'auto' }} />
-          {loading ? <Skeleton variant="text" width={200} /> : <TypographyStyled>{data && data.name}</TypographyStyled>}
+          {loading ? (
+            <Skeleton variant="text" width={200} />
+          ) : (
+            <TypographyStyled>{settings?.location?.name}</TypographyStyled>
+          )}
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
       </ListItemButton>
@@ -124,7 +135,11 @@ export const MainSettings = ({ control }) => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <ListItemTextStyled primary="Distance preference" sx={{ textAlign: 'start' }} color="primary" />
 
-          {loading ? <Skeleton variant="text" width={50} /> : <TypographyStyled>{distance} km</TypographyStyled>}
+          {loading ? (
+            <Skeleton variant="text" width={50} />
+          ) : (
+            <TypographyStyled>{settings?.distance || distance} km</TypographyStyled>
+          )}
         </Box>
         <SliderField
           aria-label="Default"

@@ -1,15 +1,17 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useEffect, useState } from 'react'
-import { query, getDocs, collection, where, addDoc, getDocFromServer, doc, setDoc, getDoc, updateDoc } from 'firebase/firestore'
+import { query, getDocs, collection, where, DocumentData, doc, setDoc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from './firebase'
+import { useDispatch } from 'src/store'
+import { setSettings, SettingsType as StoreSettingsType } from 'src/store/slices/settings'
 
 type SettingsType = {
-  uid: string
   categories: Array<Record<string, string | number>>
   distance: number
   filterByDistance: boolean
   location: Record<string, any>
+  uid: string
 }
 
 export const useUpdateSettings = () => {
@@ -17,7 +19,35 @@ export const useUpdateSettings = () => {
   const [loading, setLoading] = useState<boolean>()
   const [success, setSuccess] = useState<any>()
   const [search, setSearch] = useState<string>('')
-  const [countries, setCountries] = useState<[]>()
+  const [countries, setCountries] = useState<any[]>()
+  const dispatch = useDispatch()
+
+  const fetchSettings = useCallback(async (uid) => {
+    try {
+      setLoading(true)
+      if (uid) {
+        const q = await getDoc(doc(collection(db(), 'settings'), uid))
+        setSuccess(q.data())
+        dispatch(setSettings({
+          createdAt: q.data()?.createdAt,
+          location: q.data()?.location,
+          uid: q.data()?.uid,
+          filterByDistance: q.data()?.filterByDistance,
+          categories: q.data()?.categories,
+          updatedAt: q.data()?.updatedAt,
+          distance: q.data()?.distance,
+        }))
+        setLoading(false)
+      } else {
+        setError('There is no settings for such user')
+      }
+      setLoading(false)
+    } catch (err) {
+      console.error(err)
+      setError(err.message)
+      setLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
     let timer = null
@@ -32,39 +62,31 @@ export const useUpdateSettings = () => {
     return () => clearTimeout(timer)
   }, [search])
 
-  const setUserSettings = useCallback(async (data: SettingsType) => {
+  const updateSettings = useCallback(async (data: SettingsType) => {
     try {
+      const uid = data.uid
       setLoading(true)
-      console.error(data)
-      const q = query(collection(db(), 'settings'), where('uid', '==', data.uid))
+      const q = query(collection(db(), 'settings'), where('uid', '==', uid))
       const docs = await getDocs(q)
-      if (docs.docs.length === 0 && data.uid) {
-        await setDoc(doc(collection(db(), 'settings'), data.uid), {
-          uid: data.uid,
-          latitude: data.location.latitude,
-          longitude: data.location.longitude,
-          name: data.location.name,
+      if (docs.docs.length === 0 && uid) {
+        await setDoc(doc(collection(db(), 'settings'), uid), {
+          uid,
           createdAt: new Date(),
           updatedAt: new Date(),
           categories: data.categories,
           distance: data.distance,
           location: data.location,
           filterByDistance: data.filterByDistance,
-          placeId: data.location.placeId,
         })
       } else {
         const now = new Date()
+        console.error(data)
         const updatedData = {
-          uid: data.uid,
+          uid,
           updatedAt: now,
-          ...(data.location && {
-            placeId: data.location.placeId,
-            latitude: data.location.latitude,
-            longitude: data.location.longitude,
-            name: data.location.name
-          }),
+          distance: data.distance,
+          ...(data.location && { location: data.location }),
           ...(data.categories && { categories: data.categories }),
-          ...(data.distance && { distance: data.distance }),
           ...(data.filterByDistance && { filterByDistance: data.filterByDistance }),
         }
         await updateDoc(docs.docs[0].ref, updatedData)
@@ -73,11 +95,11 @@ export const useUpdateSettings = () => {
       setSuccess('Successfully updated!')
     } catch (err) {
       console.error(err)
-      setError(err)
+      setError(err.message || err)
       setLoading(false)
     }
   }, [])
-  return [setUserSettings, search, setSearch, countries, loading, success, error]
+  return { updateSettings, fetchSettings, search, setSearch, countries, loading, success, error }
 }
 
 export const useOneLocation = (uid) => {
@@ -98,7 +120,7 @@ export const useOneLocation = (uid) => {
       setLoading(false)
     }
   }, [])
-  return [fetchLocation, data, loading, error] as const
+  return { fetchLocation, data, loading, error } as const
 }
 
 export async function getLocations(query) {
