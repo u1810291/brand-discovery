@@ -13,6 +13,8 @@ import { db } from 'src/services/firebase'
 import { UserData } from 'src/store/slices/auth/auth.slice'
 import { CompanyType } from 'src/types'
 import { CompanyCard, Slider } from './components'
+import { useDispatch } from 'react-redux'
+import { openModal } from 'src/store/slices/modal'
 
 export const generateEmail = async (data: { to: string; subject: string; body: string }) => {
   try {
@@ -32,6 +34,7 @@ type LikedPageContentProps = {
 
 export const LikedPageContent: FC<LikedPageContentProps> = ({ data }) => {
   const user: UserData = JSON.parse(localStorage.getItem('user') || null)
+  const dispatch = useDispatch()
 
   async function handleEmailGeneration() {
     try {
@@ -45,6 +48,14 @@ export const LikedPageContent: FC<LikedPageContentProps> = ({ data }) => {
                brand Id's`,
         to: 'accountmanagement@spacewise.net',
       })
+      dispatch(
+        openModal({
+          open: true,
+          title: 'Thanks!',
+          subTitle: `Spacewise manager will contact you soon.`,
+          children: <></>,
+        }),
+      )
       console.log(result)
     } catch (error) {
       console.error(error)
