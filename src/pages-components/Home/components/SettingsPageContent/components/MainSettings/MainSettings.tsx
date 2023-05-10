@@ -72,7 +72,7 @@ export const MainSettings = ({ setValue, values }) => {
         children: (
           <Stack display="flex" flexDirection="column" gap={2} width="100%">
             <Button variant="contained" onClick={getLocation}>
-              {storeLocationLoading || loading ? <CircularProgress /> : `Allow Location`}
+              {storeLocationLoading || loading ? <CircularProgress size={24} /> : `Allow Location`}
             </Button>
             <Button
               variant="outlined"

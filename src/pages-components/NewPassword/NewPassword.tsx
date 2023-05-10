@@ -1,25 +1,25 @@
 'use client'
 
-import { useForm } from 'react-hook-form'
-import { MainLayout } from 'src/layouts/MainLayout'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { NewPasswordFormType, schema } from './helper'
-import { PasswordInput } from 'src/components/PasswordInput'
-import Image from 'next/image'
-import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
 import CircularProgress from '@mui/material/CircularProgress'
-import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
-import { useVerifyResetPassword } from 'src/services/useVerifyReset'
-import { useRouter } from 'next/router'
-import { ROUTES } from 'src/constants/routes'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { getAuth } from 'firebase/auth'
-import firebaseApp from 'src/services/firebase'
+import Image from 'next/image'
+import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
+import { PasswordInput } from 'src/components/PasswordInput'
+import { ROUTES } from 'src/constants/routes'
+import { MainLayout } from 'src/layouts/MainLayout'
+import firebaseApp from 'src/services/firebase'
+import { useVerifyResetPassword } from 'src/services/useVerifyReset'
 import { useDispatch } from 'src/store'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
+import { NewPasswordFormType, schema } from './helper'
 
 const auth = getAuth(firebaseApp())
 
@@ -92,7 +92,7 @@ export const NewPassword = () => {
             />
           </Stack>
           <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
-            {loading ? <CircularProgress /> : 'Continue'}
+            {loading ? <CircularProgress size={24} /> : 'Continue'}
           </Button>
         </Stack>
       </Stack>

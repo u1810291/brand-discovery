@@ -105,7 +105,7 @@ export const SignUpWithEmail = () => {
           />
           <Controller
             render={({ field: { value, onChange } }) => (
-              <ToggleButtonGroup exclusive aria-label="text alignment" value={value} onChange={onChange}>
+              <ToggleButtonGroup exclusive aria-label="text alignment" value={value} onChange={onChange} fullWidth>
                 <ToggleButton value="1-3" key="1-3">
                   1-3 Spaces
                 </ToggleButton>
@@ -121,11 +121,12 @@ export const SignUpWithEmail = () => {
             control={control}
           />
           <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
-            {loading || sending ? <CircularProgress color="success" /> : 'Continue'}
+            {loading || sending ? <CircularProgress size={24} color="success" /> : 'Continue'}
           </Button>
           <Typography fontSize={14} fontWeight={400} color="#747978" textAlign="center">
-            Use of this app constitutes acceptance of the <Link>Terms of Use</Link>, <Link>Booking Terms</Link> and{' '}
-            <Link>Privacy Policy</Link>.
+            Use of this app constitutes acceptance of the <Link href={ROUTES.termsOfUse}>Terms of Use</Link>,{' '}
+            <Link href="https://www.popupshops.com/en/pages/booking_terms">Booking Terms</Link> and{' '}
+            <Link href="https://www.popupshops.com/en/pages/privacy">Privacy Policy</Link>.
           </Typography>
         </Stack>
       </Stack>

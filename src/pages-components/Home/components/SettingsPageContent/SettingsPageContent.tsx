@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
+import { yupResolver } from '@hookform/resolvers/yup'
 import { styled } from '@mui/material'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { useForm } from 'react-hook-form'
 import { AppDispatch, useDispatch } from 'src/store'
 import { logout } from 'src/store/slices/auth'
 import { AccountSettings, LegalSettings, MainSettings } from './components'
 import { SettingsPageFormType, defaultValues, schema } from './helper'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const dispatch: AppDispatch = useDispatch()
@@ -63,7 +63,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
               }
             }}
           >
-            {loading ? <CircularProgress /> : 'Logout'}
+            {loading ? <CircularProgress size={24} /> : 'Logout'}
           </Button>
         </Stack>
       </Stack>

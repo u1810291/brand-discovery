@@ -118,7 +118,7 @@ export const SignIn = () => {
               </Button>
             </Stack>
             <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
-              {loading ? <CircularProgress color="success" /> : 'Login'}
+              {loading ? <CircularProgress color="success" size={24} /> : 'Login'}
             </Button>
           </Stack>
           <StyledDivider sx={{ marginBlock: { xs: 4, sm: 6 } }}>OR</StyledDivider>
