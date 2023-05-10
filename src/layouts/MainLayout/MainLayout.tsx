@@ -62,7 +62,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, navb
         </Stack>
       )}
       {children}
-      <Modal modalRef={modalRef} />
+      <Modal title={'hello'} modalRef={modalRef} />
       <Notification text={message} type={type} />
     </Root>
   )
