@@ -31,6 +31,7 @@ function RouteGuard({ children }) {
       ROUTES.signUpWithEmail,
       ROUTES.verifyEmail,
       ROUTES.notFound,
+      ROUTES.termsOfUse,
       ROUTES.walkThrough,
     ]
     const privatePaths = [
