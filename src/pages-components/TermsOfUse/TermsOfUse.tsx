@@ -24,7 +24,6 @@ export const TermsOfUse = () => {
       showBackButton
       sx={{ backgroundColor: 'rgba(248, 249, 251, 1)' }}
       padding={0}
-      spacing={2}
       headerProps={{
         paddingTop: 3,
         paddingBottom: 2,
@@ -50,24 +49,6 @@ export const TermsOfUse = () => {
         <Typography fontWeight={800} fontSize={40} lineHeight="55px" textAlign="center" marginBottom={3}>
           Terms Of Use
         </Typography>
-        {/* TODO: design variant
-        <Stack spacing={1.25} color="rgba(116, 121, 120, 1)" fontWeight={500} fontSize={14} lineHeight="30px">
-          <Text>Last revised on November 19, 2021</Text>
-          <Text>
-            Key change in this version: We’ve clarified that MTCH Technology Services Limited, which operates our
-            European Headquarters, is responsible for our service in the European Economic Area, the United Kingdom and
-            Swizerland. For a summary of our Terms of Use, go to <StyledLink href="#">Summary of Terms</StyledLink>.
-          </Text>
-          <Text>
-            Welcome to Tinder. If you live in the European Economic Area, the United Kingdom, or Swizerland, these Terms
-            of Use are between you and:
-          </Text>
-          <Text>
-            MTCH Technology Services Limited (“MTCH Technology”) WeWork charlemont Exchange 42 Charlemont Street Dublin
-            2, D02 R593 Irelan :
-          </Text>
-        </Stack> 
-        TODO: next site text*/}
         <Stack spacing={2} color="rgba(116, 121, 120, 1)" divider={<Divider sx={{ marginBlock: 1.25 }} />}>
           <Text>
             The popupshops.com-Website (the “Site”) is a service for our registered users and visitors and is owned and
@@ -111,6 +92,3 @@ const Title = styled(Typography)`
   line-height: 27px;
   color: rgba(0, 0, 0, 1);
 `
-// const StyledLink = styled(Link)`
-//   color: rgba(24, 188, 156, 1);
-// `

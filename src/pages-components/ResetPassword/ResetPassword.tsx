@@ -6,7 +6,6 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { getAuth } from 'firebase/auth'
-import firebaseApp from 'src/services/firebase'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth'
@@ -14,6 +13,7 @@ import { useForm } from 'react-hook-form'
 import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 import { InputField } from 'src/components/InputField'
 import { MainLayout } from 'src/layouts/MainLayout'
+import firebaseApp from 'src/services/firebase'
 import { useDispatch } from 'src/store'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
@@ -81,7 +81,7 @@ export const ResetPassword = () => {
             />
           </Stack>
           <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
-            {sending ? <CircularProgress /> : 'Send me reset password instructions'}
+            {sending ? <CircularProgress size={24} /> : 'Send me reset password instructions'}
           </Button>
         </Stack>
         {/* <Button type="button" variant="text" sx={{ width: 'fit-content', alignSelf: 'center' }}>
