@@ -13,7 +13,7 @@ import { LocationIcon } from 'src/assets/icons/location'
 import { Search } from 'src/assets/icons/search'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
-import { useStoreGeoLocation } from 'src/services/useGeoLocation'
+import { useUpdateSettings } from 'src/services/useGeoLocation'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { CityNames } from './components/CityNames/CityNames'
@@ -31,7 +31,7 @@ export const Location = () => {
   const cityNameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 3
   const [chosenLocation, setChosenLocation] = useState()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, query, setQuery, countries, loading, success, error] = useStoreGeoLocation()
+  const [_, query, setQuery, countries, loading, success, error] = useUpdateSettings()
 
   const handleChange = useCallback((e) => {
     setQuery(e)
@@ -51,12 +51,6 @@ export const Location = () => {
     )
     setChosenLocation(e.place_id)
 
-    // setUserGeoPosition({
-    //   uid: user?.uid,
-    //   name: e.address?.city || e.address?.country || e?.address?.place,
-    //   latitude: Number(e.lat),
-    //   longitude: Number(e.lon),
-    // })
     router.back()
   }, [])
   useEffect(() => {

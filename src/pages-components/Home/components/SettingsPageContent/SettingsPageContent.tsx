@@ -10,48 +10,73 @@ import Typography from '@mui/material/Typography'
 import { AppDispatch, useDispatch } from 'src/store'
 import { logout } from 'src/store/slices/auth'
 import { AccountSettings, LegalSettings, MainSettings } from './components'
-import { SettingsPageFormType, defaultValues, schema } from './helper'
+import { SettingsPageFormType, schema } from './helper'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useCallback, useEffect } from 'react'
+import { useUpdateSettings } from 'src/services/useGeoLocation'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const dispatch: AppDispatch = useDispatch()
   const {
     handleSubmit,
     control,
-    getValues,
-    formState: { isDirty, isValid, isSubmitting },
+    formState: { isValid, isSubmitting },
   } = useForm<SettingsPageFormType>({
-    defaultValues,
-    values: {
-      coordinates: localStorage.getItem('user') && JSON.parse(localStorage.getItem('coordinates')),
+    defaultValues: {
+      categories: localStorage.getItem('categories') && JSON.parse(localStorage.getItem('categories')),
       distance: 50,
-      filterByDistance: false,
+      filterByDistance: true,
+      location: localStorage.getItem('location') && JSON.parse(localStorage.getItem('location')),
+    },
+    values: {
+      categories: localStorage.getItem('categories') && JSON.parse(localStorage.getItem('categories')),
+      distance: 80,
+      filterByDistance: true,
       location: localStorage.getItem('location') && JSON.parse(localStorage.getItem('location')),
     },
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
+  const [updateSettings, success, error] = useUpdateSettings()
 
-  console.error(!isDirty || !isValid || isSubmitting)
   const onSubmit = async (data) => {
-    console.error(data)
+    const userId = JSON.parse(localStorage.getItem('user' || null)).uid
+
+    updateSettings({
+      uid: userId,
+      name: data.location.name,
+      latitude: data.location.latitude,
+      longitude: data.location.longitude,
+      categories: data.categories,
+      distance: data.distance,
+      filterByDistance: data.filterByDistance,
+    })
   }
 
   return (
-    <Stack position="relative" width="100%" height="100%" onSubmit={handleSubmit(onSubmit)}>
+    <Stack position="relative" width="100%" height="100%">
       <Stack position="absolute" sx={{ background: 'transparent', height: '100%', width: '100%' }}>
-        <Stack display="flex" flexGrow={1} bgcolor="white" paddingBottom={2} paddingTop={2} flexDirection="row">
+        <Stack
+          display="flex"
+          flexGrow={1}
+          bgcolor="white"
+          paddingBottom={2}
+          paddingTop={2}
+          flexDirection="row"
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
             Settings
           </Typography>
-          <Button type="submit" disabled={!isDirty || !isValid || isSubmitting}>
+          <Button type="submit" disabled={!isValid || isSubmitting}>
             Save
           </Button>
         </Stack>
         <StyledDivider />
         <Stack display="flex" flexDirection="column" overflow="hidden" height="100%" sx={{ overflowY: 'scroll' }}>
-          <MainSettings control={control} values={getValues} />
+          <MainSettings control={control} />
           <AccountSettings />
           <LegalSettings />
           <Button

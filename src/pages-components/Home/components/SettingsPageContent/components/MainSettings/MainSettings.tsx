@@ -19,18 +19,17 @@ import { SwitchField } from 'src/components/SwitchField'
 import { ROUTES } from 'src/constants/routes'
 import { useEffectOnce } from 'src/hooks/useEffectOnce'
 import { useGeoLocation } from 'src/hooks/useGeoLocation'
-import { useOneLocation, useStoreGeoLocation } from 'src/services/useGeoLocation'
+import { useOneLocation, useUpdateSettings } from 'src/services/useGeoLocation'
 import { useDispatch } from 'src/store'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { setLocation } from 'src/store/slices/user'
 
-export const MainSettings = ({ control, values }) => {
+export const MainSettings = ({ control }) => {
   const { getLocation, location, error } = useGeoLocation()
   const [distance, setDistance] = useState(50)
-  const [setUserGeoPosition, , , , storeLocationLoading, storeLocationSuccess, storeLocationError] =
-    useStoreGeoLocation()
+  const [, , , , storeLocationLoading, storeLocationSuccess, storeLocationError] = useUpdateSettings()
   const dispatch = useDispatch()
   const router = useRouter()
 
@@ -42,12 +41,16 @@ export const MainSettings = ({ control, values }) => {
     if (!!location) {
       const userId = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid
       dispatch(setLocation({ location: location }))
-      setUserGeoPosition({
-        uid: userId,
-        latitude: location.latitude,
-        longitude: location.longitude,
-        name: location.name,
-      })
+      localStorage.setItem(
+        'location',
+        JSON.stringify({
+          uid: userId,
+          name: location.name,
+          latitude: Number(location.latitude),
+          longitude: Number(location.longitude),
+          placeId: null,
+        }),
+      )
     }
     dispatch(
       notify({

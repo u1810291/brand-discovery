@@ -1,17 +1,18 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useEffect, useState } from 'react'
-import { query, getDocs, collection, where, addDoc, getDocFromServer, doc, setDoc, getDoc } from 'firebase/firestore'
+import { query, getDocs, collection, where, addDoc, getDocFromServer, doc, setDoc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from './firebase'
 
-type GeoType = {
+type SettingsType = {
   uid: string
-  name: string
-  latitude: number
-  longitude: number
+  categories: Array<Record<string, string | number>>
+  distance: number
+  filterByDistance: boolean
+  location: Record<string, any>
 }
 
-export const useStoreGeoLocation = () => {
+export const useUpdateSettings = () => {
   const [error, setError] = useState<string>()
   const [loading, setLoading] = useState<boolean>()
   const [success, setSuccess] = useState<any>()
@@ -31,30 +32,52 @@ export const useStoreGeoLocation = () => {
     return () => clearTimeout(timer)
   }, [search])
 
-  const setUserGeoPosition = useCallback(async (geo: GeoType) => {
+  const setUserSettings = useCallback(async (data: SettingsType) => {
     try {
       setLoading(true)
-      const q = query(collection(db(), 'settings'), where('uid', '==', geo.uid))
+      console.error(data)
+      const q = query(collection(db(), 'settings'), where('uid', '==', data.uid))
       const docs = await getDocs(q)
-      if (docs.docs.length === 0 && geo.uid) {
-        await setDoc(doc(collection(db(), 'settings'), geo.uid), {
-          uid: geo.uid,
-          latitude: geo.latitude,
-          longitude: geo.longitude,
-          name: geo.name,
+      if (docs.docs.length === 0 && data.uid) {
+        await setDoc(doc(collection(db(), 'settings'), data.uid), {
+          uid: data.uid,
+          latitude: data.location.latitude,
+          longitude: data.location.longitude,
+          name: data.location.name,
           createdAt: new Date(),
           updatedAt: new Date(),
+          categories: data.categories,
+          distance: data.distance,
+          location: data.location,
+          filterByDistance: data.filterByDistance,
+          placeId: data.location.placeId,
         })
+      } else {
+        const now = new Date()
+        const updatedData = {
+          uid: data.uid,
+          updatedAt: now,
+          ...(data.location && {
+            placeId: data.location.placeId,
+            latitude: data.location.latitude,
+            longitude: data.location.longitude,
+            name: data.location.name
+          }),
+          ...(data.categories && { categories: data.categories }),
+          ...(data.distance && { distance: data.distance }),
+          ...(data.filterByDistance && { filterByDistance: data.filterByDistance }),
+        }
+        await updateDoc(docs.docs[0].ref, updatedData)
       }
       setLoading(false)
-      setSuccess('Successfully added!')
+      setSuccess('Successfully updated!')
     } catch (err) {
       console.error(err)
       setError(err)
       setLoading(false)
     }
   }, [])
-  return [setUserGeoPosition, search, setSearch, countries, loading, success, error]
+  return [setUserSettings, search, setSearch, countries, loading, success, error]
 }
 
 export const useOneLocation = (uid) => {
