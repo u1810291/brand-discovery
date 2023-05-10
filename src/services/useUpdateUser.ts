@@ -37,7 +37,7 @@ export const useUpdateUser = (auth) => {
           likesUpdated: null,
           likesLeft: 50,
           dailyLikesGranted: false,
-          dailyLikesleft: null,
+          dailyLikesLeft: null,
         })
         setSuccess(res)
       } else {
@@ -68,7 +68,7 @@ export const useUpdateUser = (auth) => {
           modalShown: docs.docs[0].data().modalShown || false,
           likesLeft: docs.docs[0].data().likesLeft,
           dailyLikesGranted: docs.docs[0].data().dailyLikesGranted,
-          dailyLikesleft: docs.docs[0].data().dailyLikesleft,
+          dailyLikesLeft: docs.docs[0].data().dailyLikesleft,
           likesUpdated: hoursDiff >= 24 ? now : docs.docs[0].data().likesUpdated,
         }
         await updateDoc(docs.docs[0].ref, updatedData)
