@@ -42,10 +42,7 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
           subTitle: `You are only have 100 likes per day.
     More likes are coming soon. `,
           open: true,
-          children: (
-            <Button variant="contained" onClick={() => dispatch(closeModal())}>
-              Start Now
-            </Button>
+          children: (<></>
           ),
         }),
       )
