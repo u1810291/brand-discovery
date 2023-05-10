@@ -1,6 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close'
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined'
-import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
@@ -11,7 +10,7 @@ import { FC, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { CompanyCardSkeleton } from 'src/components/Skeletons'
 import { ROUTES } from 'src/constants/routes'
-import { closeModal, openModal } from 'src/store/slices/modal'
+import { openModal } from 'src/store/slices/modal'
 import { CompanyType } from 'src/types'
 import { Card, CompanyCard } from './components'
 import { useHomePageAnim } from './hooks'
@@ -42,8 +41,7 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
           subTitle: `You are only have 100 likes per day.
     More likes are coming soon. `,
           open: true,
-          children: (<></>
-          ),
+          children: <></>,
         }),
       )
     }
