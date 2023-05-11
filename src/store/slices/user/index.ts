@@ -1,5 +1,5 @@
-import { userSlice } from './settings.slice'
+import { userSlice } from './user.slice'
 
 export const { setLocation } = userSlice.actions
-export const settingsSelector = (state) => state.settings
+export const settingsSelector = (state) => state.user
 export default userSlice.reducer

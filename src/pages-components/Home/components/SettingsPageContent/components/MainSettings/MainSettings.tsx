@@ -1,7 +1,7 @@
 'use client'
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import { Typography, styled } from '@mui/material'
+import { Typography, styled, useMediaQuery } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -25,16 +25,19 @@ import { useDispatch } from 'src/store'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
-import { settingsSelector } from 'src/store/slices/settings'
-import { setLocation } from 'src/store/slices/user'
+import { setSettings, settingsSelector } from 'src/store/slices/settings'
+import { NameList } from '../NameList'
 
 export const MainSettings = ({ control }) => {
   const { getLocation, location, error } = useGeoLocation()
+  const isMiddleWidth = useMediaQuery('(min-width:550px)')
+  const isBigWidth = useMediaQuery('(min-width:800px)')
   const [distance, setDistance] = useState(50)
   const settings = useSelector(settingsSelector)
   const { success: storeLocationSuccess, error: storeLocationError } = useUpdateSettings()
   const dispatch = useDispatch()
   const router = useRouter()
+  const nameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 3
 
   const {
     fetchLocation,
@@ -44,12 +47,19 @@ export const MainSettings = ({ control }) => {
 
   useEffect(() => {
     if (!!location) {
-      const userId = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid
-      dispatch(setLocation({ location: location }))
+      dispatch(
+        setSettings({
+          location: {
+            name: location.name,
+            latitude: Number(location.latitude),
+            longitude: Number(location.longitude),
+            placeId: null,
+          },
+        }),
+      )
       localStorage.setItem(
         'location',
         JSON.stringify({
-          uid: userId,
           name: location.name,
           latitude: Number(location.latitude),
           longitude: Number(location.longitude),
@@ -113,7 +123,7 @@ export const MainSettings = ({ control }) => {
           {loading ? (
             <Skeleton variant="text" width={200} />
           ) : (
-            <TypographyStyled>{settings?.categories?.map((el) => el?.categoryName).join(',')}</TypographyStyled>
+            <NameList data={settings?.categories?.map((el) => el?.categoryName)} totalCount={nameCount} />
           )}
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
@@ -125,7 +135,7 @@ export const MainSettings = ({ control }) => {
           {loading ? (
             <Skeleton variant="text" width={200} />
           ) : (
-            <TypographyStyled>{settings?.location?.name}</TypographyStyled>
+            <TypographyStyled>{settings && settings?.location?.name}</TypographyStyled>
           )}
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
@@ -134,7 +144,6 @@ export const MainSettings = ({ control }) => {
       <ListItemButton sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <ListItemTextStyled primary="Distance preference" sx={{ textAlign: 'start' }} color="primary" />
-
           {loading ? (
             <Skeleton variant="text" width={50} />
           ) : (

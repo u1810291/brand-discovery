@@ -18,6 +18,7 @@ import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { CityNames } from './components/CityNames/CityNames'
 import { LocationNavbar } from './components/LocationNavbar'
+import { setSettings } from 'src/store/slices/settings'
 
 export type LocationType = {
   query: string
@@ -38,17 +39,19 @@ export const Location = () => {
   }, [])
 
   const handleChooseLocation = useCallback((e) => {
-    localStorage.setItem(
-      'location',
-      JSON.stringify({
-        name: e.address?.city || e.address?.country || e?.address?.place,
-        latitude: Number(e.lat),
-        longitude: Number(e.lon),
-        placeId: Number(e.place_id),
+    const location = {
+      name: e.address?.city || e.address?.country || e?.address?.place,
+      latitude: Number(e.lat),
+      longitude: Number(e.lon),
+      placeId: Number(e.place_id),
+    }
+    localStorage.setItem('location', JSON.stringify(location))
+    setChosenLocation(e.place_id)
+    dispatch(
+      setSettings({
+        location: location,
       }),
     )
-    setChosenLocation(e.place_id)
-
     router.back()
   }, [])
   useEffect(() => {

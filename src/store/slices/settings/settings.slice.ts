@@ -1,34 +1,37 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 export type SettingsType = {
-  createdAt: Record<string, number>
-  uid: string
-  distance: number
-  filterByDistance: boolean
-  categories: Array<Record<string, any>>
-  updatedAt: Record<string, number>
-  location: Record<string, number>
+  uid?: string
+  distance?: number
+  filterByDistance?: boolean
+  updatedAt?: Record<string, number>
+  createdAt?: Record<string, number>
+  categories?: Array<Record<string, any>>
+  location?: Record<string, number | string>
 }
 
 const initialState = {
   createdAt: {},
-  location: {},
-  uid: '',
-  distance: 0,
-  filterByDistance: null,
-  categories: [],
   updatedAt: {},
+  uid: global.localStorage && JSON.parse(global.localStorage.getItem('user') || null)?.uid,
+  location: global.localStorage && JSON.parse(global.localStorage.getItem('location') || null),
+  distance: global.localStorage && JSON.parse(global.localStorage.getItem('distance') || null),
+  categories: global.localStorage && JSON.parse(global.localStorage.getItem('categories') || null),
+  filterByDistance: global.localStorage && JSON.parse(global.localStorage.getItem('filterByDistance') || null),
 }
 // create a slice
 export const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
-    setSettings: <T>(state, { payload }: { payload: T & SettingsType }) => {
-      state = {
-        ...state,
-        ...payload,
-      }
+    setSettings: (state, { payload }: { payload: SettingsType }) => {
+      state.categories = payload.categories || state.categories
+      state.createdAt = payload.createdAt || state.createdAt
+      state.updatedAt = payload.updatedAt || state.updatedAt
+      state.distance = payload.distance || state.distance
+      state.filterByDistance = payload.filterByDistance || state.filterByDistance
+      state.location = payload.location || state.location
+      state.uid = payload.uid || state.uid
     },
   },
 })

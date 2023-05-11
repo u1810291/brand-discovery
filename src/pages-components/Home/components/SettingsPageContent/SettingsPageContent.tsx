@@ -13,7 +13,7 @@ import { logout } from 'src/store/slices/auth'
 import { AccountSettings, LegalSettings, MainSettings } from './components'
 import { SettingsPageFormType, schema } from './helper'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useUpdateSettings } from 'src/services/useGeoLocation'
 import { settingsSelector } from 'src/store/slices/settings'
 import { useSelector } from 'react-redux'
@@ -36,10 +36,9 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
       distance: settings?.distance || 50,
       filterByDistance: settings?.filterByDistance || false,
       location:
-        JSON.parse(localStorage.getItem('location' || null)) &&
-        Object.keys(JSON.parse(localStorage.getItem('location' || null))).length !== 0
-          ? JSON.parse(localStorage.getItem('location' || null))
-          : settings?.location,
+        settings?.location && Object.keys(settings?.location).length !== 0
+          ? settings?.location
+          : JSON.parse(localStorage.getItem('location' || null)),
     },
     values: {
       categories: settings?.categories?.length
@@ -48,10 +47,9 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
       distance: settings?.distance || 50,
       filterByDistance: settings?.filterByDistance || false,
       location:
-        JSON.parse(localStorage.getItem('location' || null)) &&
-        Object.keys(JSON.parse(localStorage.getItem('location' || null))).length !== 0
-          ? JSON.parse(localStorage.getItem('location' || null))
-          : settings?.location,
+        settings?.location && Object.keys(settings?.location).length !== 0
+          ? settings?.location
+          : JSON.parse(localStorage.getItem('location' || null)),
     },
     mode: 'onChange',
     resolver: yupResolver(schema),
@@ -75,7 +73,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   }, [])
 
   useEffect(() => {
-    if (typeof success !== 'object' || error) {
+    if ((success && typeof success !== 'object') || error) {
       dispatch(
         notify({
           type: error ? Type.error : Type.success,
@@ -84,6 +82,8 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
       )
     }
   }, [success, error])
+
+  console.error(settings)
 
   return (
     <Stack position="relative" width="100%" height="100%">

@@ -11,7 +11,16 @@ export function Notification({ text, type, duration }: NotificationType) {
     setOpen(!!text)
   }, [text])
   return (
-    <Snackbar open={open} autoHideDuration={duration || 6000} onClose={handleClose} sx={{ zIndex: 10 }}>
+    <Snackbar
+      open={open}
+      autoHideDuration={duration || 6000}
+      onClose={handleClose}
+      sx={{ zIndex: 10 }}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center',
+      }}
+    >
       <Alert onClose={handleClose} severity={type} sx={{ width: '100%' }}>
         {text}
       </Alert>
