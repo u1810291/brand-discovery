@@ -19,6 +19,7 @@ import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { ROUTES } from 'src/constants/routes'
 import { useRouter } from 'next/router'
+import firebaseApp, { db } from 'src/services/firebase'
 
 export type CategoriesType = {
   query: string
@@ -87,7 +88,7 @@ export const Categories = () => {
             searchResult?.map((search) => <React.Fragment key={search.id}>{search.categoryName}</React.Fragment>)
           ) : (
             categories?.map((category, i) => (
-              <React.Fragment key={`${category.categoryName}-${i}`}>
+              <React.Fragment key={`${category}-${i}`}>
                 <ListItemButton
                   onClick={() => {
                     handleSetCategory(category)
@@ -95,7 +96,7 @@ export const Categories = () => {
                   }}
                 >
                   <Box sx={{ display: 'flex', width: '100%' }}>
-                    <ListItemTextStyled primary={category.categoryName} color="primary" sx={{ width: 'auto' }} />
+                    <ListItemTextStyled primary={category} color="primary" sx={{ width: 'auto' }} />
                   </Box>
                   <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
                 </ListItemButton>

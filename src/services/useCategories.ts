@@ -1,31 +1,37 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { collection, getDocs } from 'firebase/firestore'
+import { getDoc, query, doc } from 'firebase/firestore'
 import { db } from './firebase'
 
 export const useGetCategories = () => {
-  const [data, setData] = useState<Array<Record<string, string>>>()
-  const [error, setError] = useState<string>()
-  const [loading, setLoading] = useState<boolean>()
+  const [categories, setCategories] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-  const fetchCategories = useCallback(async (uid: string) => {
-    try {
+  useEffect(() => {
+    const fetchCategories = async () => {
       setLoading(true)
-      if (uid) {
-        const docs = await getDocs(collection(db(), 'categories'))
-        const temp = []
-        docs.forEach((doc) => {
-          temp.push({ id: doc.id, ...doc.data() })
-        })
-        setData(temp)
+      try {
+        const docRef = doc(collection(db(), 'categories'), 'main_category')
+        const docSnap = await getDoc(docRef)
+        let categoriesData = []
+        if (docSnap.exists()) {
+          const data = docSnap.data()
+          categoriesData = data.categories || []
+        }
+        setCategories(categoriesData)
+      } catch (error) {
+        setError(error.message)
       }
-    } catch (err) {
-      console.error(err)
-      setError(err?.message || '')
-    } finally {
       setLoading(false)
     }
+
+    fetchCategories()
+
+    return () => {} // returning an empty function since we don't need any cleanup
   }, [])
-  return [fetchCategories, data, loading, error] as const
+
+  return [fetch, categories, loading, error]
 }
 
 export const useSetCategory = () => {
