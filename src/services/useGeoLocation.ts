@@ -86,7 +86,7 @@ export const useUpdateSettings = () => {
           distance: data.distance,
           ...(data.location && { location: data.location }),
           ...(data.categories && { categories: data.categories }),
-          ...(data.filterByDistance && { filterByDistance: data.filterByDistance }),
+          ...(typeof data.filterByDistance === 'boolean' && { filterByDistance: data.filterByDistance }),
         }
         await updateDoc(docs.docs[0].ref, updatedData)
       }

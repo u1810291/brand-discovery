@@ -9,11 +9,10 @@ import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux'
 import { ROUTES } from 'src/constants/routes'
-import { usePreviousRoute } from 'src/hooks/usePreviousRoute'
 import { useUpdateSettings } from 'src/services/useGeoLocation'
 import { AppDispatch, useDispatch } from 'src/store'
 import { logout } from 'src/store/slices/auth'
@@ -25,10 +24,9 @@ import { SettingsPageFormType, schema } from './helper'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const dispatch: AppDispatch = useDispatch()
-  const router = useRouter()
+  const [submitted, setSubmitted] = useState<boolean>(true)
   const { updateSettings, fetchSettings, success, error } = useUpdateSettings()
   const settings = useSelector(settingsSelector)
-  const previousRoute = usePreviousRoute()
   const {
     handleSubmit,
     control,
@@ -42,8 +40,8 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
     },
     values: {
       categories: settings?.categories,
-      distance: settings?.distance,
-      filterByDistance: settings?.filterByDistance,
+      distance: settings?.distance || 0,
+      filterByDistance: settings?.filterByDistance || false,
       location: settings?.location,
     },
     mode: 'onChange',
@@ -51,7 +49,6 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   })
   const onSubmit = async (data) => {
     const userId = JSON.parse(localStorage.getItem('user')).uid
-
     updateSettings({
       uid: userId,
       location: data.location,
@@ -100,7 +97,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
             Settings
           </Typography>
-          <Button type="submit" disabled={!isValid || isSubmitting}>
+          <Button type="submit" disabled={!isDirty || !isValid || isSubmitting}>
             Save
           </Button>
         </Stack>

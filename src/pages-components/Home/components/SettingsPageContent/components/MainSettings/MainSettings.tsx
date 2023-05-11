@@ -118,7 +118,7 @@ export const MainSettings = ({ control }) => {
     localStorage.setItem(e.name, e.value)
     dispatch(
       setSettings({
-        [e.name]: Boolean(e.value),
+        [e.name]: typeof e.value === 'number' ? e.value : Boolean(e.value),
       }),
     )
   }, [])

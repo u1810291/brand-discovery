@@ -29,9 +29,10 @@ export const SwitchField = React.memo(
       <Switch
         {...props}
         {...(rest && { ...rest })}
+        checked={rest.value}
         onChange={(e) => {
-          onChange(e.target.checked.toString())
-          return handleChange({ name: rest.name, value: rest.value.toString() })
+          onChange(e?.target?.checked)
+          return handleChange({ name: e?.target?.name, value: e?.target?.checked.toString() })
         }}
       />
     )

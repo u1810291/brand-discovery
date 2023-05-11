@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react'
 import { collection, getDocs } from 'firebase/firestore'
 import { db } from './firebase'
+import { useDispatch } from 'src/store'
+import { setSettings } from 'src/store/slices/settings'
 
 export const useGetCategories = () => {
   const [data, setData] = useState<Array<Record<string, string>>>()
@@ -29,13 +31,24 @@ export const useGetCategories = () => {
 }
 
 export const useSetCategory = () => {
+  const dispatch = useDispatch()
   const setCategory = useCallback(async (category) => {
     if (!!localStorage.getItem('categories')) {
       const settings = JSON.parse(localStorage.getItem('categories'))
       const updatedSettings = [category, ...settings.filter((el) => el.id !== category.id)]
       localStorage.setItem('categories', JSON.stringify(updatedSettings))
+      dispatch(
+        setSettings({
+          categories: updatedSettings,
+        }),
+      )
     } else {
       localStorage.setItem('categories', JSON.stringify([category]))
+      dispatch(
+        setSettings({
+          categories: [category],
+        }),
+      )
     }
   }, [])
   return [setCategory] as const
