@@ -24,8 +24,16 @@ import { SettingsPageFormType, schema } from './helper'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const dispatch: AppDispatch = useDispatch()
-  const [submitted, setSubmitted] = useState<boolean>(true)
   const { updateSettings, fetchSettings, success, error } = useUpdateSettings()
+  useEffect(() => {
+    const excludedPaths = [ROUTES.account, ROUTES.categories, ROUTES.location]
+    const prevPath = localStorage.getItem('history')
+    if (!excludedPaths.includes(prevPath)) {
+      const userId = JSON.parse(localStorage.getItem('user')).uid
+      fetchSettings(userId)
+    }
+  }, [])
+
   const settings = useSelector(settingsSelector)
   const {
     handleSubmit,
@@ -44,7 +52,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
       filterByDistance: settings?.filterByDistance || false,
       location: settings?.location,
     },
-    mode: 'onChange',
+    mode: 'all',
     resolver: yupResolver(schema),
   })
   const onSubmit = async (data) => {
@@ -62,15 +70,6 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
     localStorage.removeItem('filterByDistance')
   }
   useEffect(() => {
-    const excludedPaths = [ROUTES.account, ROUTES.categories, ROUTES.location]
-    const prevPath = localStorage.getItem('history')
-    if (!excludedPaths.includes(prevPath)) {
-      const userId = JSON.parse(localStorage.getItem('user')).uid
-      fetchSettings(userId)
-    }
-  }, [])
-
-  useEffect(() => {
     if ((success && typeof success !== 'object') || error) {
       dispatch(
         notify({
@@ -81,6 +80,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
     }
   }, [success, error])
 
+  console.error(control._fields)
   return (
     <Stack position="relative" width="100%" height="100%">
       <Stack position="absolute" sx={{ background: 'transparent', height: '100%', width: '100%' }}>
