@@ -24,5 +24,5 @@ export const schema = yup.object({
   firstName: yup.string().required(),
   lastName: yup.string().required(),
   password: yup.string().required(),
-  spaceCount: yup.string().notRequired(),
+  spaceCount: yup.string().required(),
 })

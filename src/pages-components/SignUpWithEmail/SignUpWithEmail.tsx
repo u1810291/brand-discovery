@@ -108,17 +108,22 @@ export const SignUpWithEmail = () => {
           />
           <Controller
             render={({ field: { value, onChange } }) => (
-              <ToggleButtonGroup exclusive aria-label="text alignment" value={value} onChange={onChange} fullWidth>
-                <ToggleButton value="1-3" key="1-3">
-                  1-3 Spaces
-                </ToggleButton>
-                <ToggleButton value="4-9" key="4-9">
-                  4-9 Spaces
-                </ToggleButton>
-                <ToggleButton value="10+" key="10+">
-                  10+ Spaces
-                </ToggleButton>
-              </ToggleButtonGroup>
+              <Stack spacing={1}>
+                <Typography fontSize={12} fontWeight={800} lineHeight="16px" color="#747978">
+                  HOW MANY SPACES DO YOU MANAGE?
+                </Typography>
+                <ToggleButtonGroup exclusive aria-label="text alignment" value={value} onChange={onChange} fullWidth>
+                  <ToggleButton value="1-3" key="1-3">
+                    1-3 Spaces
+                  </ToggleButton>
+                  <ToggleButton value="4-9" key="4-9">
+                    4-9 Spaces
+                  </ToggleButton>
+                  <ToggleButton value="10+" key="10+">
+                    10+ Spaces
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Stack>
             )}
             name="spaceCount"
             control={control}
