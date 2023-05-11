@@ -80,7 +80,6 @@ export const useUpdateSettings = () => {
         })
       } else {
         const now = new Date()
-        console.error(data)
         const updatedData = {
           uid,
           updatedAt: now,

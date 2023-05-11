@@ -12,7 +12,7 @@ import ListSubheader from '@mui/material/ListSubheader'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { LocationIcon } from 'src/assets/icons/location'
 import { SliderField } from 'src/components/SliderField'
@@ -32,7 +32,6 @@ export const MainSettings = ({ control }) => {
   const { getLocation, location, error } = useGeoLocation()
   const isMiddleWidth = useMediaQuery('(min-width:550px)')
   const isBigWidth = useMediaQuery('(min-width:800px)')
-  const [distance, setDistance] = useState(50)
   const settings = useSelector(settingsSelector)
   const { success: storeLocationSuccess, error: storeLocationError } = useUpdateSettings()
   const dispatch = useDispatch()
@@ -109,6 +108,14 @@ export const MainSettings = ({ control }) => {
       }),
     )
   }
+  const handleChange = useCallback((e) => {
+    localStorage.setItem(e.name, e.value)
+    dispatch(
+      setSettings({
+        [e.name]: Boolean(e.value),
+      }),
+    )
+  }, [])
 
   return (
     <List
@@ -147,20 +154,24 @@ export const MainSettings = ({ control }) => {
           {loading ? (
             <Skeleton variant="text" width={50} />
           ) : (
-            <TypographyStyled>{settings?.distance || distance} km</TypographyStyled>
+            <TypographyStyled>{settings?.distance} km</TypographyStyled>
           )}
         </Box>
         <SliderField
+          handleChange={handleChange}
           aria-label="Default"
           name="distance"
           valueLabelDisplay="auto"
           control={control}
-          handleChange={setDistance}
         />
       </ListItemButton>
       <ListItemButton>
         <ListItemTextStyled primary="Only show brands in this range" />
-        {loading ? <Skeleton width={50} height={32} /> : <SwitchField name="filterByDistance" control={control} />}
+        {loading ? (
+          <Skeleton width={50} height={32} />
+        ) : (
+          <SwitchField handleChange={handleChange} name="filterByDistance" control={control} />
+        )}
       </ListItemButton>
     </List>
   )
@@ -210,7 +221,6 @@ const TypographyStyled = styled(Typography)(({ theme }) =>
     verticalAlign: 'middle',
     display: 'table-cell',
     textAlign: 'center',
-    flexGrow: 1,
     lineHeight: '32px',
   }),
 )

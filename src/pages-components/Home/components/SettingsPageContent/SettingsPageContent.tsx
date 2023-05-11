@@ -15,41 +15,36 @@ import { SettingsPageFormType, schema } from './helper'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useEffect } from 'react'
 import { useUpdateSettings } from 'src/services/useGeoLocation'
-import { settingsSelector } from 'src/store/slices/settings'
+import { setSettings, settingsSelector } from 'src/store/slices/settings'
 import { useSelector } from 'react-redux'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
+import { useRouter } from 'next/router'
+import { usePreviousRoute } from 'src/hooks/usePreviousRoute'
+import { ROUTES } from 'src/constants/routes'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const dispatch: AppDispatch = useDispatch()
+  const router = useRouter()
   const { updateSettings, fetchSettings, success, error } = useUpdateSettings()
   const settings = useSelector(settingsSelector)
+  const previousRoute = usePreviousRoute()
   const {
     handleSubmit,
     control,
-    formState: { isValid, isSubmitting },
+    formState: { isDirty, isValid, isSubmitting },
   } = useForm<SettingsPageFormType>({
     defaultValues: {
-      categories: settings?.categories?.length
-        ? settings?.categories
-        : JSON.parse(localStorage.getItem('categories' || null)),
-      distance: settings?.distance || 50,
+      categories: settings?.categories,
+      distance: settings?.distance || 0,
       filterByDistance: settings?.filterByDistance || false,
-      location:
-        settings?.location && Object.keys(settings?.location).length !== 0
-          ? settings?.location
-          : JSON.parse(localStorage.getItem('location' || null)),
+      location: settings?.location,
     },
     values: {
-      categories: settings?.categories?.length
-        ? settings?.categories
-        : JSON.parse(localStorage.getItem('categories' || null)),
-      distance: settings?.distance || 50,
-      filterByDistance: settings?.filterByDistance || false,
-      location:
-        settings?.location && Object.keys(settings?.location).length !== 0
-          ? settings?.location
-          : JSON.parse(localStorage.getItem('location' || null)),
+      categories: settings?.categories,
+      distance: settings?.distance,
+      filterByDistance: settings?.filterByDistance,
+      location: settings?.location,
     },
     mode: 'onChange',
     resolver: yupResolver(schema),
@@ -66,10 +61,16 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
     })
     localStorage.removeItem('categories')
     localStorage.removeItem('location')
+    localStorage.removeItem('distance')
+    localStorage.removeItem('filterByDistance')
   }
   useEffect(() => {
-    const userId = JSON.parse(localStorage.getItem('user')).uid
-    fetchSettings(userId)
+    const excludedPaths = [ROUTES.account, ROUTES.categories, ROUTES.location]
+    const prevPath = localStorage.getItem('history')
+    if (!excludedPaths.includes(prevPath)) {
+      const userId = JSON.parse(localStorage.getItem('user')).uid
+      fetchSettings(userId)
+    }
   }, [])
 
   useEffect(() => {
@@ -82,8 +83,6 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
       )
     }
   }, [success, error])
-
-  console.error(settings)
 
   return (
     <Stack position="relative" width="100%" height="100%">

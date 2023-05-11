@@ -47,7 +47,7 @@ function RouteGuard({ children }) {
     const path = url.split('?')[0]
 
     if (matchRoute(path, ROUTES, '404')) {
-      router.replace({
+      router.push({
         pathname: ROUTES.notFound,
         query: {
           attemptUrl: router.asPath,
@@ -58,13 +58,13 @@ function RouteGuard({ children }) {
         },
       })
     } else if (matchRoute(path, privatePaths, 'loggedIn')) {
-      router.replace({
+      router.push({
         pathname: ROUTES.home,
         query: router.query,
       })
     } else if (matchRoute(path, publicPaths, 'loggedOut')) {
       setAuthorized(false)
-      router.replace({
+      router.push({
         pathname: ROUTES.signIn,
         query: { returnUrl: router.asPath },
       })
@@ -77,7 +77,7 @@ function RouteGuard({ children }) {
 }
 
 const matchRoute = (url, routes, action) => {
-  const user = localStorage.getItem('user') && JSON?.parse(localStorage.getItem('user'))
+  const user = JSON.parse(localStorage.getItem('user') || null)
 
   const map = {
     loggedIn: () => user?.isLoggedIn && !routes.includes(`/${url.split('/')[1]}`),

@@ -2,7 +2,7 @@
 import { db } from './firebase'
 import { useCallback, useState } from 'react'
 import { updateEmail } from 'firebase/auth'
-import { query, getDocs, collection, where, addDoc, updateDoc, getDoc, doc } from 'firebase/firestore'
+import { query, getDocs, collection, where, addDoc, updateDoc, getDoc, doc, setDoc } from 'firebase/firestore'
 
 export type UserType = {
   uid: string
@@ -25,7 +25,7 @@ export const useUpdateUser = (auth) => {
       const docs = await getDocs(q)
 
       if (docs.docs.length === 0) {
-        const res = await addDoc(collection(db(), 'users'), {
+        const res = await setDoc(doc(db(), 'users', user.email), {
           uid: user.uid,
           firstName: user.firstName,
           lastName: user.lastName,
