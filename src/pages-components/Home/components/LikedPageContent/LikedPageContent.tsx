@@ -46,7 +46,7 @@ export const LikedPageContent: FC<LikedPageContentProps> = ({ data }) => {
         body: `This is automatically generated e-mail from Spacewise Discovery App.
                Landlord ${userData.firstName} ${userData.lastName} ${userData.email} wants to get connected to the following brands:
                brand Id's`,
-        to: 'accountmanagement@spacewise.net',
+        to: 'sg@popupshops.com',
       })
       dispatch(
         openModal({
