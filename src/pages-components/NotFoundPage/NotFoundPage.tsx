@@ -41,7 +41,12 @@ export const NotFoundPage = () => {
             An out-of-date link
           </Typography>
         </Stack>
-        <Button size="large" variant="contained" onClick={handleClick} sx={{ width: 'fit-content', marginTop: 5 }}>
+        <Button
+          size="large"
+          variant="contained"
+          onClick={handleClick}
+          sx={{ width: 'fit-content', marginTop: 5, zIndex: 10 }}
+        >
           Back to Homepage
         </Button>
       </Stack>

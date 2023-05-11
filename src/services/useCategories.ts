@@ -40,24 +40,3 @@ export const useSetCategory = () => {
   }, [])
   return [setCategory] as const
 }
-
-// TODO: Create or update
-// try {
-//   setLoading(true)
-//   const q = query(collection(db(), 'settings'), where('uid', '==', category.uid))
-//   const docs = await getDocs(q)
-//   if (docs.docs.length !== 0 && category.uid) {
-//     const docRef = doc(collection(db(), 'settings'), category.uid)
-//     await updateDoc(docRef, category)
-//   } else {
-//     const docRef = doc(collection(db(), 'settings'), category.uid)
-//     await setDoc(docRef, category)
-//   }
-//   setSuccess('Successfully updated!')
-// } catch (err) {
-//   console.error(err)
-//   setError(err)
-//   setLoading(false)
-// } finally {
-//   setLoading(false)
-// }

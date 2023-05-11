@@ -1,7 +1,7 @@
 'use client'
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import { CircularProgress, Typography, styled } from '@mui/material'
+import { Typography, styled, useMediaQuery } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -10,43 +10,62 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 import Skeleton from '@mui/material/Skeleton'
-import Slider from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
-import Switch from '@mui/material/Switch'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { LocationIcon } from 'src/assets/icons/location'
+import { SliderField } from 'src/components/SliderField'
+import { SwitchField } from 'src/components/SwitchField'
 import { ROUTES } from 'src/constants/routes'
 import { useEffectOnce } from 'src/hooks/useEffectOnce'
 import { useGeoLocation } from 'src/hooks/useGeoLocation'
-import { useOneLocation, useStoreGeoLocation } from 'src/services/useGeoLocation'
+import { useOneLocation, useUpdateSettings } from 'src/services/useGeoLocation'
 import { useDispatch } from 'src/store'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
-import { setLocation } from 'src/store/slices/user'
+import { setSettings, settingsSelector } from 'src/store/slices/settings'
+import { NameList } from '../NameList'
 
-export const MainSettings = ({ setValue, values }) => {
-  const { getLocation, location, error, loading } = useGeoLocation()
-  const [setUserGeoPosition, , , , storeLocationLoading, storeLocationSuccess, storeLocationError] =
-    useStoreGeoLocation()
+export const MainSettings = ({ control }) => {
+  const { getLocation, location, error } = useGeoLocation()
+  const isMiddleWidth = useMediaQuery('(min-width:550px)')
+  const isBigWidth = useMediaQuery('(min-width:800px)')
+  const [distance, setDistance] = useState(50)
+  const settings = useSelector(settingsSelector)
+  const { success: storeLocationSuccess, error: storeLocationError } = useUpdateSettings()
   const dispatch = useDispatch()
   const router = useRouter()
+  const nameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 3
 
-  const [fetchLocation, data, errorFetching] = useOneLocation(
-    localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid,
-  )
+  const {
+    fetchLocation,
+    loading,
+    error: errorFetching,
+  } = useOneLocation(localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid)
 
   useEffect(() => {
     if (!!location) {
-      const userId = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid
-      dispatch(setLocation({ location: location }))
-      setUserGeoPosition({
-        uid: userId,
-        latitude: location.latitude,
-        longitude: location.longitude,
-        name: location.name,
-      })
+      dispatch(
+        setSettings({
+          location: {
+            name: location.name,
+            latitude: Number(location.latitude),
+            longitude: Number(location.longitude),
+            placeId: null,
+          },
+        }),
+      )
+      localStorage.setItem(
+        'location',
+        JSON.stringify({
+          name: location.name,
+          latitude: Number(location.latitude),
+          longitude: Number(location.longitude),
+          placeId: null,
+        }),
+      )
     }
     dispatch(
       notify({
@@ -55,7 +74,7 @@ export const MainSettings = ({ setValue, values }) => {
       }),
     )
 
-    if (storeLocationSuccess) {
+    if (!error) {
       dispatch(closeModal())
     }
   }, [error, location, storeLocationSuccess, errorFetching])
@@ -63,6 +82,7 @@ export const MainSettings = ({ setValue, values }) => {
   useEffectOnce(() => {
     fetchLocation()
   })
+
   const handleLocation = () => {
     dispatch(
       openModal({
@@ -72,7 +92,7 @@ export const MainSettings = ({ setValue, values }) => {
         children: (
           <Stack display="flex" flexDirection="column" gap={2} width="100%">
             <Button variant="contained" onClick={getLocation}>
-              {storeLocationLoading || loading ? <CircularProgress size={24} /> : `Allow Location`}
+              Allow Location
             </Button>
             <Button
               variant="outlined"
@@ -89,8 +109,7 @@ export const MainSettings = ({ setValue, values }) => {
       }),
     )
   }
-  // TODO: CHANGE TO LOADING DATA FROM API
-  const isLoading = true
+
   return (
     <List
       sx={{ width: '100%', bgcolor: 'white', paddingBottom: 0 }}
@@ -101,10 +120,10 @@ export const MainSettings = ({ setValue, values }) => {
       <ListItemButton onClick={() => router.push(ROUTES.categories)}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Categories" color="primary" sx={{ width: 'auto' }} />
-          {isLoading ? (
+          {loading ? (
             <Skeleton variant="text" width={200} />
           ) : (
-            <TypographyStyled>Sport, Health, +4 more</TypographyStyled>
+            <NameList data={settings?.categories?.map((el) => el?.categoryName)} totalCount={nameCount} />
           )}
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
@@ -113,10 +132,10 @@ export const MainSettings = ({ setValue, values }) => {
       <ListItemButton onClick={handleLocation}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Location" color="primary" sx={{ width: 'auto' }} />
-          {isLoading ? (
+          {loading ? (
             <Skeleton variant="text" width={200} />
           ) : (
-            <TypographyStyled>{data && data.name}</TypographyStyled>
+            <TypographyStyled>{settings && settings?.location?.name}</TypographyStyled>
           )}
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
@@ -125,34 +144,23 @@ export const MainSettings = ({ setValue, values }) => {
       <ListItemButton sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <ListItemTextStyled primary="Distance preference" sx={{ textAlign: 'start' }} color="primary" />
-
-          {isLoading ? (
+          {loading ? (
             <Skeleton variant="text" width={50} />
           ) : (
-            <TypographyStyled>{values('distance')} km</TypographyStyled>
+            <TypographyStyled>{settings?.distance || distance} km</TypographyStyled>
           )}
         </Box>
-        <Slider
-          value={values('distance')}
+        <SliderField
           aria-label="Default"
           name="distance"
-          defaultValue={values('distance')}
           valueLabelDisplay="auto"
-          onChange={(e: any) => setValue(e.target.value)}
+          control={control}
+          handleChange={setDistance}
         />
       </ListItemButton>
       <ListItemButton>
         <ListItemTextStyled primary="Only show brands in this range" />
-
-        {isLoading ? (
-          <Skeleton width={50} height={32} />
-        ) : (
-          <Switch
-            name="filterByDistance"
-            value={values('filterByDistance')}
-            onChange={() => setValue((prev) => !prev)}
-          />
-        )}
+        {loading ? <Skeleton width={50} height={32} /> : <SwitchField name="filterByDistance" control={control} />}
       </ListItemButton>
     </List>
   )
