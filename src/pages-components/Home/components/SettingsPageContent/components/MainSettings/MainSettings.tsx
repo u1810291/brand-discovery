@@ -29,7 +29,7 @@ import { setSettings, settingsSelector } from 'src/store/slices/settings'
 import { NameList } from '../NameList'
 
 export const MainSettings = ({ control }) => {
-  const { getLocation, location, error } = useGeoLocation()
+  const { getLocation, location, error, loading: locationLoading } = useGeoLocation()
   const isMiddleWidth = useMediaQuery('(min-width:550px)')
   const isBigWidth = useMediaQuery('(min-width:800px)')
   const settings = useSelector(settingsSelector)
@@ -90,7 +90,13 @@ export const MainSettings = ({ control }) => {
         subTitle: `You’ll need to enable your location in to use Spacewise`,
         children: (
           <Stack display="flex" flexDirection="column" gap={2} width="100%">
-            <Button variant="contained" onClick={getLocation}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                getLocation()
+                dispatch(closeModal())
+              }}
+            >
               Allow Location
             </Button>
             <Button
@@ -139,7 +145,7 @@ export const MainSettings = ({ control }) => {
       <ListItemButton onClick={handleLocation}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Location" color="primary" sx={{ width: 'auto' }} />
-          {loading ? (
+          {loading || locationLoading ? (
             <Skeleton variant="text" width={200} />
           ) : (
             <TypographyStyled>{settings && settings?.location?.name}</TypographyStyled>
