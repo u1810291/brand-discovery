@@ -9,8 +9,17 @@ import type { AppProps } from 'next/app'
 import { theme } from '../styles/themes'
 import { ThemeProvider } from '@mui/material/styles'
 import { RouteGuard } from 'src/layouts/RouteGuard'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 
 export default function App({ Component, pageProps }: AppProps) {
+  const [path, setPath] = useState<string>()
+  const router = useRouter()
+  useEffect(() => {
+    setPath(router.asPath)
+    localStorage.setItem('history', path)
+    console.error(path)
+  }, [router.asPath])
   return (
     <>
       <Head>{/* <link rel="icon" href="/favicon.svg" /> */}</Head>
