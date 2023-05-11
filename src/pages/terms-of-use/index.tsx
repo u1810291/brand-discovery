@@ -10,7 +10,6 @@ export default () => {
     () => import('src/pages-components/TermsOfUse').then((component) => component.TermsOfUse),
     {
       suspense: true,
-      ssr: false,
     },
   )
   return (

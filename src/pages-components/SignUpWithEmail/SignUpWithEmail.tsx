@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
+import { styled } from '@mui/material/styles'
 import { yupResolver } from '@hookform/resolvers/yup'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
-import Link from '@mui/material/Link'
+import StyledLink from '@mui/material/Link'
+import Link from 'next/link'
 import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
@@ -54,6 +56,7 @@ export const SignUpWithEmail = () => {
     if (!!user?.user?.uid && !emailVerifyError?.message && !sending) {
       updateUser({
         uid: user.user.uid,
+        email: user.user.email,
         firstName: getValues().firstName,
         lastName: getValues().lastName,
         companyName: getValues().companyName,
@@ -124,12 +127,20 @@ export const SignUpWithEmail = () => {
             {loading || sending ? <CircularProgress size={24} color="success" /> : 'Continue'}
           </Button>
           <Typography fontSize={14} fontWeight={400} color="#747978" textAlign="center">
-            Use of this app constitutes acceptance of the <Link href={ROUTES.termsOfUse}>Terms of Use</Link>,{' '}
-            <Link href="https://www.popupshops.com/en/pages/booking_terms">Booking Terms</Link> and{' '}
-            <Link href="https://www.popupshops.com/en/pages/privacy">Privacy Policy</Link>.
+            Use of this app constitutes acceptance of the{' '}
+            <LinkContainer href={ROUTES.termsOfUse}>Terms of Use</LinkContainer>,{' '}
+            <StyledLink href="https://www.popupshops.com/en/pages/booking_terms">Booking Terms</StyledLink> and{' '}
+            <StyledLink href="https://www.popupshops.com/en/pages/privacy">Privacy Policy</StyledLink>.
           </Typography>
         </Stack>
       </Stack>
     </MainLayout>
   )
 }
+
+const LinkContainer = styled(Link)(({ theme }) =>
+  theme.unstable_sx({
+    color: 'primary.main',
+    textDecoration: 'none',
+  }),
+)

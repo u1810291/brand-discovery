@@ -18,7 +18,6 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     setPath(router.asPath)
     localStorage.setItem('history', path)
-    console.error(path)
   }, [router.asPath])
   return (
     <>
