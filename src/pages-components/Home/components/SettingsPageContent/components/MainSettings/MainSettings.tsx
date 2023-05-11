@@ -12,7 +12,7 @@ import ListSubheader from '@mui/material/ListSubheader'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { LocationIcon } from 'src/assets/icons/location'
 import { SliderField } from 'src/components/SliderField'
@@ -109,11 +109,10 @@ export const MainSettings = ({ control }) => {
     )
   }
   const handleChange = useCallback((e) => {
-    // console.error(e)
     localStorage.setItem(e.name, e.value)
     dispatch(
       setSettings({
-        [e.name]: e.value,
+        [e.name]: Boolean(e.value),
       }),
     )
   }, [])
