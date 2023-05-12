@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import { styled } from '@mui/material/styles'
 import { yupResolver } from '@hookform/resolvers/yup'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import StyledLink from '@mui/material/Link'
-import Link from 'next/link'
 import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
+import { styled } from '@mui/material/styles'
 import { getAuth } from 'firebase/auth'
 import 'firebase/firestore'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
@@ -133,7 +133,7 @@ export const SignUpWithEmail = () => {
           </Button>
           <Typography fontSize={14} fontWeight={400} color="#747978" textAlign="center">
             Use of this app constitutes acceptance of the{' '}
-            <LinkContainer href={ROUTES.termsOfUse}>Terms of Use</LinkContainer>,{' '}
+            <LinkContainer href="https://www.popupshops.com/en/pages/terms">Terms of Use</LinkContainer>,{' '}
             <StyledLink href="https://www.popupshops.com/en/pages/booking_terms">Booking Terms</StyledLink> and{' '}
             <StyledLink href="https://www.popupshops.com/en/pages/privacy">Privacy Policy</StyledLink>.
           </Typography>
