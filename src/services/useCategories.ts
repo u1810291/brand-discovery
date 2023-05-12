@@ -28,8 +28,6 @@ export const useGetCategories = () => {
     }
 
     fetchCategories()
-
-    return () => { }
   }, [])
 
   return [categories, loading, error]

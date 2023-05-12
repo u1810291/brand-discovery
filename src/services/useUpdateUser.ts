@@ -65,11 +65,11 @@ export const useUpdateUser = (auth) => {
           ...(user.email && { email: user.email }),
           ...(user.spaceCount && { spaceCount: user.spaceCount }),
           updatedAt: now,
-          modalShown: docs.docs[0].data().modalShown || false,
-          likesLeft: docs.docs[0].data().likesLeft,
-          dailyLikesGranted: docs.docs[0].data().dailyLikesGranted,
-          dailyLikesLeft: docs.docs[0].data().dailyLikesleft,
-          likesUpdated: hoursDiff >= 24 ? now : docs.docs[0].data().likesUpdated,
+          modalShown: docs.docs[0].data()?.modalShown || false,
+          likesLeft: docs.docs[0].data()?.likesLeft || null,
+          dailyLikesGranted: docs.docs[0].data()?.dailyLikesGranted || false,
+          dailyLikesLeft: docs.docs[0].data().dailyLikesleft || null,
+          likesUpdated: hoursDiff >= 24 ? now : docs.docs[0].data().likesUpdated || null,
         }
         await updateDoc(docs.docs[0].ref, updatedData)
         setSuccess(updatedData)
