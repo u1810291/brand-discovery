@@ -13,6 +13,7 @@ export type UserData = {
   dailyLikesLeft: number
   dailyLikesGranted: boolean
   modalShown: boolean
+  categories?: Array<string>
 }
 
 type AuthType = {

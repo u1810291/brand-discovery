@@ -19,26 +19,50 @@ import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { ROUTES } from 'src/constants/routes'
 import { useRouter } from 'next/router'
+import firebaseApp, { db } from 'src/services/firebase'
+import { UserData } from 'src/store/slices/auth/auth.slice'
+import { getDoc, query, doc, collection, where, getDocs, updateDoc } from 'firebase/firestore'
 
 export type CategoriesType = {
   query: string
 }
 
+const getSelectedCategories = async (user: UserData) => {
+  try {
+    const q = query(collection(db(), 'users'), where('uid', '==', user.uid))
+    const docs = await getDocs(q)
+    const userRef = docs.docs[0].ref
+
+    if (docs.docs.length === 0) {
+      throw new Error(`No user found with uid: ${user.uid}`)
+    }
+    const userData = docs.docs[0].data() as UserData
+
+    if (!userData.hasOwnProperty('categories')) {
+      await updateDoc(userRef, { categories: [] })
+      alert('Created empty categories field in user document')
+    }
+
+    return userData.categories || []
+  } catch (err) {
+    alert(err)
+  }
+}
+
 export const Categories = () => {
-  const [fetch, categories, loading, error] = useGetCategories()
-  const [selected, setSelected] = useState<Array<string>>(() => {
-    const data = JSON.parse(localStorage.getItem('categories'))
-    return data?.length ? data?.map((category) => category.categoryName) : []
-  })
+  const [categories, loading, error] = useGetCategories()
   const [searchResult, setSearchResult] = useState<Array<Record<string, string | number>>>([
     { id: Math.random() * 1000, categoryName: 'Technology' },
   ])
   const [setCategory] = useSetCategory()
   const [query, setQuery] = useState('')
   const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
+  const [selected, setSelected] = useState<Array<string>>([])
+
+  const dispatch = useDispatch()
+
   const selectedCategories = () => {
-    const categorySettings = JSON.parse(localStorage.getItem('categories')) || []
-    setSelected(categorySettings?.map((category) => category.categoryName))
+    getSelectedCategories(user).then((categories) => setSelected(categories))
   }
 
   const handleChange = useCallback((e) => {
@@ -46,12 +70,18 @@ export const Categories = () => {
   }, [])
 
   const handleSetCategory = useCallback((category) => {
-    setCategory(category)
+    setCategory(user.uid, category)
   }, [])
 
   useEffect(() => {
     fetch(user?.uid)
   }, [user?.uid])
+
+  useEffect(() => {
+    if (error) {
+      dispatch(notify({ message: error.message, type: Type.error }))
+    }
+  }, [dispatch, error])
 
   return (
     <MainLayout showBackButton navbar={<CategoryNavbar field={query} updateField={handleChange} />}>
@@ -87,7 +117,7 @@ export const Categories = () => {
             searchResult?.map((search) => <React.Fragment key={search.id}>{search.categoryName}</React.Fragment>)
           ) : (
             categories?.map((category, i) => (
-              <React.Fragment key={`${category.categoryName}-${i}`}>
+              <React.Fragment key={`${category}-${i}`}>
                 <ListItemButton
                   onClick={() => {
                     handleSetCategory(category)
@@ -95,7 +125,7 @@ export const Categories = () => {
                   }}
                 >
                   <Box sx={{ display: 'flex', width: '100%' }}>
-                    <ListItemTextStyled primary={category.categoryName} color="primary" sx={{ width: 'auto' }} />
+                    <ListItemTextStyled primary={category} color="primary" sx={{ width: 'auto' }} />
                   </Box>
                   <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
                 </ListItemButton>
