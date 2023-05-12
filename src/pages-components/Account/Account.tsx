@@ -12,7 +12,7 @@ import { InputField } from 'src/components/InputField'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
 import { useGetUser, useUpdateUser } from 'src/services/useUpdateUser'
-import { AppDispatch, useDispatch } from 'src/store'
+import { useAppDispatch } from 'src/store'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { AccountNavbar } from './components/AccountNavbar'
@@ -20,7 +20,7 @@ import { UpdateAccountFormType, schema } from './helper'
 
 const auth = getAuth(firebaseApp())
 export const Account = () => {
-  const dispatch: AppDispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [updateUser, loading, success, error] = useUpdateUser(auth)
   const [fetchUser, data] = useGetUser()
   const {

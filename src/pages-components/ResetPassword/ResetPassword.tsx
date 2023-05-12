@@ -14,7 +14,7 @@ import SpacewiseSVG from 'src/assets/svg/spacewise.svg'
 import { InputField } from 'src/components/InputField'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
-import { useDispatch } from 'src/store'
+import { useAppDispatch } from 'src/store'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { ResetPasswordFormType, schema } from './helper'
@@ -23,7 +23,7 @@ const auth = getAuth(firebaseApp())
 
 export const ResetPassword = () => {
   const [success, setSuccess] = useState('')
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const {
     handleSubmit,
     control,

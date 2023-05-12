@@ -10,11 +10,11 @@ import { FC } from 'react'
 import { LikedCardSkeleton } from 'src/components/Skeletons'
 import { ROUTES } from 'src/constants/routes'
 import { db } from 'src/services/firebase'
+import { useAppDispatch } from 'src/store'
 import { UserData } from 'src/store/slices/auth/auth.slice'
+import { openModal } from 'src/store/slices/modal'
 import { CompanyType } from 'src/types'
 import { CompanyCard, Slider } from './components'
-import { useDispatch } from 'react-redux'
-import { openModal } from 'src/store/slices/modal'
 
 export const generateEmail = async (data: { to: string; subject: string; body: string }) => {
   try {
@@ -34,7 +34,7 @@ type LikedPageContentProps = {
 
 export const LikedPageContent: FC<LikedPageContentProps> = ({ data }) => {
   const user: UserData = JSON.parse(localStorage.getItem('user') || null)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   async function handleEmailGeneration() {
     try {

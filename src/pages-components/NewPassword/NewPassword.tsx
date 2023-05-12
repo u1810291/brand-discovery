@@ -16,7 +16,7 @@ import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
 import { useVerifyResetPassword } from 'src/services/useVerifyReset'
-import { useDispatch } from 'src/store'
+import { useAppDispatch } from 'src/store'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { NewPasswordFormType, schema } from './helper'
@@ -33,7 +33,7 @@ export const NewPassword = () => {
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const router = useRouter()
   const [resetPassword, success, loading, error] = useVerifyResetPassword(auth)
 
