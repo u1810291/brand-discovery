@@ -24,7 +24,7 @@ import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
 import { useSendVerifyEmail } from 'src/services/useSendVerifyEmail'
 import { useUpdateUser } from 'src/services/useUpdateUser'
-import { AppDispatch, useDispatch } from 'src/store'
+import { useAppDispatch } from 'src/store'
 import { signUp } from 'src/store/slices/auth'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
@@ -36,7 +36,7 @@ const auth = getAuth(firebaseApp())
 
 export const SignUpWithEmail = () => {
   const router = useRouter()
-  const dispatch: AppDispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const {
     control,
     handleSubmit,

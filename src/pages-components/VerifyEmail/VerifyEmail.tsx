@@ -12,7 +12,7 @@ import { useSendEmailVerification } from 'react-firebase-hooks/auth'
 import CheckMarkIcon from 'src/assets/svg/check-mark-icon.svg'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
-import { useDispatch } from 'src/store'
+import { useAppDispatch } from 'src/store'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 
@@ -22,7 +22,7 @@ export const VerifyEmail = () => {
   const { palette } = useTheme()
   const [sendEmailVerification, sending, error] = useSendEmailVerification(auth)
   const [success, setSuccess] = useState<string>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (error?.message || success) {

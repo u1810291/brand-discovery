@@ -20,7 +20,7 @@ import { PasswordInput } from 'src/components/PasswordInput'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
-import { AppDispatch, useDispatch } from 'src/store'
+import { useAppDispatch } from 'src/store'
 import { login } from 'src/store/slices/auth'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
@@ -29,7 +29,7 @@ import { SingInFormType, schema } from './helper'
 const auth = getAuth(firebaseApp())
 
 export const SignIn = () => {
-  const dispatch: AppDispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { palette } = useTheme()
   const router = useRouter()
 

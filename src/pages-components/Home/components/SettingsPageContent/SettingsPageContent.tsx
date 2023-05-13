@@ -11,11 +11,10 @@ import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { useSelector } from 'react-redux'
 import { ROUTES } from 'src/constants/routes'
 import { usePreviousRoute } from 'src/hooks/usePreviousRoute'
 import { useUpdateSettings } from 'src/services/useGeoLocation'
-import { AppDispatch, useDispatch } from 'src/store'
+import { useAppDispatch, useAppSelector } from 'src/store'
 import { logout } from 'src/store/slices/auth'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
@@ -24,10 +23,10 @@ import { AccountSettings, LegalSettings, MainSettings } from './components'
 import { SettingsPageFormType, schema } from './helper'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
-  const dispatch: AppDispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const router = useRouter()
   const { updateSettings, fetchSettings, success, error } = useUpdateSettings()
-  const settings = useSelector(settingsSelector)
+  const settings = useAppSelector(settingsSelector)
   const previousRoute = usePreviousRoute()
   const {
     handleSubmit,
