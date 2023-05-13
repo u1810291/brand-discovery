@@ -80,7 +80,6 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
     }
   }, [success, error])
 
-  console.error(control._fields)
   return (
     <Stack position="relative" width="100%" height="100%">
       <Stack position="absolute" sx={{ background: 'transparent', height: '100%', width: '100%' }}>
