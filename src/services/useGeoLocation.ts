@@ -25,20 +25,24 @@ export const useUpdateSettings = () => {
   const fetchSettings = useCallback(async (uid) => {
     try {
       setLoading(true)
+      const globalSettings = {
+        location: JSON.parse(global.localStorage.getItem('location') || null),
+        filterByDistance: global.localStorage.getItem('filterByDistance'),
+        categories: global.localStorage.getItem('categories'),
+        distance: global.localStorage.getItem('distance'),
+      }
       if (uid) {
         const q = await getDoc(doc(collection(db(), 'settings'), uid))
         setSuccess(q.data())
-        dispatch(
-          setSettings({
-            createdAt: q.data()?.createdAt,
-            location: q.data()?.location,
-            uid: q.data()?.uid,
-            filterByDistance: q.data()?.filterByDistance,
-            categories: q.data()?.categories,
-            updatedAt: q.data()?.updatedAt,
-            distance: q.data()?.distance,
-          }),
-        )
+        dispatch(setSettings({
+          uid: q.data()?.uid,
+          createdAt: q.data()?.createdAt,
+          updatedAt: q.data()?.updatedAt,
+          location: globalSettings.location ?? q.data()?.location,
+          distance: globalSettings.distance ?? q.data()?.distance,
+          categories: globalSettings.categories ?? q.data()?.categories,
+          filterByDistance: globalSettings.filterByDistance ?? q.data()?.filterByDistance,
+        }))
         setLoading(false)
       } else {
         setError('There is no settings for such user')
@@ -88,12 +92,13 @@ export const useUpdateSettings = () => {
           distance: data.distance,
           ...(data.location && { location: data.location }),
           ...(data.categories && { categories: data.categories }),
-          ...(data.filterByDistance && { filterByDistance: data.filterByDistance }),
+          ...(typeof data.filterByDistance === 'boolean' && { filterByDistance: data.filterByDistance }),
         }
         await updateDoc(docs.docs[0].ref, updatedData)
       }
       setLoading(false)
       setSuccess('Successfully updated!')
+      fetchSettings(uid)
     } catch (err) {
       console.error(err)
       setError(err.message || err)

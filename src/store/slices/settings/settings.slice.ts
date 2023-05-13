@@ -14,10 +14,11 @@ const initialState = {
   createdAt: {},
   updatedAt: {},
   uid: global.localStorage && JSON.parse(global.localStorage.getItem('user') || null)?.uid,
-  location: global.localStorage && JSON.parse(global.localStorage.getItem('location') || null),
-  distance: global.localStorage && JSON.parse(global.localStorage.getItem('distance') || null),
-  categories: global.localStorage && JSON.parse(global.localStorage.getItem('categories') || null),
-  filterByDistance: global.localStorage && JSON.parse(global.localStorage.getItem('filterByDistance') || null),
+  location: (global.localStorage && JSON.parse(global.localStorage.getItem('location') || null)) || null,
+  distance: (global.localStorage && JSON.parse(global.localStorage.getItem('distance') || null)) || 0,
+  categories: (global.localStorage && JSON.parse(global.localStorage.getItem('categories') || null)) || [],
+  filterByDistance:
+    (global.localStorage && JSON.parse(global.localStorage.getItem('filterByDistance') || null)) || false,
 }
 // create a slice
 export const settingsSlice = createSlice({

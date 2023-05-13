@@ -1,6 +1,6 @@
-import { useCallback, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { collection, getDocs } from 'firebase/firestore'
-import { getDoc, query, doc, runTransaction, updateDoc, where } from 'firebase/firestore'
+import { getDoc, query, doc, updateDoc, where } from 'firebase/firestore'
 import { db } from './firebase'
 import { UserData } from 'src/store/slices/auth/auth.slice'
 
@@ -28,16 +28,12 @@ export const useGetCategories = () => {
     }
 
     fetchCategories()
-
-    return () => {} // returning an empty function since we don't need any cleanup
   }, [])
 
   return [categories, loading, error]
 }
 
 export const useSetCategory = () => {
-  // Get categories from Firestore
-
   const setCategory = async (uid, category) => {
     try {
       const q = query(collection(db(), 'users'), where('uid', '==', uid))

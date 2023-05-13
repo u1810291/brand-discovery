@@ -9,10 +9,9 @@ import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { ROUTES } from 'src/constants/routes'
-import { usePreviousRoute } from 'src/hooks/usePreviousRoute'
 import { useUpdateSettings } from 'src/services/useGeoLocation'
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { logout } from 'src/store/slices/auth'
@@ -23,11 +22,18 @@ import { AccountSettings, LegalSettings, MainSettings } from './components'
 import { SettingsPageFormType, schema } from './helper'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
-  const dispatch = useAppDispatch()
-  const router = useRouter()
   const { updateSettings, fetchSettings, success, error } = useUpdateSettings()
+  useEffect(() => {
+    const excludedPaths = [ROUTES.account, ROUTES.categories, ROUTES.location]
+    const prevPath = localStorage.getItem('history')
+    if (!excludedPaths.includes(prevPath)) {
+      const userId = JSON.parse(localStorage.getItem('user')).uid
+      fetchSettings(userId)
+    }
+  }, [])
+
+  const dispatch = useAppDispatch()
   const settings = useAppSelector(settingsSelector)
-  const previousRoute = usePreviousRoute()
   const {
     handleSubmit,
     control,
@@ -41,16 +47,15 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
     },
     values: {
       categories: settings?.categories,
-      distance: settings?.distance,
-      filterByDistance: settings?.filterByDistance,
+      distance: settings?.distance || 0,
+      filterByDistance: settings?.filterByDistance || false,
       location: settings?.location,
     },
-    mode: 'onChange',
+    mode: 'all',
     resolver: yupResolver(schema),
   })
   const onSubmit = async (data) => {
     const userId = JSON.parse(localStorage.getItem('user')).uid
-
     updateSettings({
       uid: userId,
       location: data.location,
@@ -63,15 +68,6 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
     localStorage.removeItem('distance')
     localStorage.removeItem('filterByDistance')
   }
-  useEffect(() => {
-    const excludedPaths = [ROUTES.account, ROUTES.categories, ROUTES.location]
-    const prevPath = localStorage.getItem('history')
-    if (!excludedPaths.includes(prevPath)) {
-      const userId = JSON.parse(localStorage.getItem('user')).uid
-      fetchSettings(userId)
-    }
-  }, [])
-
   useEffect(() => {
     if ((success && typeof success !== 'object') || error) {
       dispatch(
@@ -99,7 +95,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
             Settings
           </Typography>
-          <Button type="submit" disabled={!isValid || isSubmitting}>
+          <Button type="submit" disabled={!isDirty || !isValid || isSubmitting}>
             Save
           </Button>
         </Stack>

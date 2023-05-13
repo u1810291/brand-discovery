@@ -2,6 +2,7 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
 import 'firebase/compat/auth'
+import { useSetCategory } from './init'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -33,3 +34,6 @@ export function db() {
   }
   return database
 }
+
+const [categoriesSet] = useSetCategory()
+categoriesSet()
