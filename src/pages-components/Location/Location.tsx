@@ -8,17 +8,17 @@ import ListItemText from '@mui/material/ListItemText'
 import Stack from '@mui/material/Stack'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
 import { LocationIcon } from 'src/assets/icons/location'
 import { Search } from 'src/assets/icons/search'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { useUpdateSettings } from 'src/services/useGeoLocation'
+import { useAppDispatch } from 'src/store'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
+import { setSettings } from 'src/store/slices/settings'
 import { CityNames } from './components/CityNames/CityNames'
 import { LocationNavbar } from './components/LocationNavbar'
-import { setSettings } from 'src/store/slices/settings'
 
 export type LocationType = {
   query: string
@@ -28,7 +28,7 @@ export const Location = () => {
   const isMiddleWidth = useMediaQuery('(min-width:550px)')
   const isBigWidth = useMediaQuery('(min-width:800px)')
   const router = useRouter()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const cityNameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 3
   const [chosenLocation, setChosenLocation] = useState()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

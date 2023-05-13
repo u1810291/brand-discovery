@@ -7,9 +7,9 @@ import { styled } from '@mui/material/styles'
 import { animated, interpolate } from '@react-spring/web'
 import Link from 'next/link'
 import { FC, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
 import { CompanyCardSkeleton } from 'src/components/Skeletons'
 import { ROUTES } from 'src/constants/routes'
+import { useAppDispatch } from 'src/store'
 import { openModal } from 'src/store/slices/modal'
 import { CompanyType } from 'src/types'
 import { Card, CompanyCard } from './components'
@@ -31,7 +31,7 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
       finishAction,
     })
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (likesLeft <= 0) {

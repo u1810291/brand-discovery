@@ -13,7 +13,6 @@ import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import { LocationIcon } from 'src/assets/icons/location'
 import { SliderField } from 'src/components/SliderField'
 import { SwitchField } from 'src/components/SwitchField'
@@ -21,7 +20,7 @@ import { ROUTES } from 'src/constants/routes'
 import { useEffectOnce } from 'src/hooks/useEffectOnce'
 import { useGeoLocation } from 'src/hooks/useGeoLocation'
 import { useOneLocation, useUpdateSettings } from 'src/services/useGeoLocation'
-import { useDispatch } from 'src/store'
+import { useAppDispatch, useAppSelector } from 'src/store'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
@@ -32,9 +31,9 @@ export const MainSettings = ({ control }) => {
   const { getLocation, location, error, loading: locationLoading } = useGeoLocation()
   const isMiddleWidth = useMediaQuery('(min-width:550px)')
   const isBigWidth = useMediaQuery('(min-width:800px)')
-  const settings = useSelector(settingsSelector)
+  const settings = useAppSelector(settingsSelector)
   const { success: storeLocationSuccess, error: storeLocationError } = useUpdateSettings()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const router = useRouter()
   const nameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 3
 
@@ -65,16 +64,15 @@ export const MainSettings = ({ control }) => {
           placeId: null,
         }),
       )
-    }
-    dispatch(
-      notify({
-        type: error || errorFetching ? Type.error : Type.success,
-        message: storeLocationError || errorFetching || storeLocationSuccess,
-      }),
-    )
 
-    if (!error) {
-      dispatch(closeModal())
+      if (error || errorFetching) {
+        dispatch(
+          notify({
+            type: Type.error,
+            message: storeLocationError || errorFetching,
+          }),
+        )
+      }
     }
   }, [error, location, storeLocationSuccess, errorFetching])
 

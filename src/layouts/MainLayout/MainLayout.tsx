@@ -6,13 +6,12 @@ import IconButton from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
 import { useRouter } from 'next/router'
 import { FC, PropsWithChildren, ReactElement, useLayoutEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { Modal } from 'src/components'
 import Notification from 'src/components/Notification'
 import { useClickOutside, useWindowSize } from 'src/hooks'
-import { useDispatch } from 'src/store'
+import { useAppDispatch, useAppSelector } from 'src/store'
 import { closeModal } from 'src/store/slices/modal'
-import { notify, notifySelector } from 'src/store/slices/notify'
+import { notify, selectors } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 
 type MainLayoutProps = {
@@ -26,8 +25,8 @@ type MainLayoutProps = {
 export const MainLayout: FC<MainLayoutProps> = ({ children, showBackButton, navbar, headerProps, ...props }) => {
   const router = useRouter()
   const { height } = useWindowSize()
-  const { message, type } = useSelector(notifySelector)
-  const dispatch = useDispatch()
+  const { message, type } = useAppSelector(selectors.notifySelector)
+  const dispatch = useAppDispatch()
   const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine)
   const modalRef = useRef<HTMLDivElement | null>(null)
 

@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore'
 import { useCallback, useEffect, useState } from 'react'
-import { query, getDocs, collection, where, DocumentData, doc, setDoc, getDoc, updateDoc } from 'firebase/firestore'
+import { useAppDispatch } from 'src/store'
+import { setSettings } from 'src/store/slices/settings'
 import { db } from './firebase'
-import { useDispatch } from 'src/store'
-import { setSettings, SettingsType as StoreSettingsType } from 'src/store/slices/settings'
 
 type SettingsType = {
   categories: Array<Record<string, string | number>>
@@ -20,7 +20,7 @@ export const useUpdateSettings = () => {
   const [success, setSuccess] = useState<any>()
   const [search, setSearch] = useState<string>('')
   const [countries, setCountries] = useState<any[]>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const fetchSettings = useCallback(async (uid) => {
     try {
