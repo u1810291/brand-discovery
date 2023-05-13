@@ -189,7 +189,7 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
   const bind = useDrag(({ args: [index], active, movement: [mx], direction: [xDir], velocity: [vx] }) => {
     const trigger = vx > 0.1
 
-    if (likesLeft >= 0) return
+    // if (likesLeft >= 0) return
     if (xDir > 0) {
       setIsLike(true)
       setIsShowLabel(true)
