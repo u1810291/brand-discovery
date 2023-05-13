@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { useDispatch } from 'src/store'
+import { useAppDispatch } from 'src/store'
 import { setSettings } from 'src/store/slices/settings'
 
 export type CoordinatesType = {
@@ -13,7 +13,7 @@ export const useGeoLocation = () => {
   const [location, setLocation] = useState<CoordinatesType>()
   const [error, setError] = useState<string>()
   const [loading, setLoading] = useState<boolean>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const getLocation = useCallback(() => {
     setLoading(true)

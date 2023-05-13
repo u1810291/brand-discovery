@@ -14,7 +14,7 @@ import { CategoryNavbar } from './components/CategoryNavbar'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { SelectedCategories } from './components/SelectedCategories'
 import { useGetCategories, useSetCategory } from 'src/services/useCategories'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'src/store'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { ROUTES } from 'src/constants/routes'
@@ -59,7 +59,7 @@ export const Categories = () => {
   const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
   const [selected, setSelected] = useState<Array<string>>([])
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const selectedCategories = () => {
     getSelectedCategories(user).then((categories) => setSelected(categories))

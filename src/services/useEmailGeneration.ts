@@ -1,6 +1,6 @@
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { useCallback } from 'react'
-import { useDispatch } from 'src/store'
+import { useAppDispatch } from 'src/store'
 import { openModal } from 'src/store/slices/modal'
 import { db } from './firebase'
 import emailjs from 'emailjs-com'
@@ -19,7 +19,7 @@ export const generateEmail = async (data: { to: string; subject: string; body: s
 }
 
 export const useEmailGeneration = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const handleEmailGeneration = useCallback(async (uid) => {
     try {
       const q = query(collection(db(), 'users'), where('uid', '==', uid))
