@@ -6,7 +6,7 @@ export type SettingsType = {
   filterByDistance?: boolean
   updatedAt?: Record<string, number>
   createdAt?: Record<string, number>
-  categories?: Array<Record<string, any>>
+  categories?: Array<string>
   location?: Record<string, number | string>
 }
 
