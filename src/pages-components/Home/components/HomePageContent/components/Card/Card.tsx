@@ -1,3 +1,4 @@
+'use client'
 import { Typography, styled } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { animated } from '@react-spring/web'

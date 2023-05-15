@@ -13,76 +13,47 @@ import { Search } from 'src/assets/icons/search'
 import { CategoryNavbar } from './components/CategoryNavbar'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { SelectedCategories } from './components/SelectedCategories'
-import { useGetCategories, useSetCategory } from 'src/services/useCategories'
-import { useAppDispatch } from 'src/store'
+import { useGetCategories } from 'src/services/useCategories'
+import { useAppDispatch, useAppSelector } from 'src/store'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
-import { ROUTES } from 'src/constants/routes'
-import { useRouter } from 'next/router'
-import firebaseApp, { db } from 'src/services/firebase'
-import { UserData } from 'src/store/slices/auth/auth.slice'
-import { getDoc, query, doc, collection, where, getDocs, updateDoc } from 'firebase/firestore'
+import { settingsSelector } from 'src/store/slices/settings'
 
 export type CategoriesType = {
   query: string
 }
-
-const getSelectedCategories = async (user: UserData) => {
-  try {
-    const q = query(collection(db(), 'users'), where('uid', '==', user.uid))
-    const docs = await getDocs(q)
-    const userRef = docs.docs[0].ref
-
-    if (docs.docs.length === 0) {
-      throw new Error(`No user found with uid: ${user.uid}`)
-    }
-    const userData = docs.docs[0].data() as UserData
-
-    if (!userData.hasOwnProperty('categories')) {
-      await updateDoc(userRef, { categories: [] })
-      alert('Created empty categories field in user document')
-    }
-
-    return userData.categories || []
-  } catch (err) {
-    alert(err)
-  }
-}
-
 export const Categories = () => {
-  const [categories, loading, error] = useGetCategories()
   const [searchResult, setSearchResult] = useState<Array<Record<string, string | number>>>([
     { id: Math.random() * 1000, categoryName: 'Technology' },
   ])
-  const [setCategory] = useSetCategory()
   const [query, setQuery] = useState('')
+  const { categories: selected } = useAppSelector(settingsSelector)
   const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
-  const [selected, setSelected] = useState<Array<string>>([])
 
+  const { categories, getSelectedCategories, loading, error, setCategory, deleteCategory } = useGetCategories()
   const dispatch = useAppDispatch()
-
-  const selectedCategories = () => {
-    getSelectedCategories(user).then((categories) => setSelected(categories))
-  }
 
   const handleChange = useCallback((e) => {
     setQuery(e)
   }, [])
 
   const handleSetCategory = useCallback((category) => {
-    setCategory(user.uid, category)
+    setCategory(user.uid, category, () => getSelectedCategories(user))
   }, [])
 
   useEffect(() => {
-    fetch(user?.uid)
-  }, [user?.uid])
+    getSelectedCategories(user)
+  }, [])
 
   useEffect(() => {
     if (error) {
-      dispatch(notify({ message: error.message, type: Type.error }))
+      dispatch(notify({ message: error, type: Type.error }))
     }
   }, [dispatch, error])
 
+  const handleDelete = useCallback((item: string) => {
+    deleteCategory(user, item)
+  }, [])
   return (
     <MainLayout showBackButton navbar={<CategoryNavbar field={query} updateField={handleChange} />}>
       <Stack>
@@ -104,7 +75,7 @@ export const Categories = () => {
                 <Stack>
                   <RegularTypographyStyled>Selected Categories ({selected?.length})</RegularTypographyStyled>
                 </Stack>
-                <SelectedCategories totalCount={selected?.length} data={selected} />
+                <SelectedCategories totalCount={selected?.length} data={selected} handleDelete={handleDelete} />
               </Stack>
             </Stack>
           ) : null}
@@ -118,12 +89,7 @@ export const Categories = () => {
           ) : (
             categories?.map((category, i) => (
               <React.Fragment key={`${category}-${i}`}>
-                <ListItemButton
-                  onClick={() => {
-                    handleSetCategory(category)
-                    selectedCategories()
-                  }}
-                >
+                <ListItemButton onClick={() => handleSetCategory(category)}>
                   <Box sx={{ display: 'flex', width: '100%' }}>
                     <ListItemTextStyled primary={category} color="primary" sx={{ width: 'auto' }} />
                   </Box>

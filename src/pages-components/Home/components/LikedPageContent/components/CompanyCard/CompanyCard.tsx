@@ -1,3 +1,4 @@
+'use client'
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined'
 import { Typography, styled } from '@mui/material'
 import Stack, { StackProps } from '@mui/material/Stack'
