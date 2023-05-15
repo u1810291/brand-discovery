@@ -1,3 +1,4 @@
+'use client'
 import CloseIcon from '@mui/icons-material/Close'
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined'
 import IconButton from '@mui/material/IconButton'

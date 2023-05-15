@@ -1,3 +1,4 @@
+'use client'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'

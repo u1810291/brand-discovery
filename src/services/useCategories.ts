@@ -57,7 +57,7 @@ export const useGetCategories = () => {
     fetchCategories()
   }, [])
 
-  const setCategory = useCallback(async (uid, category) => {
+  const setCategory = useCallback(async (uid, category, callback) => {
     try {
       const q = query(collection(db(), 'settings'), where('uid', '==', uid))
       const docs = await getDocs(q)
@@ -74,6 +74,7 @@ export const useGetCategories = () => {
       if (!userData.categories.includes(category)) {
         updateData.categories = [...userData.categories, category]
         await updateDoc(userRef, updateData)
+        callback()
       }
     } catch (err) {
       console.error(err)
@@ -81,5 +82,25 @@ export const useGetCategories = () => {
     }
   }, [])
 
-  return { getSelectedCategories, categories, loading, error, selected, setCategory }
+  const deleteCategory = useCallback(async (user: UserData, deleted: string) => {
+    try {
+      const q = query(collection(db(), 'settings'), where('uid', '==', user.uid))
+      const docs = await getDocs(q)
+      const userRef = docs.docs[0].ref
+
+      if (docs.docs.length === 0) {
+        throw new Error(`No user found with uid: ${user.uid}`)
+      }
+      const userData = docs.docs[0].data() as SettingsType
+
+      const filteredCategories = userData?.categories.filter((category) => category !== deleted)
+      await updateDoc(userRef, { categories: filteredCategories })
+      dispatch(setSettings({ categories: filteredCategories }))
+      getSelectedCategories(user)
+    } catch (error) {
+      setError(error.message)
+      console.error(error)
+    }
+  }, [])
+  return { getSelectedCategories, categories, loading, error, selected, setCategory, deleteCategory }
 }

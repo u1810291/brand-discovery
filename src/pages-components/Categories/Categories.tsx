@@ -22,7 +22,6 @@ import { settingsSelector } from 'src/store/slices/settings'
 export type CategoriesType = {
   query: string
 }
-
 export const Categories = () => {
   const [searchResult, setSearchResult] = useState<Array<Record<string, string | number>>>([
     { id: Math.random() * 1000, categoryName: 'Technology' },
@@ -31,7 +30,7 @@ export const Categories = () => {
   const { categories: selected } = useAppSelector(settingsSelector)
   const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
 
-  const { categories, getSelectedCategories, loading, error, setCategory } = useGetCategories()
+  const { categories, getSelectedCategories, loading, error, setCategory, deleteCategory } = useGetCategories()
   const dispatch = useAppDispatch()
 
   const handleChange = useCallback((e) => {
@@ -39,11 +38,10 @@ export const Categories = () => {
   }, [])
 
   const handleSetCategory = useCallback((category) => {
-    setCategory(user.uid, category)
+    setCategory(user.uid, category, () => getSelectedCategories(user))
   }, [])
 
   useEffect(() => {
-    console.error(selected)
     getSelectedCategories(user)
   }, [])
 
@@ -53,6 +51,9 @@ export const Categories = () => {
     }
   }, [dispatch, error])
 
+  const handleDelete = useCallback((item: string) => {
+    deleteCategory(user, item)
+  }, [])
   return (
     <MainLayout showBackButton navbar={<CategoryNavbar field={query} updateField={handleChange} />}>
       <Stack>
@@ -74,7 +75,7 @@ export const Categories = () => {
                 <Stack>
                   <RegularTypographyStyled>Selected Categories ({selected?.length})</RegularTypographyStyled>
                 </Stack>
-                <SelectedCategories totalCount={selected?.length} data={selected} />
+                <SelectedCategories totalCount={selected?.length} data={selected} handleDelete={handleDelete} />
               </Stack>
             </Stack>
           ) : null}
