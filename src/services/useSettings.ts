@@ -7,11 +7,11 @@ import { setSettings } from 'src/store/slices/settings'
 import { db } from './firebase'
 
 type SettingsType = {
-  categories: Array<Record<string, string | number>>
-  distance: number
-  filterByDistance: boolean
-  location: Record<string, any>
   uid: string
+  distance?: number
+  filterByDistance?: boolean
+  location?: Record<string, any>
+  categories?: Array<Record<string, string | number>>
 }
 
 export const useUpdateSettings = () => {
@@ -25,12 +25,6 @@ export const useUpdateSettings = () => {
   const fetchSettings = useCallback(async (uid) => {
     try {
       setLoading(true)
-      const globalSettings = {
-        location: JSON.parse(global.localStorage.getItem('location') || null),
-        filterByDistance: global.localStorage.getItem('filterByDistance'),
-        categories: global.localStorage.getItem('categories'),
-        distance: global.localStorage.getItem('distance'),
-      }
       if (uid) {
         const q = await getDoc(doc(collection(db(), 'settings'), uid))
         setSuccess(q.data())
@@ -38,10 +32,10 @@ export const useUpdateSettings = () => {
           uid: q.data()?.uid,
           createdAt: q.data()?.createdAt,
           updatedAt: q.data()?.updatedAt,
-          location: globalSettings.location ?? q.data()?.location,
-          distance: globalSettings.distance ?? q.data()?.distance,
-          categories: globalSettings.categories ?? q.data()?.categories,
-          filterByDistance: globalSettings.filterByDistance ?? q.data()?.filterByDistance,
+          location: q.data()?.location,
+          distance: q.data()?.distance,
+          categories: q.data()?.categories,
+          filterByDistance: q.data()?.filterByDistance,
         }))
         setLoading(false)
       } else {
@@ -50,7 +44,7 @@ export const useUpdateSettings = () => {
       setLoading(false)
     } catch (err) {
       console.error(err)
-      setError(err.message)
+      setError(err?.message)
       setLoading(false)
     }
   }, [])
@@ -79,17 +73,17 @@ export const useUpdateSettings = () => {
           uid,
           createdAt: new Date(),
           updatedAt: new Date(),
-          categories: data.categories,
-          distance: data.distance,
-          location: data.location,
-          filterByDistance: data.filterByDistance,
+          ...(data.categories && { categories: data.categories }),
+          ...(data.distance && { distance: data.distance }),
+          ...(data.location && { location: data.location }),
+          ...(data.filterByDistance && { filterByDistance: data.filterByDistance }),
         })
       } else {
         const now = new Date()
         const updatedData = {
           uid,
           updatedAt: now,
-          distance: data.distance,
+          ...(data.distance && { distance: data.distance }),
           ...(data.location && { location: data.location }),
           ...(data.categories && { categories: data.categories }),
           ...(typeof data.filterByDistance === 'boolean' && { filterByDistance: data.filterByDistance }),
@@ -101,7 +95,7 @@ export const useUpdateSettings = () => {
       fetchSettings(uid)
     } catch (err) {
       console.error(err)
-      setError(err.message || err)
+      setError(err?.message)
       setLoading(false)
     }
   }, [])
@@ -122,7 +116,7 @@ export const useOneLocation = (uid) => {
       }
     } catch (err) {
       console.error(err)
-      setError(err.message)
+      setError(err?.message)
       setLoading(false)
     }
   }, [])

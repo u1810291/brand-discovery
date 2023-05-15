@@ -17,11 +17,12 @@ import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { AccountNavbar } from './components/AccountNavbar'
 import { UpdateAccountFormType, schema } from './helper'
+import { formattedMessage } from 'src/utils/formatErrors'
 
 const auth = getAuth(firebaseApp())
 export const Account = () => {
   const dispatch = useAppDispatch()
-  const [updateUser, loading, success, error] = useUpdateUser(auth)
+  const { updateUser, loading, success, error } = useUpdateUser(auth)
   const [fetchUser, data] = useGetUser()
   const {
     control,
@@ -61,7 +62,7 @@ export const Account = () => {
 
   useEffect(() => {
     if (success || error) {
-      dispatch(notify({ type: error ? Type.error : Type.success, message: error ? error : 'Updated successfully' }))
+      dispatch(notify({ type: error ? Type.error : Type.success, message: error ? formattedMessage(error) : 'Updated successfully' }))
     }
   }, [success, error])
 

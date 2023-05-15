@@ -29,8 +29,7 @@ import { signUp } from 'src/store/slices/auth'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { SignUpWithEmailFormType, defaultValues, schema } from './helper'
-// import { addDoc, collection } from 'firebase/firestore'
-// import { db } from 'src/services/firebase'
+import { formattedMessage } from 'src/utils/formatErrors'
 
 const auth = getAuth(firebaseApp())
 
@@ -50,7 +49,7 @@ export const SignUpWithEmail = () => {
 
   const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
   const [sendVerifyEmail, sending, emailVerifyError] = useSendVerifyEmail(auth)
-  const [updateUser] = useUpdateUser(auth)
+  const { updateUser } = useUpdateUser(auth)
 
   useEffect(() => {
     if (!!user?.user?.uid && !emailVerifyError?.message && !sending) {
@@ -77,7 +76,7 @@ export const SignUpWithEmail = () => {
       dispatch(
         notify({
           type: Type.error,
-          message: error?.message || emailVerifyError?.message,
+          message: formattedMessage(error?.message) || formattedMessage(emailVerifyError?.message),
         }),
       )
     }
