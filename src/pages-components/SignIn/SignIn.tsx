@@ -25,6 +25,7 @@ import { login } from 'src/store/slices/auth'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { SingInFormType, schema } from './helper'
+import { formattedMessage } from 'src/utils/formatErrors'
 
 const auth = getAuth(firebaseApp())
 
@@ -59,7 +60,7 @@ export const SignIn = () => {
       dispatch(
         notify({
           type: Type.error,
-          message: error?.message,
+          message: formattedMessage(error?.message),
         }),
       )
     }

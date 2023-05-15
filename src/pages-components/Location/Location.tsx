@@ -7,12 +7,12 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import Stack from '@mui/material/Stack'
 import { useRouter } from 'next/router'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { LocationIcon } from 'src/assets/icons/location'
 import { Search } from 'src/assets/icons/search'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
-import { useUpdateSettings } from 'src/services/useGeoLocation'
+import { useUpdateSettings } from 'src/services/useSettings'
 import { useAppDispatch } from 'src/store'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
@@ -31,8 +31,9 @@ export const Location = () => {
   const dispatch = useAppDispatch()
   const cityNameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 3
   const [chosenLocation, setChosenLocation] = useState()
+  const user = useMemo(() => JSON.parse(localStorage.getItem('user') || null), [])
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { search, setSearch, countries, loading, success, error } = useUpdateSettings()
+  const { updateSettings, search, setSearch, countries, loading, success, error } = useUpdateSettings()
 
   const handleChange = useCallback((e) => {
     setSearch(e)
@@ -45,8 +46,11 @@ export const Location = () => {
       longitude: Number(e.lon),
       placeId: Number(e.place_id),
     }
-    localStorage.setItem('location', JSON.stringify(location))
     setChosenLocation(e.place_id)
+    updateSettings({
+      uid: user.id,
+      location: location,
+    })
     dispatch(
       setSettings({
         location: location,

@@ -8,10 +8,10 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { ROUTES } from 'src/constants/routes'
-import { useUpdateSettings } from 'src/services/useGeoLocation'
+import { useUpdateSettings } from 'src/services/useSettings'
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { logout } from 'src/store/slices/auth'
 import { notify } from 'src/store/slices/notify'
@@ -21,51 +21,29 @@ import { AccountSettings, LegalSettings, MainSettings } from './components'
 import { SettingsPageFormType, schema } from './helper'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
+  const dispatch = useAppDispatch()
+  const userId = useMemo(() => JSON.parse(localStorage.getItem('user') || null).uid, [])
   const { updateSettings, fetchSettings, success, error } = useUpdateSettings()
+  const settings = useAppSelector(settingsSelector)
+  const [defaultValues, setDefaultValues] = useState<SettingsPageFormType>({
+    distance: settings?.distance,
+    filterByDistance: settings?.filterByDistance,
+  })
   useEffect(() => {
     const excludedPaths = [ROUTES.account, ROUTES.categories, ROUTES.location]
     const prevPath = localStorage.getItem('history')
     if (!excludedPaths.includes(prevPath)) {
-      const userId = JSON.parse(localStorage.getItem('user')).uid
       fetchSettings(userId)
+      setDefaultValues({ distance: settings?.distance, filterByDistance: settings?.filterByDistance })
     }
   }, [])
 
-  const dispatch = useAppDispatch()
-  const settings = useAppSelector(settingsSelector)
-  const {
-    handleSubmit,
-    control,
-    formState: { isDirty, isValid, isSubmitting },
-  } = useForm<SettingsPageFormType>({
-    defaultValues: {
-      categories: settings?.categories,
-      distance: settings?.distance || 0,
-      filterByDistance: settings?.filterByDistance || false,
-      location: settings?.location,
-    },
-    values: {
-      categories: settings?.categories,
-      distance: settings?.distance || 0,
-      filterByDistance: settings?.filterByDistance || false,
-      location: settings?.location,
-    },
-    mode: 'all',
-    resolver: yupResolver(schema),
-  })
   const onSubmit = async (data) => {
-    const userId = JSON.parse(localStorage.getItem('user')).uid
     updateSettings({
       uid: userId,
-      location: data.location,
-      categories: data.categories,
       distance: data.distance,
       filterByDistance: data.filterByDistance,
     })
-    localStorage.removeItem('categories')
-    localStorage.removeItem('location')
-    localStorage.removeItem('distance')
-    localStorage.removeItem('filterByDistance')
   }
   useEffect(() => {
     if ((success && typeof success !== 'object') || error) {
@@ -77,6 +55,16 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
       )
     }
   }, [success, error])
+
+  const {
+    handleSubmit,
+    control,
+    formState: { isDirty, isValid, isSubmitting, isSubmitted },
+  } = useForm<SettingsPageFormType>({
+    defaultValues,
+    mode: 'onChange',
+    resolver: yupResolver(schema),
+  })
 
   return (
     <Stack position="relative" width="100%" height="100%">
@@ -94,7 +82,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
             Settings
           </Typography>
-          <Button type="submit" disabled={!isDirty || !isValid || isSubmitting}>
+          <Button type="submit" disabled={!isDirty || !isValid || isSubmitting || isSubmitted}>
             Save
           </Button>
         </Stack>

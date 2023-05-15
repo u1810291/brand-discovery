@@ -12,14 +12,14 @@ import ListSubheader from '@mui/material/ListSubheader'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { LocationIcon } from 'src/assets/icons/location'
 import { SliderField } from 'src/components/SliderField'
 import { SwitchField } from 'src/components/SwitchField'
 import { ROUTES } from 'src/constants/routes'
 import { useEffectOnce } from 'src/hooks/useEffectOnce'
 import { useGeoLocation } from 'src/hooks/useGeoLocation'
-import { useOneLocation, useUpdateSettings } from 'src/services/useGeoLocation'
+import { useOneLocation, useUpdateSettings } from 'src/services/useSettings'
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { notify } from 'src/store/slices/notify'
@@ -32,10 +32,11 @@ export const MainSettings = ({ control }) => {
   const isMiddleWidth = useMediaQuery('(min-width:550px)')
   const isBigWidth = useMediaQuery('(min-width:800px)')
   const settings = useAppSelector(settingsSelector)
-  const { success: storeLocationSuccess, error: storeLocationError } = useUpdateSettings()
+  const { success: storeLocationSuccess, error: storeLocationError, updateSettings } = useUpdateSettings()
   const dispatch = useAppDispatch()
   const router = useRouter()
   const nameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 3
+  const user = useMemo(() => JSON.parse(localStorage.getItem('user') || null), [])
 
   const {
     fetchLocation,
@@ -45,34 +46,29 @@ export const MainSettings = ({ control }) => {
 
   useEffect(() => {
     if (!!location) {
+      const locationUpdated = {
+        name: location.name,
+        latitude: Number(location.latitude),
+        longitude: Number(location.longitude),
+        placeId: null,
+      }
       dispatch(
         setSettings({
-          location: {
-            name: location.name,
-            latitude: Number(location.latitude),
-            longitude: Number(location.longitude),
-            placeId: null,
-          },
+          location: locationUpdated,
         }),
       )
-      localStorage.setItem(
-        'location',
-        JSON.stringify({
-          name: location.name,
-          latitude: Number(location.latitude),
-          longitude: Number(location.longitude),
-          placeId: null,
+      updateSettings({
+        uid: user?.uid,
+        location: locationUpdated,
+      })
+    }
+    if (error || errorFetching) {
+      dispatch(
+        notify({
+          type: Type.error,
+          message: storeLocationError || errorFetching,
         }),
       )
-
-      if (error || errorFetching) {
-        dispatch(
-          notify({
-            type: Type.error,
-            message: storeLocationError || errorFetching,
-          }),
-        )
-      }
     }
   }, [error, location, storeLocationSuccess, errorFetching])
 
@@ -134,7 +130,7 @@ export const MainSettings = ({ control }) => {
           {loading ? (
             <Skeleton variant="text" width={200} />
           ) : (
-            <NameList data={settings?.categories?.map((el) => el?.categoryName)} totalCount={nameCount} />
+            <NameList data={settings?.categories} totalCount={nameCount} />
           )}
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />

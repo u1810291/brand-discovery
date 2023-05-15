@@ -31,8 +31,8 @@ export const useGetCategories = () => {
       dispatch(setSettings({ categories: userData?.categories || [] }))
       setSelected(userData?.categories || [])
     } catch (err) {
-      console.error(err.message)
-      setError(err.message)
+      console.error(err)
+      setError(err?.message)
     }
   }, [])
 
@@ -49,7 +49,7 @@ export const useGetCategories = () => {
         }
         setCategories(categoriesData)
       } catch (error) {
-        setError(error.message)
+        setError(error?.message)
       }
       setLoading(false)
     }
@@ -78,7 +78,7 @@ export const useGetCategories = () => {
       }
     } catch (err) {
       console.error(err)
-      setError(err.message)
+      setError(err?.message)
     }
   }, [])
 
@@ -98,7 +98,8 @@ export const useGetCategories = () => {
       dispatch(setSettings({ categories: filteredCategories }))
       getSelectedCategories(user)
     } catch (error) {
-      setError(error.message)
+      console.error(error)
+      setError(error?.message)
       console.error(error)
     }
   }, [])

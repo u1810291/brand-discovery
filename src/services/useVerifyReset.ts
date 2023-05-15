@@ -18,7 +18,7 @@ export const useVerifyResetPassword = (auth: Auth) => {
               })
               .catch((err) => {
                 setLoading(false)
-                setError(err)
+                setError(err?.message)
               })
           } else {
             setLoading(false)
@@ -27,12 +27,12 @@ export const useVerifyResetPassword = (auth: Auth) => {
         })
         .catch((err) => {
           setLoading(false)
-          setError(err)
+          setError(err?.message)
         })
       setLoading(false)
     },
     [auth],
   )
 
-  return [verifyPassword, success, loading, error] as const
+  return { verifyPassword, success, loading, error } as const
 }

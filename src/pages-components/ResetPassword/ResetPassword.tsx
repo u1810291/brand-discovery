@@ -18,6 +18,7 @@ import { useAppDispatch } from 'src/store'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { ResetPasswordFormType, schema } from './helper'
+import { formattedMessage } from 'src/utils/formatErrors'
 
 const auth = getAuth(firebaseApp())
 
@@ -47,7 +48,7 @@ export const ResetPassword = () => {
       dispatch(
         notify({
           type: error?.message ? Type.error : Type.success,
-          message: error?.message || success,
+          message: formattedMessage(error?.message) || success,
         }),
       )
     }

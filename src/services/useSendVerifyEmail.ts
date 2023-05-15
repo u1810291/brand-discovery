@@ -20,8 +20,10 @@ export const useSendVerifyEmail = (auth: Auth) => {
       })
       .catch(function (error) {
         console.error(error)
+        setError(error?.message)
+      })
+      .finally(() => {
         setLoading(false)
-        setError(error)
       })
   }, [])
   return [sendVerifyEmail, loading, error, success] as const

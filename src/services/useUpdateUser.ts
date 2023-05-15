@@ -53,7 +53,7 @@ export const useUpdateUser = (auth) => {
               setSuccess('Email updated successfully!')
             })
             .catch((error) => {
-              setError(error.message)
+              setError(error?.message?.split('/')[1])
               console.error(error)
             })
         }
@@ -76,12 +76,12 @@ export const useUpdateUser = (auth) => {
       }
     } catch (err) {
       console.error(err)
-      setError(err.message)
+      setError(err?.message)
     } finally {
       setLoading(false)
     }
   }, [])
-  return [updateUser, loading, success, error] as const
+  return { updateUser, loading, success, error } as const
 }
 
 export const useGetUser = () => {
@@ -101,7 +101,7 @@ export const useGetUser = () => {
       }
     } catch (err) {
       console.error(err)
-      setError(err.message)
+      setError(err?.message)
     }
   }, [])
   return [fetchUser, data, error] as const

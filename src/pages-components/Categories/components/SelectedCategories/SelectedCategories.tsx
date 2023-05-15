@@ -46,7 +46,17 @@ export const SelectedCategories: FC<SelectedCategoriesProps> = ({ data = [], tot
           label={item}
           color="primary"
           variant="outlined"
-          sx={{ width: 'fit-content', marginTop: '4px !important', background: '#E4F4F1' }}
+          sx={{
+            width: 'fit-content',
+            marginTop: '4px !important',
+            background: '#E4F4F1',
+            '&:active': {
+              opacity: 0.6,
+            },
+            transition: 'all 0.3s ease',
+            transitionProperty: 'opacity',
+            transitionDuration: '0.3s',
+          }}
           deleteIcon={<CloseIcon />}
           onDelete={() => handleDelete(item)}
         />
