@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { collection, getDocs, limit, orderBy, query, where } from 'firebase/firestore'
+import { collection, getDocs, limit, query, where } from 'firebase/firestore'
 import { db } from './firebase'
 import { useAppDispatch } from 'src/store'
 import { BrandsType, setAllBrands } from 'src/store/slices/brands'
@@ -13,19 +13,20 @@ export const useBrands = () => {
     const fetchBrands = async () => {
       setLoading(true)
       try {
-        const q = await query(collection(db(), 'companies'), limit(25))
+        const q = await query(collection(db(), 'companies'), where('picture_1', '!=', 'null'), limit(25))
         const data = await getDocs(q)
         const brand = []
         data.forEach(async (doc) => {
           // const cityDetails = await getCityDetails(doc.data().loc_latitude, doc.data().loc_longitude)
           // console.error('cityDetails', cityDetails)
+          console.error(doc.data())
           brand.push({
             company: {
               title: 'Adidas',
               location: 'San Francisco',
               image: '/images/adidas_logo.jpeg',
               followers: doc.data().combined_followers,
-              tags: doc.data().categories.split('/').filter(Boolean),
+              tags: doc.data().categories?.split('/').filter(Boolean),
               id: doc.data()._id,
             },
             images: [

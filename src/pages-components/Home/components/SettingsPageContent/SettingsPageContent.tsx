@@ -22,20 +22,20 @@ import { SettingsPageFormType, schema } from './helper'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const dispatch = useAppDispatch()
-  const userId = useMemo(() => JSON.parse(localStorage.getItem('user') || null).uid, [])
+  const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
   const { updateSettings, fetchSettings, success, error } = useUpdateSettings()
   const settings = useAppSelector(settingsSelector)
   useEffect(() => {
     const excludedPaths = [ROUTES.account, ROUTES.categories, ROUTES.location]
     const prevPath = localStorage.getItem('history')
     if (!excludedPaths.includes(prevPath)) {
-      fetchSettings(userId)
+      fetchSettings(user.uid)
     }
   }, [])
 
   const onSubmit = async (data) => {
     updateSettings({
-      uid: userId,
+      uid: user.uid,
       distance: data.distance,
       filterByDistance: data.filterByDistance,
     })

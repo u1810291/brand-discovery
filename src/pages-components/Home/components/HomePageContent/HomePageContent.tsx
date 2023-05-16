@@ -32,7 +32,7 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
       dislikeAction,
       finishAction,
     })
-  const { loading, error } = useBrands()
+  const { loading } = useBrands()
 
   const dispatch = useAppDispatch()
 
