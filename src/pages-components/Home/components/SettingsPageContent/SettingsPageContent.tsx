@@ -22,25 +22,20 @@ import { SettingsPageFormType, schema } from './helper'
 
 export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const dispatch = useAppDispatch()
-  const userId = useMemo(() => JSON.parse(localStorage.getItem('user') || null).uid, [])
+  const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
   const { updateSettings, fetchSettings, success, error } = useUpdateSettings()
   const settings = useAppSelector(settingsSelector)
-  const [defaultValues, setDefaultValues] = useState<SettingsPageFormType>({
-    distance: settings?.distance,
-    filterByDistance: settings?.filterByDistance,
-  })
   useEffect(() => {
     const excludedPaths = [ROUTES.account, ROUTES.categories, ROUTES.location]
     const prevPath = localStorage.getItem('history')
     if (!excludedPaths.includes(prevPath)) {
-      fetchSettings(userId)
-      setDefaultValues({ distance: settings?.distance, filterByDistance: settings?.filterByDistance })
+      fetchSettings(user.uid)
     }
   }, [])
 
   const onSubmit = async (data) => {
     updateSettings({
-      uid: userId,
+      uid: user.uid,
       distance: data.distance,
       filterByDistance: data.filterByDistance,
     })
@@ -56,12 +51,12 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
     }
   }, [success, error])
 
-  const {
-    handleSubmit,
-    control,
-    formState: { isDirty, isValid, isSubmitting, isSubmitted },
-  } = useForm<SettingsPageFormType>({
-    defaultValues,
+  const { handleSubmit, control } = useForm<SettingsPageFormType>({
+    defaultValues: { distance: settings?.distance || 20, filterByDistance: settings?.filterByDistance },
+    values: {
+      distance: settings?.distance || 20,
+      filterByDistance: settings?.filterByDistance,
+    },
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
@@ -82,13 +77,10 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
             Settings
           </Typography>
-          <Button type="submit" disabled={!isDirty || !isValid || isSubmitting || isSubmitted}>
-            Save
-          </Button>
         </Stack>
         <StyledDivider />
         <Stack display="flex" flexDirection="column" overflow="hidden" height="100%" sx={{ overflowY: 'scroll' }}>
-          <MainSettings control={control} />
+          <MainSettings control={control} onSubmit={onSubmit} />
           <AccountSettings />
           <LegalSettings />
           <Button

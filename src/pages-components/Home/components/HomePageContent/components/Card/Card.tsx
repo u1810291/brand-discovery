@@ -73,18 +73,18 @@ export const Card: FC<CardProps> = ({ images, isShowLabel, isLike, ...props }) =
         ))}
       <GallerySwiper
         data={images}
-        swiperOptions={{ spaceBetween: 0, slidesPerView: 1 }}
         setSwiper={setSwiper}
+        swiperOptions={{ spaceBetween: 0, slidesPerView: 1 }}
         renderElement={(item) => (
           <ImageContainer>
             <Image
-              placeholder="blur"
-              blurDataURL={`${item}`}
-              unoptimized
               src={item}
-              alt="picture"
+              unoptimized
               width={600}
               height={400}
+              alt="picture"
+              // placeholder="blur"
+              // blurDataURL={`${item}`}
             />
           </ImageContainer>
         )}

@@ -15,6 +15,7 @@ import { openModal } from 'src/store/slices/modal'
 import { CompanyType } from 'src/types'
 import { Card, CompanyCard } from './components'
 import { useHomePageAnim } from './hooks'
+import { useBrands } from 'src/services/useBrands'
 
 type ContentProps = {
   data: { company: CompanyType; images: string[] }[]
@@ -31,6 +32,7 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
       dislikeAction,
       finishAction,
     })
+  const { loading } = useBrands()
 
   const dispatch = useAppDispatch()
 
@@ -47,13 +49,11 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
       )
     }
   }, [likesLeft])
-  // TODO: CHANGE TO LOADING DATA FROM API
-  const isLoading = false
 
   return (
     <Stack flex={1} position="relative" marginX={3} marginTop={5} marginBottom={4}>
       <Stack flex={1}>
-        {isLoading ? (
+        {loading ? (
           <Skeleton variant="rectangular" sx={{ flex: 1, opacity: 0.7 }} />
         ) : (
           animArray.map(({ x, y, rot, scale }, i) => (
@@ -76,7 +76,7 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
 
       {currentIndex >= 0 && (
         <Wrapper>
-          {isLoading ? (
+          {loading ? (
             <CompanyCardSkeleton />
           ) : (
             <LinkContainer href={`${ROUTES.brand}/${data[currentIndex].company.id}`}>
@@ -84,7 +84,7 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
             </LinkContainer>
           )}
           <Stack direction="row" justifyContent="space-between" width="100%" paddingX={9}>
-            {isLoading ? (
+            {loading ? (
               <>
                 <Skeleton variant="circular" width={40} height={40} />
                 <Skeleton variant="circular" width={40} height={40} />

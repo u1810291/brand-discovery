@@ -87,7 +87,7 @@ export const SignUpWithEmail = () => {
 
   const onSubmit = async (data: SignUpWithEmailFormType) => {
     const { user } = await createUserWithEmailAndPassword(data.email, data.password)
-    await sendVerifyEmail()
+    await sendVerifyEmail(data.password)
     await setCategories(user.uid)
   }
 

@@ -5,6 +5,7 @@ import modalSlice from './slices/modal'
 import notifySlice from './slices/notify'
 import settingsSlice from './slices/settings'
 import userSlice from './slices/user'
+import brandsSlice from './slices/brands'
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     notify: notifySlice,
     settings: settingsSlice,
     user: userSlice,
+    brands: brandsSlice,
   },
   devTools: true,
   middleware: (getDefaultMiddleware) =>

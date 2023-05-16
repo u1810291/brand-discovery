@@ -31,7 +31,7 @@ export const Location = () => {
   const dispatch = useAppDispatch()
   const cityNameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 3
   const [chosenLocation, setChosenLocation] = useState()
-  const user = useMemo(() => JSON.parse(localStorage.getItem('user') || null), [])
+  const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { updateSettings, search, setSearch, countries, loading, success, error } = useUpdateSettings()
 
@@ -48,7 +48,7 @@ export const Location = () => {
     }
     setChosenLocation(e.place_id)
     updateSettings({
-      uid: user.id,
+      uid: user.uid,
       location: location,
     })
     dispatch(
@@ -72,7 +72,7 @@ export const Location = () => {
         <List sx={{ width: '100%', bgcolor: 'white' }} component="nav" aria-labelledby="nested-list-subheader">
           {search && (
             <>
-              <ListItemButton sx={{ paddingLeft: 0 }} onClick={() => console.error('error')}>
+              <ListItemButton sx={{ paddingLeft: 0 }}>
                 <Search />
                 <Box sx={{ width: '100%', paddingLeft: 2 }}>
                   <ListItemTextStyled primary={search} color="primary" sx={{ width: 'auto' }} />

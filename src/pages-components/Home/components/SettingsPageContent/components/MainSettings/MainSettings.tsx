@@ -27,7 +27,7 @@ import { Type } from 'src/store/slices/notify/notify.slice'
 import { setSettings, settingsSelector } from 'src/store/slices/settings'
 import { NameList } from '../NameList'
 
-export const MainSettings = ({ control }) => {
+export const MainSettings = ({ control, onSubmit }) => {
   const { getLocation, location, error, loading: locationLoading } = useGeoLocation()
   const isMiddleWidth = useMediaQuery('(min-width:550px)')
   const isBigWidth = useMediaQuery('(min-width:800px)')
@@ -109,10 +109,10 @@ export const MainSettings = ({ control }) => {
     )
   }
   const handleChange = useCallback((e) => {
-    localStorage.setItem(e.name, e.value)
+    setTimeout(() => onSubmit({ [e.name]: e.value }), 1000)
     dispatch(
       setSettings({
-        [e.name]: typeof e.value === 'number' ? e.value : Boolean(e.value),
+        [e.name]: typeof e.value === 'number' ? e.value : e.value,
       }),
     )
   }, [])
@@ -154,7 +154,7 @@ export const MainSettings = ({ control }) => {
           {loading ? (
             <Skeleton variant="text" width={50} />
           ) : (
-            <TypographyStyled>{settings?.distance} km</TypographyStyled>
+            <TypographyStyled>{settings?.distance} mi</TypographyStyled>
           )}
         </Box>
         <SliderField

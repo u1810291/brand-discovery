@@ -76,7 +76,7 @@ export const useUpdateSettings = () => {
           ...(data.categories && { categories: data.categories }),
           ...(data.distance && { distance: data.distance }),
           ...(data.location && { location: data.location }),
-          ...(data.filterByDistance && { filterByDistance: data.filterByDistance }),
+          ...(typeof data.filterByDistance === 'boolean' && { filterByDistance: Boolean(data.filterByDistance) }),
         })
       } else {
         const now = new Date()
@@ -86,7 +86,7 @@ export const useUpdateSettings = () => {
           ...(data.distance && { distance: data.distance }),
           ...(data.location && { location: data.location }),
           ...(data.categories && { categories: data.categories }),
-          ...(typeof data.filterByDistance === 'boolean' && { filterByDistance: data.filterByDistance }),
+          ...(typeof data.filterByDistance === 'boolean' && { filterByDistance: Boolean(data.filterByDistance) }),
         }
         await updateDoc(docs.docs[0].ref, updatedData)
       }
