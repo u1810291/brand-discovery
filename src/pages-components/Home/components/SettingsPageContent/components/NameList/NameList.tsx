@@ -16,7 +16,7 @@ export const NameList: FC<NameListProps> = ({ data = [], totalCount = 2 }) => {
     return (
       <Stack spacing={0.5} direction="row" width="100%" justifyContent="end">
         {neededData.map((item, index) => (
-          <TypographyStyled key={item.id} color="primary" sx={{ display: 'flex', flexDirection: 'row' }}>
+          <TypographyStyled key={`${item}-${index}`} color="primary" sx={{ display: 'flex', flexDirection: 'row' }}>
             {neededData.length - 1 === index ? `${item}` : `${item},`}
           </TypographyStyled>
         ))}
