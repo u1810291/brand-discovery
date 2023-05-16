@@ -21,7 +21,7 @@ import { InputField } from 'src/components/InputField'
 import { PasswordInput } from 'src/components/PasswordInput'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
-import firebaseApp from 'src/services/firebase'
+import firebaseApp, { db } from 'src/services/firebase'
 import { useSendVerifyEmail } from 'src/services/useSendVerifyEmail'
 import { useUpdateUser } from 'src/services/useUpdateUser'
 import { useAppDispatch } from 'src/store'
@@ -30,8 +30,27 @@ import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { SignUpWithEmailFormType, defaultValues, schema } from './helper'
 import { formattedMessage } from 'src/utils/formatErrors'
+import { collection, doc, getDocs, query, updateDoc, where, setDoc } from 'firebase/firestore'
 
 const auth = getAuth(firebaseApp())
+
+const setCategories = async (uid: string) => {
+  try {
+    const q = query(collection(db(), 'categories'))
+    const docs = await getDocs(q)
+    const categories = docs.docs[0].data().categories
+    const updatedData = {
+      categories: categories,
+      uid: uid,
+      createdAt: new Date(),
+    }
+    const newDocRef = doc(collection(db(), 'settings'), uid)
+    await setDoc(newDocRef, updatedData)
+    console.log(`Document written with ID: ${newDocRef.id}`)
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 export const SignUpWithEmail = () => {
   const router = useRouter()
@@ -67,8 +86,9 @@ export const SignUpWithEmail = () => {
   }, [user?.user?.uid, sending])
 
   const onSubmit = async (data: SignUpWithEmailFormType) => {
-    await createUserWithEmailAndPassword(data.email, data.password)
+    const { user } = await createUserWithEmailAndPassword(data.email, data.password)
     await sendVerifyEmail()
+    await setCategories(user.uid)
   }
 
   useEffect(() => {
