@@ -100,7 +100,7 @@ export const Account = () => {
           control={control}
         />
         <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
-          {loading ? <CircularProgress color="success" /> : 'Save'}
+          {loading ? <CircularProgress color="success" size={24} /> : 'Save'}
         </Button>
       </Stack>
     </MainLayout>
