@@ -72,7 +72,7 @@ export const Location = () => {
         <List sx={{ width: '100%', bgcolor: 'white' }} component="nav" aria-labelledby="nested-list-subheader">
           {search && (
             <>
-              <ListItemButton sx={{ paddingLeft: 0 }} onClick={() => console.error('error')}>
+              <ListItemButton sx={{ paddingLeft: 0 }}>
                 <Search />
                 <Box sx={{ width: '100%', paddingLeft: 2 }}>
                   <ListItemTextStyled primary={search} color="primary" sx={{ width: 'auto' }} />

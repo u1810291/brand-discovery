@@ -109,7 +109,6 @@ export const MainSettings = ({ control, onSubmit }) => {
     )
   }
   const handleChange = useCallback((e) => {
-    console.error(e.name, e.value)
     setTimeout(() => onSubmit({ [e.name]: e.value }), 1000)
     dispatch(
       setSettings({
@@ -155,7 +154,7 @@ export const MainSettings = ({ control, onSubmit }) => {
           {loading ? (
             <Skeleton variant="text" width={50} />
           ) : (
-            <TypographyStyled>{settings?.distance} km</TypographyStyled>
+            <TypographyStyled>{settings?.distance} mi</TypographyStyled>
           )}
         </Box>
         <SliderField

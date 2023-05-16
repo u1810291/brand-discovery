@@ -27,7 +27,6 @@ export const useUpdateSettings = () => {
       setLoading(true)
       if (uid) {
         const q = await getDoc(doc(collection(db(), 'settings'), uid))
-        console.error(q.data())
         setSuccess(q.data())
         dispatch(setSettings({
           uid: q.data()?.uid,
@@ -69,7 +68,6 @@ export const useUpdateSettings = () => {
       setLoading(true)
       const q = query(collection(db(), 'settings'), where('uid', '==', uid))
       const docs = await getDocs(q)
-      console.error(docs.docs.length)
       if (docs.docs.length === 0 && uid) {
         await setDoc(doc(collection(db(), 'settings'), uid), {
           uid,
@@ -81,7 +79,6 @@ export const useUpdateSettings = () => {
           ...(typeof data.filterByDistance === 'boolean' && { filterByDistance: Boolean(data.filterByDistance) }),
         })
       } else {
-        console.error('update settings', data.filterByDistance)
         const now = new Date()
         const updatedData = {
           uid,

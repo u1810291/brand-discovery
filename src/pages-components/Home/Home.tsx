@@ -15,11 +15,12 @@ import { ROUTES } from 'src/constants/routes'
 import { useToggle } from 'src/hooks'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp, { db } from 'src/services/firebase'
-import { useAppDispatch } from 'src/store'
+import { useAppDispatch, useAppSelector } from 'src/store'
 import { UserData } from 'src/store/slices/auth/auth.slice'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { EmptyState, HomePageContent, InfoPageContent, LikedPageContent, SettingsPageContent } from './components'
 import { companies } from './mock'
+import { brandsSelector } from 'src/store/slices/brands'
 
 const auth = getAuth(firebaseApp())
 
@@ -30,7 +31,7 @@ export const Home = () => {
   const dispatch = useAppDispatch()
   const user: UserData = JSON.parse(localStorage.getItem('user') || null)
   const { isOpen: isShowEmptyContent, open: showEmptyContent } = useToggle(false)
-
+  const { brands } = useAppSelector(brandsSelector)
   useEffect(() => {
     const handleClick = async (uid: string) => {
       try {
@@ -111,7 +112,7 @@ export const Home = () => {
         />
       ) : (
         <HomePageContent
-          data={companies}
+          data={brands}
           likeAction={() => {
             return
           }}

@@ -25,21 +25,15 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const userId = useMemo(() => JSON.parse(localStorage.getItem('user') || null).uid, [])
   const { updateSettings, fetchSettings, success, error } = useUpdateSettings()
   const settings = useAppSelector(settingsSelector)
-  const [defaultValues, setDefaultValues] = useState<SettingsPageFormType>({
-    distance: settings?.distance,
-    filterByDistance: settings?.filterByDistance,
-  })
   useEffect(() => {
     const excludedPaths = [ROUTES.account, ROUTES.categories, ROUTES.location]
     const prevPath = localStorage.getItem('history')
     if (!excludedPaths.includes(prevPath)) {
       fetchSettings(userId)
-      setDefaultValues({ distance: settings?.distance, filterByDistance: settings?.filterByDistance })
     }
   }, [])
 
   const onSubmit = async (data) => {
-    console.error(data)
     updateSettings({
       uid: userId,
       distance: data.distance,
@@ -58,9 +52,9 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   }, [success, error])
 
   const { handleSubmit, control } = useForm<SettingsPageFormType>({
-    defaultValues: { distance: settings?.distance, filterByDistance: settings?.filterByDistance },
+    defaultValues: { distance: settings?.distance || 20, filterByDistance: settings?.filterByDistance },
     values: {
-      distance: settings?.distance,
+      distance: settings?.distance || 20,
       filterByDistance: settings?.filterByDistance,
     },
     mode: 'onChange',
