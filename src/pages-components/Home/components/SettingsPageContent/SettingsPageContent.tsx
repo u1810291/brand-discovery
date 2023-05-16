@@ -39,6 +39,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   }, [])
 
   const onSubmit = async (data) => {
+    console.error(data)
     updateSettings({
       uid: userId,
       distance: data.distance,
@@ -56,12 +57,12 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
     }
   }, [success, error])
 
-  const {
-    handleSubmit,
-    control,
-    formState: { isDirty, isValid, isSubmitting, isSubmitted },
-  } = useForm<SettingsPageFormType>({
-    defaultValues,
+  const { handleSubmit, control } = useForm<SettingsPageFormType>({
+    defaultValues: { distance: settings?.distance, filterByDistance: settings?.filterByDistance },
+    values: {
+      distance: settings?.distance,
+      filterByDistance: settings?.filterByDistance,
+    },
     mode: 'onChange',
     resolver: yupResolver(schema),
   })
@@ -82,13 +83,10 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
             Settings
           </Typography>
-          <Button type="submit" disabled={!isDirty || !isValid || isSubmitting || isSubmitted}>
-            Save
-          </Button>
         </Stack>
         <StyledDivider />
         <Stack display="flex" flexDirection="column" overflow="hidden" height="100%" sx={{ overflowY: 'scroll' }}>
-          <MainSettings control={control} />
+          <MainSettings control={control} onSubmit={onSubmit} />
           <AccountSettings />
           <LegalSettings />
           <Button

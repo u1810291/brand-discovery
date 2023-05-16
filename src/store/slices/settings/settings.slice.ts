@@ -30,7 +30,8 @@ export const settingsSlice = createSlice({
       state.createdAt = payload.createdAt || state.createdAt
       state.updatedAt = payload.updatedAt || state.updatedAt
       state.distance = payload.distance || state.distance
-      state.filterByDistance = payload.filterByDistance || state.filterByDistance
+      state.filterByDistance =
+        typeof payload.filterByDistance === 'boolean' ? payload.filterByDistance : state.filterByDistance
       state.location = payload.location || state.location
       state.uid = payload.uid || state.uid
     },
