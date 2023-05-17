@@ -77,7 +77,7 @@ export const Card: FC<CardProps> = ({ images, isShowLabel, isLike, ...props }) =
         swiperOptions={{ spaceBetween: 0, slidesPerView: 1 }}
         renderElement={(item) => (
           <ImageContainer>
-            <Image
+            {/* <Image
               src={item}
               unoptimized
               width={600}
@@ -85,7 +85,7 @@ export const Card: FC<CardProps> = ({ images, isShowLabel, isLike, ...props }) =
               alt="picture"
               // placeholder="blur"
               // blurDataURL={`${item}`}
-            />
+            /> */}
           </ImageContainer>
         )}
       />

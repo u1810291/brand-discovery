@@ -18,7 +18,7 @@ import { useHomePageAnim } from './hooks'
 import { useBrands } from 'src/services/useBrands'
 
 type ContentProps = {
-  data: { company: CompanyType; images: string[] }[]
+  data: any[]
   likeAction: (id: string) => void | Promise<void>
   dislikeAction: (id: string) => void | Promise<void>
   finishAction: () => void | Promise<void>
@@ -61,7 +61,7 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
               <Card
                 isLike={isLike}
                 isShowLabel={i === currentIndex && isShowLabel}
-                images={data[i]?.images.slice(0, 5) || []}
+                images={data[i]?.edge_sidecar_to_children?.map((el) => el.display_url)?.slice(0, 5) || []}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 //@ts-ignore
                 {...bind(i)}
@@ -79,8 +79,8 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
           {loading ? (
             <CompanyCardSkeleton />
           ) : (
-            <LinkContainer href={`${ROUTES.brand}/${data[currentIndex].company.id}`}>
-              <CompanyCard data={data[currentIndex]?.company} />
+            <LinkContainer href={`${ROUTES.brand}/${data[currentIndex].id}`}>
+              <CompanyCard data={data[currentIndex]} />
             </LinkContainer>
           )}
           <Stack direction="row" justifyContent="space-between" width="100%" paddingX={9}>

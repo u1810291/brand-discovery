@@ -4,7 +4,6 @@ import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore
 import { useEffect, useState } from 'react'
 import { db } from 'src/services/firebase'
 import { UserData } from 'src/store/slices/auth/auth.slice'
-import { CompanyType } from 'src/types'
 
 const to = (i: number) => ({
   x: 0,
@@ -17,7 +16,7 @@ const to = (i: number) => ({
 const from = (_i: number) => ({ x: 0, rot: 0, scale: 1, y: 0 })
 
 type UseHomePageAnimParams = {
-  data: { company: CompanyType }[]
+  data: any[]
   likeAction: (id: string) => void | Promise<void>
   dislikeAction: (id: string) => void | Promise<void>
   finishAction: () => void | Promise<void>
@@ -111,13 +110,13 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
   const handleLikeAction = () => {
     setLikesLeft(likesLeft - 1)
     updateLikesLeft(user.uid)
-    likeAction(data[currentIndex].company.id)
+    likeAction(data[currentIndex].id)
   }
 
   const handleDislikeAction = () => {
     setLikesLeft(likesLeft - 1)
     updateLikesLeft(user.uid)
-    dislikeAction(data[currentIndex].company.id)
+    dislikeAction(data[currentIndex].id)
   }
 
   async function getNextSlide(isLike: boolean) {
