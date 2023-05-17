@@ -13,13 +13,12 @@ export const useBrands = () => {
     const fetchBrands = async () => {
       setLoading(true)
       try {
-        const q = await query(collection(db(), 'companies'), where('picture_1', '!=', 'null'), limit(25))
+        const q = await query(collection(db(), 'companies'), limit(25))
         const data = await getDocs(q)
         const brand = []
         data.forEach(async (doc) => {
           // const cityDetails = await getCityDetails(doc.data().loc_latitude, doc.data().loc_longitude)
           // console.error('cityDetails', cityDetails)
-          console.error(doc.data())
           brand.push({
             company: {
               title: 'Adidas',

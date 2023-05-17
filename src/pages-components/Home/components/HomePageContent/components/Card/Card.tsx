@@ -72,7 +72,7 @@ export const Card: FC<CardProps> = ({ images, isShowLabel, isLike, ...props }) =
           </Stack>
         ))}
       <GallerySwiper
-        data={images}
+        data={images.filter(Boolean)}
         setSwiper={setSwiper}
         swiperOptions={{ spaceBetween: 0, slidesPerView: 1 }}
         renderElement={(item) => (

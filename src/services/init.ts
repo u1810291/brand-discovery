@@ -2,6 +2,8 @@ import { doc, setDoc, getDoc, getDocs, query, collection, addDoc } from 'firebas
 import { db } from './firebase'
 import categories from '../../categories.json'
 import companies from '../../companies.json'
+// import fs from 'fs'
+// import path from 'path'
 
 export const useSetCategory = () => {
   const setCategory = async () => {
@@ -15,11 +17,23 @@ export const useSetCategory = () => {
           categories: categories.main_category,
         })
       }
+
       if (!companiesSnap.docs.length) {
         companies.map(async (el) => {
           await addDoc(collection(db(), 'companies'), el)
         })
       }
+      // else {
+      //   const companies = []
+      //   companiesSnap.forEach((el) => companies.push(el.data()))
+      //   fs.readFile('./companies.json', 'utf8', (err: any, data: any) => {
+      //     if (err) {
+      //       console.error(err)
+      //     } else {
+      //       console.error('data', data)
+      //     }
+      //   })
+      // }
     } catch (err) {
       console.error(err)
     }

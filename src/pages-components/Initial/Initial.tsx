@@ -13,21 +13,50 @@ import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { TextContainer } from './styles'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth'
+import { useAppDispatch } from 'src/store'
+import { login } from 'src/store/slices/auth'
+import firebaseApp from 'src/services/firebase'
+import { getAuth } from 'firebase/auth'
+
+const auth = getAuth(firebaseApp())
 
 export const Initial = () => {
   const { palette } = useTheme()
   const router = useRouter()
   const whiteListRoutes = ['resetPassword', 'verifyEmail']
-  // TODO: needs to be updated more smart way for redirects
+  const [signInWithEmailAndPassword, user] = useSignInWithEmailAndPassword(auth)
+  const dispatch = useAppDispatch()
 
-  if (!!localStorage.getItem('user')) {
-    router.replace(ROUTES.home)
-  } else if(whiteListRoutes.includes(router.query.mode as string)) {
-    router.replace(`/link${window.location.search}`)
-  } else {
-    setTimeout(() => router.replace(ROUTES.signIn), 2000)
+  async function signIn(email, password) {
+    await signInWithEmailAndPassword(email, password)
   }
+  useEffect(() => {
+    const params = new URL(window.location.href)
+    if (!!localStorage.getItem('user')) {
+      router.replace(ROUTES.home)
+    } else if(whiteListRoutes.includes(router.query.mode as string)) {
+      router.replace(`/link${window.location.search}`)
+    }
+    if (params.searchParams.get('email') && params.searchParams.get('password')) {
+      signIn(params.searchParams.get('email'), params.searchParams.get('password')).catch((err) => console.error(err))
+    }
+  }, [])
 
+  useEffect(() => {
+    let timeout = null
+    timeout = setTimeout(() => {
+      if (user?.user?.uid) {
+        dispatch(login(JSON.parse(JSON.stringify(user))))
+        router.push(user?.user?.emailVerified ? ROUTES.home : ROUTES.verifyEmail)
+      } else {
+        router.replace(ROUTES.signIn)}
+      }, 2000)
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [user?.user?.uid])
   return (
     <MainLayout>
       <Stack

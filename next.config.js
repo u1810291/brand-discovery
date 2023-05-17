@@ -6,6 +6,9 @@ const withPWA = require('next-pwa')({
   skipWaiting: true,
   runtimeCaching,
   disableDevLogs: true,
+  fallbacks: {
+    fs: false,
+  },
 })
 
 const nextConfig = withPWA({
@@ -14,6 +17,14 @@ const nextConfig = withPWA({
     removeConsole: {
       exclude: ['error'],
     },
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        fs: false,
+      }
+    }
+    return config;
   },
   images: {
     dangerouslyAllowSVG: true,
