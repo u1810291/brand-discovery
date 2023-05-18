@@ -1,5 +1,4 @@
 'use client'
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { CircularProgress, Typography, styled } from '@mui/material'
 import Box from '@mui/material/Box'
@@ -21,10 +20,9 @@ import { SelectedCategories } from './components/SelectedCategories'
 export type CategoriesType = {
   query: string
 }
+
 export const Categories = () => {
-  const [searchResult, setSearchResult] = useState<Array<Record<string, string | number>>>([
-    { id: Math.random() * 1000, categoryName: 'Technology' },
-  ])
+  const [searchResult, setSearchResult] = useState<Array<string>>([])
   const [query, setQuery] = useState('')
   const { categories: selected } = useAppSelector(settingsSelector)
   const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
@@ -32,13 +30,27 @@ export const Categories = () => {
   const { categories, getSelectedCategories, loading, error, setCategory, deleteCategory } = useGetCategories()
   const dispatch = useAppDispatch()
 
-  const handleChange = useCallback((e) => {
-    setQuery(e)
-  }, [])
+  const handleChange = useCallback(
+    (e) => {
+      setQuery(e)
+      if (e === '') {
+        setSearchResult([])
+      } else {
+        const filteredCategories = categories.filter(
+          (category) => category.toLowerCase().indexOf(e.toLowerCase()) !== -1,
+        )
+        setSearchResult(filteredCategories)
+      }
+    },
+    [categories],
+  )
 
-  const handleSetCategory = useCallback((category) => {
-    setCategory(user.uid, category, () => getSelectedCategories(user))
-  }, [])
+  const handleSetCategory = useCallback(
+    (category) => {
+      setCategory(user.uid, category, () => getSelectedCategories(user))
+    },
+    [user, setCategory, getSelectedCategories],
+  )
 
   useEffect(() => {
     getSelectedCategories(user)
@@ -53,6 +65,7 @@ export const Categories = () => {
   const handleDelete = useCallback((item: string) => {
     deleteCategory(user, item)
   }, [])
+
   return (
     <MainLayout
       padding={0}
@@ -85,7 +98,17 @@ export const Categories = () => {
             <CircularProgress />
           </Stack>
         ) : query ? (
-          searchResult?.map((search) => <React.Fragment key={search.id}>{search.categoryName}</React.Fragment>)
+          searchResult?.map((search) => (
+            <React.Fragment key={search}>
+              <ListItemButton onClick={() => handleSetCategory(search)}>
+                <Box sx={{ display: 'flex', width: '100%' }}>
+                  <ListItemTextStyled primary={search} color="primary" sx={{ width: 'auto' }} />
+                </Box>
+                <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
+              </ListItemButton>
+              <StyledDivider sx={{ left: 20 }} />
+            </React.Fragment>
+          ))
         ) : (
           categories?.map((category, i) => (
             <React.Fragment key={`${category}-${i}`}>
