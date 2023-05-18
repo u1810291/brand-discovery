@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { collection, getDocs, limit, query, where } from 'firebase/firestore'
+import { collection, getDocs, limit, query } from 'firebase/firestore'
 import { db } from './firebase'
 import { useAppDispatch } from 'src/store'
 import { BrandsType, setAllBrands } from 'src/store/slices/brands'
@@ -13,11 +13,9 @@ export const useBrands = () => {
     const fetchBrands = async () => {
       setLoading(true)
       try {
-        const q = await query(collection(db(), 'companies'), limit(25))
+        const q = await query(collection(db(), 'companies'), limit(50))
         const data = await getDocs(q)
         const brand = []
-        const lat = 55.704438,
-          lon = 12.502119
         data.forEach(async (doc) => {
           // const cityDetails = await getCityDetails(doc.data().loc_latitude, doc.data().loc_longitude)
           // console.error('cityDetails', cityDetails)
