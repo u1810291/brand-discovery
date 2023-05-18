@@ -15,12 +15,23 @@ export const useSetCategory = () => {
           categories: categories.main_category,
         })
       }
+
       if (!companiesSnap.docs.length) {
-        console.error(companies)
         companies?.map(async (el) => {
           await addDoc(collection(db(), 'brands'), el)
         })
       }
+      // else {
+      //   const companies = []
+      //   companiesSnap.forEach((el) => companies.push(el.data()))
+      //   fs.readFile('./companies.json', 'utf8', (err: any, data: any) => {
+      //     if (err) {
+      //       console.error(err)
+      //     } else {
+      //       console.error('data', data)
+      //     }
+      //   })
+      // }
     } catch (err) {
       console.error(err)
     }

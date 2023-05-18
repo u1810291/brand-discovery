@@ -20,7 +20,7 @@ import { collection, getDocs, query, updateDoc, where, doc } from 'firebase/fire
 import { db } from 'src/services/firebase'
 
 type ContentProps = {
-  data: { company: CompanyType; images: string[] }[]
+  data: any[]
   likeAction: (id: string) => void | Promise<void>
   dislikeAction: (id: string) => void | Promise<void>
   finishAction: () => void | Promise<void>
@@ -115,7 +115,7 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
               <Card
                 isLike={isLike}
                 isShowLabel={i === currentIndex && isShowLabel}
-                images={data[i]?.images.slice(0, 5) || []}
+                images={data[i]?.images?.slice(0, 5) || []}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 //@ts-ignore
                 {...bind(i)}
@@ -134,7 +134,7 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
             <CompanyCardSkeleton />
           ) : (
             <LinkContainer href={`${ROUTES.brand}/${data[currentIndex].company.id}`}>
-              <CompanyCard data={data[currentIndex]?.company} />
+              <CompanyCard data={data[currentIndex].company} />
             </LinkContainer>
           )}
           <Stack direction="row" justifyContent="space-between" width="100%" paddingX={9}>

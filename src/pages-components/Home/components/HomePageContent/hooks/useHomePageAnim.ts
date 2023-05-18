@@ -17,7 +17,7 @@ const to = (i: number) => ({
 const from = (_i: number) => ({ x: 0, rot: 0, scale: 1, y: 0 })
 
 type UseHomePageAnimParams = {
-  data: { company: CompanyType }[]
+  data: CompanyType[]
   likeAction: (id: string) => void | Promise<void>
   dislikeAction: (id: string) => void | Promise<void>
   finishAction: () => void | Promise<void>
@@ -111,13 +111,13 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
   const handleLikeAction = () => {
     setLikesLeft(likesLeft - 1)
     updateLikesLeft(user.uid)
-    likeAction(data[currentIndex].company.id)
+    likeAction(data[currentIndex].id)
   }
 
   const handleDislikeAction = () => {
     setLikesLeft(likesLeft - 1)
     updateLikesLeft(user.uid)
-    dislikeAction(data[currentIndex].company.id)
+    dislikeAction(data[currentIndex].id)
   }
 
   async function getNextSlide(isLike: boolean) {
