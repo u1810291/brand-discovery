@@ -125,6 +125,6 @@ const Background = styled(Stack)`
     rgba(0, 0, 0, 0) 90%,
     rgba(0, 0, 0, 1) 100%
   );
-  box-shadow: 0px 16px 64px rgba(179, 180, 174, 0.25);
+  box-shadow: 0px 1px 1px rgba(179, 180, 174, 0.25);
   border-radius: 16px;
 `
