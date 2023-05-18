@@ -5,7 +5,7 @@ import React from 'react'
 import { FieldValues, useController, UseControllerProps } from 'react-hook-form'
 
 interface SwitchFieldProps {
-  handleChange: (item: Record<string, string>) => void
+  handleChange: (item: Record<string, string | boolean>) => void
 }
 
 export const SwitchField = React.memo(
@@ -32,7 +32,7 @@ export const SwitchField = React.memo(
         checked={rest.value}
         onChange={(e) => {
           onChange(e?.target?.checked)
-          return handleChange({ name: e?.target?.name, value: e?.target?.checked.toString() })
+          return handleChange({ name: e?.target?.name, value: e?.target?.checked })
         }}
       />
     )
