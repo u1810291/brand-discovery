@@ -19,12 +19,13 @@ export const useBrands = () => {
         data.forEach(async (doc) => {
           // const cityDetails = await getCityDetails(doc.data().loc_latitude, doc.data().loc_longitude)
           // console.error('cityDetails', cityDetails)
+          console.error(doc.data())
           brand.push({
             company: {
-              title: 'Adidas',
+              title: doc.data()?.profile_name,
               location: 'San Francisco',
-              image: '/images/adidas_logo.jpeg',
-              followers: doc.data().combined_followers,
+              image: doc.data()?.profile_image_url,
+              followers: doc.data()?.combined_followers,
               tags: doc.data().categories?.split('/').filter(Boolean),
               id: doc.data()._id,
             },
