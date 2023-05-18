@@ -6,24 +6,19 @@ import { ChipsList } from 'src/UI/ChipList'
 
 import { BrandSkeleton } from 'src/components/Skeletons'
 import { MainLayout } from 'src/layouts/MainLayout'
-import { companies } from '../Home/mock'
 import { CompanyCard, Gallery } from './components'
 import { useEffect } from 'react'
 import { useBrands } from 'src/services/useBrands'
 
-const galleryCount = 123
-
 export const Brand = () => {
   const router = useRouter()
   const { id } = router.query
-  const currentCompany = companies.find((item) => item.company.id === id)
   const { brands, fetchOneBrand } = useBrands()
 
   useEffect(() => {
     fetchOneBrand(id)
   }, [])
 
-  console.error('brands', brands)
   const isLoading = false
   return (
     <MainLayout showBackButton>
