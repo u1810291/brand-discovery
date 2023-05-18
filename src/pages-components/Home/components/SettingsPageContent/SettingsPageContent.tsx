@@ -54,7 +54,7 @@ export const SettingsPageContent = ({ signOut, setSuccess, loading }) => {
   const { handleSubmit, control } = useForm<SettingsPageFormType>({
     defaultValues: { distance: settings?.distance || 20, filterByDistance: settings?.filterByDistance },
     values: {
-      distance: settings?.distance || 20,
+      distance: settings?.distance || 0,
       filterByDistance: settings?.filterByDistance,
     },
     mode: 'onChange',
