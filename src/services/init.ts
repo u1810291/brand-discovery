@@ -17,7 +17,6 @@ export const useSetCategory = () => {
       }
 
       if (!companiesSnap.docs.length) {
-        console.error(companies)
         companies?.map(async (el) => {
           await addDoc(collection(db(), 'brands'), el)
         })

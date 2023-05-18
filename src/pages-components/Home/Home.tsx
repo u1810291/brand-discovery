@@ -95,7 +95,6 @@ export const Home = () => {
     }
   }, [success])
 
-  console.error(brands)
   const tabs = [
     {
       name: 'home',

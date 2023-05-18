@@ -6,9 +6,10 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import Image from 'next/image'
 import { FC } from 'react'
 import { ChipsList } from 'src/UI/ChipList'
+import { CompanyType } from 'src/types'
 
 type CompanyCardProps = {
-  data?: any
+  data?: CompanyType
 } & StackProps
 export const CompanyCard: FC<CompanyCardProps> = ({ data, ...props }) => {
   const isMiddleWidth = useMediaQuery('(min-width:550px)')
@@ -20,29 +21,30 @@ export const CompanyCard: FC<CompanyCardProps> = ({ data, ...props }) => {
     <Root {...props}>
       <Image
         placeholder="blur"
-        blurDataURL={`${data?.profile_pic_url_hd}`}
+        blurDataURL={`${data?.image}`}
+        unoptimized
         alt="logo"
-        src={data?.profile_pic_url_hd}
+        src={data?.image}
         width={96}
         height={96}
       />
       <Stack spacing={0.5} width="100%">
         <Typography fontWeight={800} fontSize={'16px'} lineHeight={'22px'}>
-          {data?.username}
+          {data?.title}
         </Typography>
         <Stack direction="row" alignItems="center" gap={0.5}>
           <LocationOnOutlinedIcon sx={{ color: '#747978' }} />
           <Typography fontSize={'12px'} lineHeight={'16px'} fontWeight={400} color="#747978">
-            {data?.location?.name || 'Worldwide'}
+            {data?.location}
           </Typography>
         </Stack>
         <Typography fontWeight={800} fontSize={'16px'} lineHeight={'22px'} alignItems="center">
-          {data?.followers_count}
+          {data?.followers}
           <Typography marginLeft={0.5} component="span" fontSize={'12px'} lineHeight={'16px'} fontWeight={400}>
             Followers
           </Typography>
         </Typography>
-        <ChipsList data={[data?.category_enum]} totalCount={chipsCount} />
+        <ChipsList data={data?.tags} totalCount={chipsCount} />
       </Stack>
     </Root>
   )
