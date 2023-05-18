@@ -1,4 +1,6 @@
 import { useCallback, useState } from 'react'
+import { useAppDispatch } from 'src/store'
+import { setSettings } from 'src/store/slices/settings'
 
 export type CoordinatesType = {
   accuracy: number
@@ -11,6 +13,7 @@ export const useGeoLocation = () => {
   const [location, setLocation] = useState<CoordinatesType>()
   const [error, setError] = useState<string>()
   const [loading, setLoading] = useState<boolean>()
+  const dispatch = useAppDispatch()
 
   const getLocation = useCallback(() => {
     setLoading(true)
@@ -28,6 +31,16 @@ export const useGeoLocation = () => {
         longitude: crd.longitude,
         name: position?.address?.city || position?.address?.country,
       })
+      dispatch(
+        setSettings({
+          location: {
+            accuracy: crd.accuracy,
+            latitude: crd.latitude,
+            longitude: crd.longitude,
+            name: position?.address?.city || position?.address?.country,
+          },
+        }),
+      )
       setLoading(false)
     }
 

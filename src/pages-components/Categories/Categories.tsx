@@ -1,110 +1,105 @@
 'use client'
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import Stack from '@mui/material/Stack'
-import { MainLayout } from 'src/layouts/MainLayout'
-import ListItemButton from '@mui/material/ListItemButton'
-import Box from '@mui/material/Box'
-import List from '@mui/material/List'
-import ListItemText from '@mui/material/ListItemText'
-import Divider from '@mui/material/Divider'
-import { CircularProgress, Typography, styled } from '@mui/material'
-import { Search } from 'src/assets/icons/search'
-import { CategoryNavbar } from './components/CategoryNavbar'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import { SelectedCategories } from './components/SelectedCategories'
-import { useGetCategories, useSetCategory } from 'src/services/useCategories'
-import { useDispatch } from 'react-redux'
+import { CircularProgress, Typography, styled } from '@mui/material'
+import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider'
+import List from '@mui/material/List'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
+import Stack from '@mui/material/Stack'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { MainLayout } from 'src/layouts/MainLayout'
+import { useGetCategories } from 'src/services/useCategories'
+import { useAppDispatch, useAppSelector } from 'src/store'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
-import { ROUTES } from 'src/constants/routes'
-import { useRouter } from 'next/router'
+import { settingsSelector } from 'src/store/slices/settings'
+import { CategoryNavbar } from './components/CategoryNavbar'
+import { SelectedCategories } from './components/SelectedCategories'
 
 export type CategoriesType = {
   query: string
 }
-
 export const Categories = () => {
-  const [fetch, categories, loading, error] = useGetCategories()
-  const [selected, setSelected] = useState<Array<string>>(() => {
-    const data = JSON.parse(localStorage.getItem('categories'))
-    return data?.length ? data?.map((category) => category.categoryName) : []
-  })
   const [searchResult, setSearchResult] = useState<Array<Record<string, string | number>>>([
     { id: Math.random() * 1000, categoryName: 'Technology' },
   ])
-  const [setCategory] = useSetCategory()
   const [query, setQuery] = useState('')
+  const { categories: selected } = useAppSelector(settingsSelector)
   const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
-  const selectedCategories = () => {
-    const categorySettings = JSON.parse(localStorage.getItem('categories')) || []
-    setSelected(categorySettings?.map((category) => category.categoryName))
-  }
+
+  const { categories, getSelectedCategories, loading, error, setCategory, deleteCategory } = useGetCategories()
+  const dispatch = useAppDispatch()
 
   const handleChange = useCallback((e) => {
     setQuery(e)
   }, [])
 
   const handleSetCategory = useCallback((category) => {
-    setCategory(category)
+    setCategory(user.uid, category, () => getSelectedCategories(user))
   }, [])
 
   useEffect(() => {
-    fetch(user?.uid)
-  }, [user?.uid])
+    getSelectedCategories(user)
+  }, [])
 
+  useEffect(() => {
+    if (error) {
+      dispatch(notify({ message: error, type: Type.error }))
+    }
+  }, [dispatch, error])
+
+  const handleDelete = useCallback((item: string) => {
+    deleteCategory(user, item)
+  }, [])
   return (
-    <MainLayout showBackButton navbar={<CategoryNavbar field={query} updateField={handleChange} />}>
-      <Stack>
-        <List sx={{ width: '100%', bgcolor: 'white' }} component="nav" aria-labelledby="nested-list-subheader">
-          {selected?.length ? (
-            <Stack position="relative" height={selected && 100}>
-              <Stack
-                spacing={0.5}
-                width="calc(100% + 50px)"
-                flexWrap="wrap"
-                justifyContent="start"
-                display="flex"
-                flexDirection="column"
-                position="absolute"
-                left={-25}
-                padding="10px 20px"
-                bgcolor="#F8F9FB"
-              >
-                <Stack>
-                  <RegularTypographyStyled>Selected Categories ({selected?.length})</RegularTypographyStyled>
-                </Stack>
-                <SelectedCategories totalCount={selected?.length} data={selected} />
-              </Stack>
+    <MainLayout
+      padding={0}
+      showBackButton
+      headerProps={{ padding: 3, marginBottom: 0, paddingBottom: 1 }}
+      navbar={<CategoryNavbar field={query} updateField={handleChange} />}
+    >
+      <List sx={{ width: '100%', bgcolor: 'white' }} component="nav" aria-labelledby="nested-list-subheader">
+        {selected?.length ? (
+          <Stack
+            position="relative"
+            height="fit-content"
+            padding={2}
+            spacing={0.5}
+            flexWrap="wrap"
+            justifyContent="start"
+            display="flex"
+            flexDirection="column"
+            bgcolor="#F8F9FB"
+          >
+            <Stack>
+              <RegularTypographyStyled>Selected Categories ({selected?.length})</RegularTypographyStyled>
             </Stack>
-          ) : null}
+            <SelectedCategories totalCount={selected?.length} data={selected} handleDelete={handleDelete} />
+          </Stack>
+        ) : null}
 
-          {loading ? (
-            <Stack display="flex" flexDirection="row" alignItems="center" justifyContent="center" height="100%">
-              <CircularProgress />
-            </Stack>
-          ) : query ? (
-            searchResult?.map((search) => <React.Fragment key={search.id}>{search.categoryName}</React.Fragment>)
-          ) : (
-            categories?.map((category, i) => (
-              <React.Fragment key={`${category.categoryName}-${i}`}>
-                <ListItemButton
-                  onClick={() => {
-                    handleSetCategory(category)
-                    selectedCategories()
-                  }}
-                >
-                  <Box sx={{ display: 'flex', width: '100%' }}>
-                    <ListItemTextStyled primary={category.categoryName} color="primary" sx={{ width: 'auto' }} />
-                  </Box>
-                  <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
-                </ListItemButton>
-                <StyledDivider sx={{ left: 20 }} />
-              </React.Fragment>
-            ))
-          )}
-        </List>
-      </Stack>
+        {loading ? (
+          <Stack display="flex" flexDirection="row" alignItems="center" justifyContent="center" height="100%">
+            <CircularProgress />
+          </Stack>
+        ) : query ? (
+          searchResult?.map((search) => <React.Fragment key={search.id}>{search.categoryName}</React.Fragment>)
+        ) : (
+          categories?.map((category, i) => (
+            <React.Fragment key={`${category}-${i}`}>
+              <ListItemButton onClick={() => handleSetCategory(category)}>
+                <Box sx={{ display: 'flex', width: '100%' }}>
+                  <ListItemTextStyled primary={category} color="primary" sx={{ width: 'auto' }} />
+                </Box>
+                <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
+              </ListItemButton>
+              <StyledDivider sx={{ left: 20 }} />
+            </React.Fragment>
+          ))
+        )}
+      </List>
     </MainLayout>
   )
 }

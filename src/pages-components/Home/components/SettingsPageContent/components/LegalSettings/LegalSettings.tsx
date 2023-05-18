@@ -1,3 +1,4 @@
+'use client'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { styled } from '@mui/material'
 import List from '@mui/material/List'

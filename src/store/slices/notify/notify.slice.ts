@@ -10,10 +10,17 @@ type NotifyType = {
   type: Type
 }
 
-const initialState = {
+type NotifySliceType = {
+  message: string
+  type: Type
+  isShowNotify: boolean
+}
+
+const initialState: NotifySliceType = {
   message: '',
   type: null,
-} satisfies NotifyType
+  isShowNotify: false,
+}
 
 export const notifySlice = createSlice({
   name: 'notify',
@@ -22,10 +29,10 @@ export const notifySlice = createSlice({
     notify: (state, { payload }: { payload: NotifyType }) => {
       state.message = payload.message
       state.type = payload.type
+      state.isShowNotify = true
     },
     notifyClose: (state) => {
-      state.message = ''
-      state.type = null
+      state.isShowNotify = false
     },
   },
 })

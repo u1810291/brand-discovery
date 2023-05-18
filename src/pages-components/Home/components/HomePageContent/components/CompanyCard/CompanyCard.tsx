@@ -1,3 +1,4 @@
+'use client'
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined'
 import { Typography, styled } from '@mui/material'
 import Stack, { StackProps } from '@mui/material/Stack'
@@ -32,7 +33,7 @@ export const CompanyCard: FC<CompanyCardProps> = ({ data, ...props }) => {
           {data?.title}
         </Typography>
         <Stack direction="row" alignItems="center" gap={0.5}>
-          <LocationOnOutlinedIcon />
+          <LocationOnOutlinedIcon sx={{ color: '#747978' }} />
           <Typography fontSize={'12px'} lineHeight={'16px'} fontWeight={400} color="#747978">
             {data?.location}
           </Typography>

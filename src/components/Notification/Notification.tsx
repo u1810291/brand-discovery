@@ -1,17 +1,27 @@
-import { useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
+import { useAppDispatch, useAppSelector } from 'src/store'
+import { notifyClose, selectors } from 'src/store/slices/notify'
 
 export function Notification({ text, type, duration }: NotificationType) {
-  const [open, setOpen] = useState(!!text)
+  const dispatch = useAppDispatch()
+  const open = useAppSelector(selectors.isShowNotifySelector)
+
   const handleClose = () => {
-    setOpen(false)
+    dispatch(notifyClose())
   }
-  useEffect(() => {
-    setOpen(!!text)
-  }, [text])
+
   return (
-    <Snackbar open={open} autoHideDuration={duration || 6000} onClose={handleClose} sx={{ zIndex: 10 }}>
+    <Snackbar
+      open={open}
+      autoHideDuration={duration || 6000}
+      onClose={handleClose}
+      sx={{ zIndex: 10 }}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center',
+      }}
+    >
       <Alert onClose={handleClose} severity={type} sx={{ width: '100%' }}>
         {text}
       </Alert>

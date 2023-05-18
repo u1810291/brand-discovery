@@ -1,20 +1,21 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useTheme } from '@mui/material'
-import { getAuth } from 'firebase/auth'
-import { MainLayout } from 'src/layouts/MainLayout'
-import { useSendEmailVerification } from 'react-firebase-hooks/auth'
-import Image from 'next/image'
-import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import firebaseApp from 'src/services/firebase'
-import Typography from '@mui/material/Typography'
 import CircularProgress from '@mui/material/CircularProgress'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { getAuth } from 'firebase/auth'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import { useSendEmailVerification } from 'react-firebase-hooks/auth'
 import CheckMarkIcon from 'src/assets/svg/check-mark-icon.svg'
-import { useDispatch } from 'src/store'
+import { MainLayout } from 'src/layouts/MainLayout'
+import firebaseApp from 'src/services/firebase'
+import { useAppDispatch } from 'src/store'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
+import { formattedMessage } from 'src/utils/formatErrors'
 
 const auth = getAuth(firebaseApp())
 
@@ -22,14 +23,14 @@ export const VerifyEmail = () => {
   const { palette } = useTheme()
   const [sendEmailVerification, sending, error] = useSendEmailVerification(auth)
   const [success, setSuccess] = useState<string>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (error?.message || success) {
       dispatch(
         notify({
           type: error?.message ? Type.error : Type.success,
-          message: error?.message || success,
+          message: formattedMessage(error?.message) || success,
         }),
       )
     }
@@ -72,7 +73,7 @@ export const VerifyEmail = () => {
             }}
             fullWidth
           >
-            {sending ? <CircularProgress /> : 'Resend Email'}
+            {sending ? <CircularProgress size={24} /> : 'Resend Email'}
           </Button>
         </Stack>
       </Stack>

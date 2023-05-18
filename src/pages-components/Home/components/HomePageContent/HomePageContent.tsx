@@ -1,6 +1,6 @@
+'use client'
 import CloseIcon from '@mui/icons-material/Close'
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined'
-import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
@@ -8,16 +8,17 @@ import { styled } from '@mui/material/styles'
 import { animated, interpolate } from '@react-spring/web'
 import Link from 'next/link'
 import { FC, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
 import { CompanyCardSkeleton } from 'src/components/Skeletons'
 import { ROUTES } from 'src/constants/routes'
-import { closeModal, openModal } from 'src/store/slices/modal'
+import { useAppDispatch } from 'src/store'
+import { openModal } from 'src/store/slices/modal'
 import { CompanyType } from 'src/types'
 import { Card, CompanyCard } from './components'
 import { useHomePageAnim } from './hooks'
+import { useBrands } from 'src/services/useBrands'
 
 type ContentProps = {
-  data: { company: CompanyType; images: string[] }[]
+  data: any[]
   likeAction: (id: string) => void | Promise<void>
   dislikeAction: (id: string) => void | Promise<void>
   finishAction: () => void | Promise<void>
@@ -31,8 +32,9 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
       dislikeAction,
       finishAction,
     })
+  const { loading } = useBrands()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (likesLeft <= 0) {
@@ -42,22 +44,16 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
           subTitle: `You are only have 100 likes per day.
     More likes are coming soon. `,
           open: true,
-          children: (
-            <Button variant="contained" onClick={() => dispatch(closeModal())}>
-              Start Now
-            </Button>
-          ),
+          children: <></>,
         }),
       )
     }
   }, [likesLeft])
-  // TODO: CHANGE TO LOADING DATA FROM API
-  const isLoading = false
 
   return (
     <Stack flex={1} position="relative" marginX={3} marginTop={5} marginBottom={4}>
       <Stack flex={1}>
-        {isLoading ? (
+        {loading ? (
           <Skeleton variant="rectangular" sx={{ flex: 1, opacity: 0.7 }} />
         ) : (
           animArray.map(({ x, y, rot, scale }, i) => (
@@ -65,7 +61,7 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
               <Card
                 isLike={isLike}
                 isShowLabel={i === currentIndex && isShowLabel}
-                images={data[i]?.images.slice(0, 5) || []}
+                images={data[i]?.images?.slice(0, 5) || []}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 //@ts-ignore
                 {...bind(i)}
@@ -80,15 +76,15 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
 
       {currentIndex >= 0 && (
         <Wrapper>
-          {isLoading ? (
+          {loading ? (
             <CompanyCardSkeleton />
           ) : (
             <LinkContainer href={`${ROUTES.brand}/${data[currentIndex].company.id}`}>
-              <CompanyCard data={data[currentIndex]?.company} />
+              <CompanyCard data={data[currentIndex].company} />
             </LinkContainer>
           )}
           <Stack direction="row" justifyContent="space-between" width="100%" paddingX={9}>
-            {isLoading ? (
+            {loading ? (
               <>
                 <Skeleton variant="circular" width={40} height={40} />
                 <Skeleton variant="circular" width={40} height={40} />

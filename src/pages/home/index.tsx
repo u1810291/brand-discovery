@@ -1,9 +1,9 @@
 'use client'
 
-import { Suspense } from 'react'
-import dynamic from 'next/dynamic'
-import Header from 'src/components/Header'
 import CircularProgress from '@mui/material/CircularProgress'
+import dynamic from 'next/dynamic'
+import { Suspense } from 'react'
+import Header from 'src/components/Header'
 
 export default () => {
   const Home = dynamic(() => import('src/pages-components/Home').then((component) => component.Home), {
@@ -12,7 +12,7 @@ export default () => {
   })
   return (
     <div>
-      <Header title="Home">
+      <Header title="Spacewise Brand Discovery">
         <meta name="description" content="Home page" />
       </Header>
       <Suspense fallback={<CircularProgress />}>

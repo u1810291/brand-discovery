@@ -1,10 +1,10 @@
 import { useSprings } from '@react-spring/web'
 import { useDrag } from '@use-gesture/react'
-import { useState } from 'react'
-import { CompanyType } from 'src/types'
-import { UserData } from 'src/store/slices/auth/auth.slice'
-import { query, getDocs, collection, where, updateDoc } from 'firebase/firestore'
+import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore'
+import { useEffect, useState } from 'react'
 import { db } from 'src/services/firebase'
+import { UserData } from 'src/store/slices/auth/auth.slice'
+import { CompanyType } from 'src/types'
 
 const to = (i: number) => ({
   x: 0,
@@ -17,7 +17,7 @@ const to = (i: number) => ({
 const from = (_i: number) => ({ x: 0, rot: 0, scale: 1, y: 0 })
 
 type UseHomePageAnimParams = {
-  data: { company: CompanyType }[]
+  data: CompanyType[]
   likeAction: (id: string) => void | Promise<void>
   dislikeAction: (id: string) => void | Promise<void>
   finishAction: () => void | Promise<void>
@@ -66,6 +66,15 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
     }
   }
 
+  const getDailyLikesCount = async () => {
+    const likesAdded = await dailyLikesAdd()
+    if (likesAdded === '+') setLikesLeft(100)
+  }
+
+  useEffect(() => {
+    getDailyLikesCount()
+  }, [])
+
   async function updateLikesLeft(uid: string) {
     try {
       const q = query(collection(db(), 'users'), where('uid', '==', uid))
@@ -102,13 +111,13 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
   const handleLikeAction = () => {
     setLikesLeft(likesLeft - 1)
     updateLikesLeft(user.uid)
-    likeAction(data[currentIndex].company.id)
+    likeAction(data[currentIndex].id)
   }
 
   const handleDislikeAction = () => {
     setLikesLeft(likesLeft - 1)
     updateLikesLeft(user.uid)
-    dislikeAction(data[currentIndex].company.id)
+    dislikeAction(data[currentIndex].id)
   }
 
   async function getNextSlide(isLike: boolean) {
@@ -147,7 +156,7 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
     })
     setActiveIndex((prev) => prev + 1)
     if (gone.size === data.length) {
-      finishAction()
+      setTimeout(() => finishAction(), 300)
     }
   }
   const getDragResult = async (direction: number) => {
@@ -159,19 +168,15 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
   }
 
   const onLikeClick = async () => {
-    const likesAdded = await dailyLikesAdd()
-    likesAdded === '+' ? setLikesLeft(100) : setLikesLeft(likesLeft)
-    setIsLike(true)
     setIsShowLabel(true)
+    setIsLike(true)
     await handleLikeAction()
     getNextSlide(true)
   }
 
   const onDislikeClick = async () => {
-    const likesAdded = await dailyLikesAdd()
-    likesAdded === '+' ? setLikesLeft(100) : setLikesLeft(likesLeft)
-    setIsLike(false)
     setIsShowLabel(true)
+    setIsLike(false)
     await handleDislikeAction()
     getNextSlide(false)
   }
@@ -184,7 +189,7 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
   const bind = useDrag(({ args: [index], active, movement: [mx], direction: [xDir], velocity: [vx] }) => {
     const trigger = vx > 0.1
 
-    if (likesLeft >= 0) return
+    // if (likesLeft >= 0) return
     if (xDir > 0) {
       setIsLike(true)
       setIsShowLabel(true)
@@ -200,6 +205,9 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
       setActiveIndex((prev) => prev + 1)
       setIsShowLabel(false)
       getDragResult(xDir)
+      if (gone.size === data.length) {
+        setTimeout(() => finishAction(), 300)
+      }
     }
 
     api.start((i) => {

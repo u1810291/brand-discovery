@@ -1,17 +1,41 @@
 'use client'
 
 import Switch, { SwitchProps } from '@mui/material/Switch'
+import React from 'react'
 import { FieldValues, useController, UseControllerProps } from 'react-hook-form'
 
-export function SwitchField<T extends FieldValues>({ name, control, ...props }: UseControllerProps<T> & SwitchProps) {
-  const { field } = control
-    ? useController<T>({
-        name,
-        control,
-      })
-    : {
-        field: null,
-      }
-
-  return <Switch {...props} {...(field && { ...field })} />
+interface SwitchFieldProps {
+  handleChange: (item: Record<string, string>) => void
 }
+
+export const SwitchField = React.memo(
+  <T extends FieldValues>({
+    handleChange,
+    name,
+    control,
+    ...props
+  }: UseControllerProps<T> & SwitchProps & SwitchFieldProps) => {
+    const {
+      field: { onChange, ...rest },
+    } = control
+      ? useController<T>({
+          name,
+          control,
+        })
+      : {
+          field: null,
+        }
+    return (
+      <Switch
+        {...props}
+        {...(rest && { ...rest })}
+        checked={rest.value}
+        onChange={(e) => {
+          onChange(e?.target?.checked)
+          return handleChange({ name: e?.target?.name, value: e?.target?.checked.toString() })
+        }}
+      />
+    )
+  },
+  (prevProps, nextProps) => prevProps.control._fields.filterByDistance === nextProps.control._fields.filterByDistance,
+)
