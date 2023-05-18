@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from 'react'
-import { collection, getDocs, limit, query, where, getDoc } from 'firebase/firestore'
+import { useState, useCallback } from 'react'
+import { collection, getDocs, limit, query, where } from 'firebase/firestore'
 import { db } from './firebase'
 import { useAppDispatch } from 'src/store'
-import { BrandsType, setAllBrands } from 'src/store/slices/brands'
+import { setAllBrands } from 'src/store/slices/brands'
 
 export const useBrands = () => {
   const [brands, setBrands] = useState<any>()
@@ -76,13 +76,13 @@ export const useBrands = () => {
     }
     setLoading(false)
   }, [])
-  async function getCityDetails(lat: number, lon: number) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_GET_COUNTRIES_AND_CITY_ENDPOINT}/reverse?format=json&addressdetails=1&format=json&limit=5&lat=${lat}&lon=${lon}`,
-    )
-    const data = res.json()
-    return data
-  }
+  // async function getCityDetails(lat: number, lon: number) {
+  //   const res = await fetch(
+  //     `${process.env.NEXT_PUBLIC_GET_COUNTRIES_AND_CITY_ENDPOINT}/reverse?format=json&addressdetails=1&format=json&limit=5&lat=${lat}&lon=${lon}`,
+  //   )
+  //   const data = res.json()
+  //   return data
+  // }
 
   return { brands, loading, error, fetchOneBrand, fetchAllBrands }
 }

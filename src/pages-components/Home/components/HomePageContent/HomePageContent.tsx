@@ -25,12 +25,12 @@ type ContentProps = {
   finishAction: () => void | Promise<void>
 }
 
-interface likeData {
-  name: string
-  company_id: string
-  time: Date
-  liked: boolean
-}
+// interface likeData {
+//   name: string
+//   company_id: string
+//   time: Date
+//   liked: boolean
+// }
 
 async function handleActionClick(uid: string, cid: string, liked: boolean) {
   try {
