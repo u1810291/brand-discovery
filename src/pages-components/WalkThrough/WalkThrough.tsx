@@ -91,7 +91,7 @@ const ImageContainer = styled(Stack)`
 //   position: absolute;
 //   width: 100%;
 //   bottom: 120px;
-//   z-index: 2;s
+//   z-index: 2;
 //   left: 50%;
 //   transform: translateX(-50%);
 //   color: #fff;
