@@ -5,11 +5,11 @@ import { styled } from '@mui/material/styles'
 import { FC } from 'react'
 
 interface NameListProps {
-  data?: { categoryName: string; id: string }[]
+  data?: Array<string>[]
   totalCount?: number
 }
 
-export const NameList: FC<NameListProps> = ({ data = [], totalCount = 2 }) => {
+export const NameList: FC<NameListProps> = ({ data, totalCount = 2 }) => {
   const neededData = data.slice(0, totalCount)
   const otherData = data.slice(totalCount)
   if (data.length > totalCount) {
@@ -30,8 +30,8 @@ export const NameList: FC<NameListProps> = ({ data = [], totalCount = 2 }) => {
   return (
     <Stack spacing={0.5} direction="row" width="100%" flexWrap="wrap" justifyContent="end">
       {data.map((item, index) => (
-        <TypographyStyled key={item?.id} color="primary" sx={{ display: 'flex', flexDirection: 'row' }}>
-          {neededData.length - 1 === index ? `${item?.categoryName}` : `${item?.categoryName},`}
+        <TypographyStyled key={`${item}-${index}`} color="primary" sx={{ display: 'flex', flexDirection: 'row' }}>
+          {neededData.length - 1 === index ? `${item}` : `${item},`}
         </TypographyStyled>
       ))}
     </Stack>

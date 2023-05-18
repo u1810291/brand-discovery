@@ -6,18 +6,17 @@ import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'
 import { animated, interpolate } from '@react-spring/web'
+import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore'
 import Link from 'next/link'
 import { FC, useEffect } from 'react'
 import { CompanyCardSkeleton } from 'src/components/Skeletons'
 import { ROUTES } from 'src/constants/routes'
+import { db } from 'src/services/firebase'
+import { useBrands } from 'src/services/useBrands'
 import { useAppDispatch } from 'src/store'
 import { openModal } from 'src/store/slices/modal'
-import { CompanyType } from 'src/types'
 import { Card, CompanyCard } from './components'
 import { useHomePageAnim } from './hooks'
-import { useBrands } from 'src/services/useBrands'
-import { collection, getDocs, query, updateDoc, where, doc } from 'firebase/firestore'
-import { db } from 'src/services/firebase'
 
 type ContentProps = {
   data: any[]
@@ -164,7 +163,7 @@ const Wrapper = styled(Stack)`
   position: absolute;
   width: 100%;
   bottom: 20px;
-  z-index: 2;
+  z-index: 3;
   max-width: 700px;
   gap: 16px;
   left: 50%;
