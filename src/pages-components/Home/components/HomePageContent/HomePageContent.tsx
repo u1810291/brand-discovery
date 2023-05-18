@@ -16,12 +16,54 @@ import { CompanyType } from 'src/types'
 import { Card, CompanyCard } from './components'
 import { useHomePageAnim } from './hooks'
 import { useBrands } from 'src/services/useBrands'
+import { collection, getDocs, query, updateDoc, where, doc } from 'firebase/firestore'
+import { db } from 'src/services/firebase'
 
 type ContentProps = {
   data: { company: CompanyType; images: string[] }[]
   likeAction: (id: string) => void | Promise<void>
   dislikeAction: (id: string) => void | Promise<void>
   finishAction: () => void | Promise<void>
+}
+
+interface likeData {
+  name: string
+  company_id: string
+  time: Date
+  liked: boolean
+}
+
+async function handleActionClick(uid: string, cid: string, liked: boolean) {
+  try {
+    const uq = query(collection(db(), 'users'), where('uid', '==', uid))
+    const udocs = await getDocs(uq)
+    const cq = query(collection(db(), 'companies'), where('_id', '==', cid))
+    const cdocs = await getDocs(cq)
+    const companyData = cdocs.docs[0].data()
+
+    const updateData = {
+      name: companyData.profile_name,
+      company_id: cid,
+      time: new Date(),
+      liked,
+    }
+    const userData = udocs.docs[0].data()
+    if (userData.likes && userData.likes.some((like) => like.company_id === cid)) {
+      // Company ID already exists in likes array
+      return
+    } else if (userData.likes) {
+      // Add the new like to the existing array
+      const updatedUserLikes = [...userData.likes, updateData]
+      await updateDoc(doc(db(), 'users', udocs.docs[0].id), { likes: updatedUserLikes })
+      return
+    } else {
+      // Create a new likes array with the first like
+      await updateDoc(doc(db(), 'users', udocs.docs[0].id), { likes: [updateData] })
+      return
+    }
+  } catch (err) {
+    alert(err)
+  }
 }
 
 export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAction, finishAction }) => {
@@ -33,6 +75,8 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
       finishAction,
     })
   const { loading } = useBrands()
+
+  const user = JSON.parse(localStorage.getItem('user') || null)
 
   const dispatch = useAppDispatch()
 
@@ -49,6 +93,16 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
       )
     }
   }, [likesLeft])
+
+  const handleLike = () => {
+    handleActionClick(user.uid, data[currentIndex].company.id, true)
+    onLikeClick()
+  }
+
+  const handleDislike = () => {
+    handleActionClick(user.uid, data[currentIndex].company.id, false)
+    onDislikeClick()
+  }
 
   return (
     <Stack flex={1} position="relative" marginX={3} marginTop={5} marginBottom={4}>
@@ -91,10 +145,10 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
               </>
             ) : (
               <>
-                <StyledButton onClick={onDislikeClick} sx={{ borderColor: '#EC1B40' }} size="large">
+                <StyledButton onClick={handleDislike} sx={{ borderColor: '#EC1B40' }} size="large">
                   <CloseIcon color="error" />
                 </StyledButton>
-                <StyledButton onClick={onLikeClick} size="large" sx={{ borderColor: '#18bc9c' }}>
+                <StyledButton onClick={handleLike} size="large" sx={{ borderColor: '#18bc9c' }}>
                   <FavoriteOutlinedIcon color="primary" />
                 </StyledButton>
               </>

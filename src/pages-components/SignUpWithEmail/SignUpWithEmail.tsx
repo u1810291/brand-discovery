@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-'use client'
-
 import { yupResolver } from '@hookform/resolvers/yup'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -58,6 +55,7 @@ export const SignUpWithEmail = () => {
   const {
     control,
     handleSubmit,
+    trigger, // <-- add the trigger method
     getValues,
     formState: { isDirty, isValid, isSubmitting },
   } = useForm<SignUpWithEmailFormType>({
@@ -86,9 +84,12 @@ export const SignUpWithEmail = () => {
   }, [user?.user?.uid, sending])
 
   const onSubmit = async (data: SignUpWithEmailFormType) => {
-    const { user } = await createUserWithEmailAndPassword(data.email, data.password)
-    await sendVerifyEmail(data.password)
-    await setCategories(user.uid)
+    const result = await createUserWithEmailAndPassword(data.email, data.password)
+    if (result) {
+      const { user } = result
+      await setCategories(user.uid)
+    }
+    await sendVerifyEmail(data.email)
   }
 
   useEffect(() => {
@@ -101,6 +102,7 @@ export const SignUpWithEmail = () => {
       )
     }
   }, [error, emailVerifyError])
+
   return (
     <MainLayout showBackButton>
       <Stack marginY="auto" marginTop={{ xs: 0, sm: 'auto' }} spacing={3}>
@@ -114,16 +116,36 @@ export const SignUpWithEmail = () => {
             label="E-mail address"
             control={control}
             autoComplete="email"
+            onChange={() => trigger('email')} // <-- trigger validation on change
           />
-          <InputField name="companyName" placeholder="Enter your Company name" label="Company name" control={control} />
-          <InputField name="firstName" placeholder="Enter your First name" label="First name" control={control} />
-          <InputField name="lastName" placeholder="Enter your Last name" label="Last name" control={control} />
+          <InputField
+            name="companyName"
+            placeholder="Enter your Company name"
+            label="Company name"
+            control={control}
+            onChange={() => trigger('companyName')} // <-- trigger validation on change
+          />
+          <InputField
+            name="firstName"
+            placeholder="Enter your First name"
+            label="First name"
+            control={control}
+            onChange={() => trigger('firstName')} // <-- trigger validation on change
+          />
+          <InputField
+            name="lastName"
+            placeholder="Enter your Last name"
+            label="Last name"
+            control={control}
+            onChange={() => trigger('lastName')} // <-- trigger validation on change
+          />
           <PasswordInput
             name="password"
             label="Password"
             placeholder="Enter your password"
             autoComplete="new-password"
             control={control}
+            onChange={() => trigger('password')} // <-- trigger validation on change
           />
           <Controller
             render={({ field: { value, onChange } }) => (

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { collection, getDocs, limit, query, where } from 'firebase/firestore'
-import { db } from './firebase'
+import { db, st } from './firebase'
 import { useAppDispatch } from 'src/store'
 import { BrandsType, setAllBrands } from 'src/store/slices/brands'
 
@@ -13,7 +13,7 @@ export const useBrands = () => {
     const fetchBrands = async () => {
       setLoading(true)
       try {
-        const q = await query(collection(db(), 'companies'), limit(25))
+        const q = await query(collection(db(), 'companies'), limit(50))
         const data = await getDocs(q)
         const brand = []
         data.forEach(async (doc) => {
@@ -29,13 +29,7 @@ export const useBrands = () => {
               tags: doc.data().categories?.split('/').filter(Boolean),
               id: doc.data()._id,
             },
-            images: [
-              doc.data().picture_1,
-              doc.data().picture_2,
-              doc.data().picture_3,
-              doc.data().picture_4,
-              doc.data().picture_5,
-            ],
+            images: ['https://mariosingh.com/wp-content/uploads/2020/03/shutterstock_327351386.jpg'],
           })
         })
         setBrands(brand)

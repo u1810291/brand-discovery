@@ -30,8 +30,8 @@ export const NameList: FC<NameListProps> = ({ data = [], totalCount = 2 }) => {
   return (
     <Stack spacing={0.5} direction="row" width="100%" flexWrap="wrap" justifyContent="end">
       {data.map((item, index) => (
-        <TypographyStyled key={item.id} color="primary" sx={{ display: 'flex', flexDirection: 'row' }}>
-          {neededData.length - 1 === index ? `${item.categoryName}` : `${item.categoryName},`}
+        <TypographyStyled key={item?.id} color="primary" sx={{ display: 'flex', flexDirection: 'row' }}>
+          {neededData.length - 1 === index ? `${item?.categoryName}` : `${item?.categoryName},`}
         </TypographyStyled>
       ))}
     </Stack>
