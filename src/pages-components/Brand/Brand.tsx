@@ -40,7 +40,7 @@ export const Brand = () => {
               <Typography fontWeight={700} fontSize={'14px'} lineHeight={'20px'}>
                 {brand?.images?.filter(Boolean).length} Gallery Photos
               </Typography>
-              <Gallery />
+              <Gallery currentCompany={brand?.company} images={brand?.images?.filter(Boolean)} />
             </Stack>
           </Stack>
         )

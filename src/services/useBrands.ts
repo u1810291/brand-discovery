@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useCallback } from 'react'
-import { collection, getDocs, limit, query, where, startAfter, orderBy, endBefore } from 'firebase/firestore'
+import { collection, getDocs, limit, query, where, startAfter, orderBy } from 'firebase/firestore'
 import { db } from './firebase'
 import { useAppDispatch } from 'src/store'
 import { setAllBrands } from 'src/store/slices/brands'
 import { SettingsType } from 'src/store/slices/settings'
 import { UserData } from 'src/store/slices/auth/auth.slice'
+import defaultLogo from '../../public/images/default_logo.svg'
+import defaultPicture from '../../public/images/default_brand_image.png'
 
 export const useBrands = () => {
   const [brands, setBrands] = useState<any>([])
@@ -59,39 +61,45 @@ export const useBrands = () => {
         settingsData.distance,
       )
       const userData = userDocs.docs[0].data() as UserData
+      const userLimit = (userData.likesLeft || 10) * 3
 
       // TODO: Fix me, needs to be iteratively fetch not liked data from firestore
       // https://stackoverflow.com/questions/61354866/is-there-a-workaround-for-the-firebase-query-in-limit-to-10
       const companiesQuery = await query(
         collection(db(), 'brands'),
-        orderBy('_id'),
-        where('_id', 'not-in', userData.likes.map((el) => el.company_id).splice(0, 10)),
         orderBy('main_categories'),
-        ...settingsData.categories.map((el) => endBefore(el)),
-        limit(20),
+        ...settingsData.categories.map((el) => startAfter(el)),
+        limit(userLimit),
       )
 
       const companiesData = await getDocs(companiesQuery)
       const brand = []
       companiesData.forEach(async (doc) => {
-        const username = doc.data()?.instagram_url?.split('/')
-        brand.push({
-          company: {
-            title: username[username.length - 1],
-            location: doc.data()?.city || doc.data()?.loc_label || doc.data()?.loc_locality,
-            image:
-              doc.data()?.profile_image_url ||
-              'https://firebasestorage.googleapis.com/v0/b/brand-discovery-2a140.appspot.com/o/images%2Fadidas%2F2022-08-29_17-29-57_UTC_profile_pic.jpg?alt=media&token=c769ae9f-27d7-4b03-a937-229c5d73fac7',
-            followers: doc.data()?.combined_followers,
-            tags: [doc.data()?.categories?.split('/')?.filter(Boolean), doc.data()?.main_categories].flatMap(
-              (el) => el,
-            ),
-            id: doc.data()._id,
-          },
-          images: [],
-        })
-        // }
+        if (!userData.likes.map((el) => el.company_id).includes(doc.data()._id)) {
+          if (
+            doc.data().loc_latitude <= northLat &&
+            doc.data().loc_latitude >= southLat &&
+            doc.data().loc_longitude >= northLon &&
+            doc.data().loc_longitude <= southLon
+          ) {
+            const username = doc.data()?.instagram_url?.split('/')
+            brand.push({
+              company: {
+                title: username[username.length - 1],
+                location: doc.data()?.city || doc.data()?.loc_label || doc.data()?.loc_locality,
+                image: doc.data()?.profile_image_url || defaultLogo,
+                followers: doc.data()?.combined_followers,
+                tags: [doc.data()?.categories?.split('/')?.filter(Boolean), doc.data()?.main_categories].flatMap(
+                  (el) => el,
+                ),
+                id: doc.data()._id,
+              },
+              images: [defaultPicture],
+            })
+          }
+        }
       })
+      console.error(brand)
       setBrands(brand)
       dispatch(setAllBrands(brand))
       setLoading(false)
@@ -114,16 +122,14 @@ export const useBrands = () => {
         company: {
           title: username[username.length - 1],
           location: companiesDoc?.city || companiesDoc?.loc_label || companiesDoc?.loc_locality,
-          image:
-            companiesDoc?.profile_image_url ||
-            'https://firebasestorage.googleapis.com/v0/b/brand-discovery-2a140.appspot.com/o/images%2Fadidas%2F2022-08-29_17-29-57_UTC_profile_pic.jpg?alt=media&token=c769ae9f-27d7-4b03-a937-229c5d73fac7',
+          image: companiesDoc?.profile_image_url || defaultLogo,
           followers: companiesDoc?.combined_followers,
           tags: [companiesDoc?.categories?.split('/')?.filter(Boolean), companiesDoc?.main_categories].flatMap(
             (el) => el,
           ),
           id: companiesDoc?._id,
         },
-        images: [],
+        images: [defaultPicture],
       })
       setLoading(false)
     } catch (error) {
@@ -156,16 +162,14 @@ export const useBrands = () => {
           company: {
             title: username[username.length - 1],
             location: doc.data()?.city || doc.data()?.loc_label || doc.data()?.loc_locality,
-            image:
-              doc.data()?.profile_image_url ||
-              'https://firebasestorage.googleapis.com/v0/b/brand-discovery-2a140.appspot.com/o/images%2Fadidas%2F2022-08-29_17-29-57_UTC_profile_pic.jpg?alt=media&token=c769ae9f-27d7-4b03-a937-229c5d73fac7',
+            image: doc.data()?.profile_image_url || defaultLogo,
             followers: doc.data()?.combined_followers,
             tags: [doc?.data()?.categories?.split('/')?.filter(Boolean), doc.data()?.main_categories].flatMap(
               (el) => el,
             ),
             id: doc.data()._id,
           },
-          images: [],
+          images: [defaultPicture],
         })
         // }
       })

@@ -15,7 +15,7 @@ export const CompanyCard: FC<CompanyCardProps> = ({ data, ...props }) => {
   const isMiddleWidth = useMediaQuery('(min-width:550px)')
   const isBigWidth = useMediaQuery('(min-width:800px)')
 
-  const chipsCount = isBigWidth ? 7 : isMiddleWidth ? 5 : 1
+  const chipsCount = isBigWidth ? 5 : isMiddleWidth ? 3 : 1
 
   return (
     <Root {...props}>
@@ -59,4 +59,5 @@ const Root = styled(Stack)`
   display: flex;
   flex-direction: row;
   gap: 16px;
+  z-index: 10;
 `
