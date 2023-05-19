@@ -25,12 +25,14 @@ export const useEmailGeneration = () => {
       const q = query(collection(db(), 'users'), where('uid', '==', uid))
       const docs = await getDocs(q)
       const userData = docs.docs[0].data()
+
       const result = await generateEmail({
         subject: 'Landlord wants to get connected to brands',
         body: `This is automatically generated e-mail from Spacewise Discovery App.
-               Landlord ${userData.firstName} ${userData.lastName} ${userData.email} wants to get connected to the following brands:
-               brand Id's`,
-        to: 'sg@popupshops.com',
+               Landlord ${userData.firstName} ${userData.lastName} 
+               ${userData.email} wants to get connected to the following brands:
+               brand Id's ${userData.likes.filter((el) => el.liked).map((el) => `${el.name}\n`)}`,
+        to: 'otabek.rzakulov@gmail.com',
       })
       dispatch(
         openModal({

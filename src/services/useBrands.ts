@@ -99,7 +99,6 @@ export const useBrands = () => {
           }
         }
       })
-      console.error(brand)
       setBrands(brand)
       dispatch(setAllBrands(brand))
       setLoading(false)
