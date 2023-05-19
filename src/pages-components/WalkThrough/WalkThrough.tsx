@@ -4,6 +4,7 @@ import { useState } from 'react'
 import ReactPlayer from 'react-player'
 import { GallerySwiper } from 'src/UI/GallerySwiper'
 import { Indicator } from 'src/components/Indicator'
+import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { Swiper as SwiperCommon } from 'swiper'
 
