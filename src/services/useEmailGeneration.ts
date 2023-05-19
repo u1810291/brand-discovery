@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { useCallback } from 'react'
 import { useAppDispatch } from 'src/store'
@@ -31,8 +32,9 @@ export const useEmailGeneration = () => {
         body: `This is automatically generated e-mail from Spacewise Discovery App.
                Landlord ${userData.firstName} ${userData.lastName} 
                ${userData.email} wants to get connected to the following brands:
-               brand Id's ${userData.likes.filter((el) => el.liked).map((el) => `${el.name}\n`)}`,
-        to: 'otabek.rzakulov@gmail.com',
+               brand Id's
+               ${userData.likes.filter((el) => el.liked).map((el) => `${el.name} \n`).join('')}`,
+        to: 'sg@popupshops.com',
       })
       dispatch(
         openModal({
