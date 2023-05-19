@@ -1,4 +1,4 @@
-import { doc, setDoc, getDoc, getDocs, query, collection, addDoc } from 'firebase/firestore'
+import { doc, setDoc, getDoc, getDocs, query, collection } from 'firebase/firestore'
 import { db } from './firebase'
 import categories from '../../categories.json'
 // import companies from '../../data.json'

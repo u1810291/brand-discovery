@@ -5,20 +5,15 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { styled } from '@mui/material/styles'
 import Link from 'next/link'
-import { FC, useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { LikedCardSkeleton } from 'src/components/Skeletons'
 import { ROUTES } from 'src/constants/routes'
 import { useEmailGeneration } from 'src/services/useEmailGeneration'
 import { UserData } from 'src/store/slices/auth/auth.slice'
-import { CompanyType } from 'src/types'
 import { CompanyCard, Slider } from './components'
 import { useBrands } from 'src/services/useBrands'
 
-type LikedPageContentProps = {
-  data: { company: CompanyType; images: string[] }[]
-}
-
-export const LikedPageContent: FC<LikedPageContentProps> = ({ data }) => {
+export const LikedPageContent = () => {
   const user: UserData = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
   const { handleEmailGeneration } = useEmailGeneration()
 

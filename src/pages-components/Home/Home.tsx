@@ -15,14 +15,10 @@ import { ROUTES } from 'src/constants/routes'
 import { useToggle } from 'src/hooks'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp, { db } from 'src/services/firebase'
-import { useAppDispatch, useAppSelector } from 'src/store'
+import { useAppDispatch } from 'src/store'
 import { UserData } from 'src/store/slices/auth/auth.slice'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { EmptyState, HomePageContent, InfoPageContent, LikedPageContent, SettingsPageContent } from './components'
-import { companies } from './mock'
-import { brandsSelector } from 'src/store/slices/brands'
-import { useBrands } from 'src/services/useBrands'
-import { useEffectOnce } from 'src/hooks/useEffectOnce'
 
 const auth = getAuth(firebaseApp())
 
@@ -124,7 +120,7 @@ export const Home = () => {
         />
       ),
     },
-    { name: 'liked', icon: <FavoriteBorderIcon />, content: <LikedPageContent data={companies} /> },
+    { name: 'liked', icon: <FavoriteBorderIcon />, content: <LikedPageContent /> },
     { name: 'info', icon: <InfoIcon />, content: <InfoPageContent /> },
     {
       name: 'settings',
