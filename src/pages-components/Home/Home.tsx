@@ -22,6 +22,7 @@ import { EmptyState, HomePageContent, InfoPageContent, LikedPageContent, Setting
 import { companies } from './mock'
 import { brandsSelector } from 'src/store/slices/brands'
 import { useBrands } from 'src/services/useBrands'
+// import { useGetBigQueryData } from 'src/services/useBigQuery'
 
 const auth = getAuth(firebaseApp())
 
@@ -35,9 +36,12 @@ export const Home = () => {
   const { brands } = useAppSelector(brandsSelector)
   const { fetchAllBrands } = useBrands()
 
+  // const [data, fetchBig] = useGetBigQueryData()
   useEffect(() => {
+    // fetchBig()
     fetchAllBrands()
   }, [])
+  // console.error(data)
   useEffect(() => {
     const handleClick = async (uid: string) => {
       try {
