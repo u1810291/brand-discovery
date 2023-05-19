@@ -6,16 +6,19 @@ import { ChipsList } from 'src/UI/ChipList'
 
 import { BrandSkeleton } from 'src/components/Skeletons'
 import { MainLayout } from 'src/layouts/MainLayout'
-import { companies } from '../Home/mock'
 import { CompanyCard, Gallery } from './components'
-
-const galleryCount = 123
+import { useEffect } from 'react'
+import { useBrands } from 'src/services/useBrands'
 
 export const Brand = () => {
   const router = useRouter()
   const { id } = router.query
-  const currentCompany = companies.find((item) => item.company.id === id)
-  // TODO: CHANGE TO LOADING DATA FROM API
+  const { brands, fetchOneBrand } = useBrands()
+
+  useEffect(() => {
+    fetchOneBrand(id)
+  }, [])
+
   const isLoading = false
   return (
     <MainLayout showBackButton>
@@ -23,16 +26,16 @@ export const Brand = () => {
         <BrandSkeleton />
       ) : (
         <Stack spacing={3}>
-          <CompanyCard data={currentCompany?.company} />
+          <CompanyCard data={brands?.company} />
           <Stack spacing={1}>
             <Typography fontWeight={700} fontSize={'14px'} lineHeight={'20px'}>
               Categories
             </Typography>
-            <ChipsList data={currentCompany?.company.tags} totalCount={currentCompany?.company.tags.length} />
+            <ChipsList data={brands?.company?.tags} totalCount={brands?.company?.tags?.length} />
           </Stack>
           <Stack spacing={1}>
             <Typography fontWeight={700} fontSize={'14px'} lineHeight={'20px'}>
-              {galleryCount} Gallery Photos
+              {brands?.images?.filter(Boolean).length} Gallery Photos
             </Typography>
             <Gallery />
           </Stack>

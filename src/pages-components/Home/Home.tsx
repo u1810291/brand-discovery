@@ -21,6 +21,7 @@ import { closeModal, openModal } from 'src/store/slices/modal'
 import { EmptyState, HomePageContent, InfoPageContent, LikedPageContent, SettingsPageContent } from './components'
 import { companies } from './mock'
 import { brandsSelector } from 'src/store/slices/brands'
+import { useBrands } from 'src/services/useBrands'
 
 const auth = getAuth(firebaseApp())
 
@@ -32,6 +33,11 @@ export const Home = () => {
   const user: UserData = JSON.parse(localStorage.getItem('user') || null)
   const { isOpen: isShowEmptyContent, open: showEmptyContent } = useToggle(false)
   const { brands } = useAppSelector(brandsSelector)
+  const { fetchAllBrands } = useBrands()
+
+  useEffect(() => {
+    fetchAllBrands()
+  }, [])
   useEffect(() => {
     const handleClick = async (uid: string) => {
       try {
