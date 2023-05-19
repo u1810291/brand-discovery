@@ -29,7 +29,7 @@ export const useGetCategories = () => {
         setError('Created empty categories field in user document')
       }
       dispatch(setSettings({ categories: userData?.categories?.sort() || [] }))
-      setSelected(userData?.categories?.sort() || [])
+      setSelected(userData?.categories || [])
     } catch (err) {
       console.error(err)
       setError(err?.message)
