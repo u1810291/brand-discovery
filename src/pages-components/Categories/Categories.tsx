@@ -1,5 +1,5 @@
 'use client'
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+import AddIcon from '@mui/icons-material/Add'
 import { CircularProgress, Typography, styled } from '@mui/material'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
@@ -66,6 +66,10 @@ export const Categories = () => {
     deleteCategory(user, item)
   }, [])
 
+  const getIsSelectedCategory = (category: string) => {
+    return selected.includes(category)
+  }
+
   return (
     <MainLayout
       padding={0}
@@ -100,11 +104,11 @@ export const Categories = () => {
         ) : query ? (
           searchResult?.map((search) => (
             <React.Fragment key={search}>
-              <ListItemButton onClick={() => handleSetCategory(search)}>
+              <ListItemButton disabled={getIsSelectedCategory(search)} onClick={() => handleSetCategory(search)}>
                 <Box sx={{ display: 'flex', width: '100%' }}>
                   <ListItemTextStyled primary={search} color="primary" sx={{ width: 'auto' }} />
                 </Box>
-                <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
+                {!getIsSelectedCategory(search) && <AddIcon sx={{ color: '#9AA09E' }} />}
               </ListItemButton>
               <StyledDivider sx={{ left: 20 }} />
             </React.Fragment>
@@ -112,11 +116,11 @@ export const Categories = () => {
         ) : (
           categories?.map((category, i) => (
             <React.Fragment key={`${category}-${i}`}>
-              <ListItemButton onClick={() => handleSetCategory(category)}>
+              <ListItemButton disabled={getIsSelectedCategory(category)} onClick={() => handleSetCategory(category)}>
                 <Box sx={{ display: 'flex', width: '100%' }}>
                   <ListItemTextStyled primary={category} color="primary" sx={{ width: 'auto' }} />
                 </Box>
-                <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
+                {!getIsSelectedCategory(category) && <AddIcon sx={{ color: '#9AA09E' }} />}
               </ListItemButton>
               <StyledDivider sx={{ left: 20 }} />
             </React.Fragment>

@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography'
 import { styled } from '@mui/material/styles'
 import { getAuth } from 'firebase/auth'
 import 'firebase/firestore'
+import { collection, doc, getDocs, query, setDoc } from 'firebase/firestore'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
@@ -25,9 +26,8 @@ import { useAppDispatch } from 'src/store'
 import { signUp } from 'src/store/slices/auth'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
-import { SignUpWithEmailFormType, defaultValues, schema } from './helper'
 import { formattedMessage } from 'src/utils/formatErrors'
-import { collection, doc, getDocs, query, updateDoc, where, setDoc } from 'firebase/firestore'
+import { SignUpWithEmailFormType, defaultValues, schema } from './helper'
 
 const auth = getAuth(firebaseApp())
 
@@ -174,7 +174,7 @@ export const SignUpWithEmail = () => {
           </Button>
           <Typography fontSize={14} fontWeight={400} color="#747978" textAlign="center">
             Use of this app constitutes acceptance of the{' '}
-            <LinkContainer href="https://www.popupshops.com/en/pages/terms">Terms of Use</LinkContainer>,{' '}
+            <LinkContainer href={ROUTES.termsOfUse}>Terms of Use</LinkContainer>,{' '}
             <StyledLink href="https://www.popupshops.com/en/pages/booking_terms">Booking Terms</StyledLink> and{' '}
             <StyledLink href="https://www.popupshops.com/en/pages/privacy">Privacy Policy</StyledLink>.
           </Typography>
@@ -187,6 +187,5 @@ export const SignUpWithEmail = () => {
 const LinkContainer = styled(Link)(({ theme }) =>
   theme.unstable_sx({
     color: 'primary.main',
-    textDecoration: 'none',
   }),
 )
