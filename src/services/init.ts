@@ -1,7 +1,7 @@
 import { doc, setDoc, getDoc, getDocs, query, collection, addDoc } from 'firebase/firestore'
 import { db } from './firebase'
 import categories from '../../categories.json'
-import companies from '../../data.json'
+// import companies from '../../data.json'
 
 export const useSetCategory = () => {
   const setCategory = async () => {
@@ -17,9 +17,9 @@ export const useSetCategory = () => {
       }
 
       if (!companiesSnap.docs.length) {
-        companies?.map(async (el) => {
-          await addDoc(collection(db(), 'brands'), el)
-        })
+        // companies?.map(async (el) => {
+        //   await addDoc(collection(db(), 'brands'), el)
+        // })
       }
     } catch (err) {
       console.error(err)
