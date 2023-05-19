@@ -21,6 +21,9 @@ import { closeModal, openModal } from 'src/store/slices/modal'
 import { EmptyState, HomePageContent, InfoPageContent, LikedPageContent, SettingsPageContent } from './components'
 import { companies } from './mock'
 import { brandsSelector } from 'src/store/slices/brands'
+import { useBrands } from 'src/services/useBrands'
+import { useEffectOnce } from 'src/hooks/useEffectOnce'
+// import { useGetBigQueryData } from 'src/services/useBigQuery'
 
 const auth = getAuth(firebaseApp())
 
@@ -32,6 +35,16 @@ export const Home = () => {
   const user: UserData = JSON.parse(localStorage.getItem('user') || null)
   const { isOpen: isShowEmptyContent, open: showEmptyContent } = useToggle(false)
   const { brands } = useAppSelector(brandsSelector)
+  const { fetchAllBrands } = useBrands()
+
+  useEffectOnce(() => {
+    fetchAllBrands()
+  })
+
+  useEffect(() => {
+    f
+  }, [brands])
+
   useEffect(() => {
     const handleClick = async (uid: string) => {
       try {

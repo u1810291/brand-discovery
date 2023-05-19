@@ -21,17 +21,6 @@ export const useSetCategory = () => {
           await addDoc(collection(db(), 'brands'), el)
         })
       }
-      // else {
-      //   const companies = []
-      //   companiesSnap.forEach((el) => companies.push(el.data()))
-      //   fs.readFile('./companies.json', 'utf8', (err: any, data: any) => {
-      //     if (err) {
-      //       console.error(err)
-      //     } else {
-      //       console.error('data', data)
-      //     }
-      //   })
-      // }
     } catch (err) {
       console.error(err)
     }
