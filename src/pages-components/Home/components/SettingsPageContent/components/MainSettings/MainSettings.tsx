@@ -35,7 +35,7 @@ export const MainSettings = ({ control, onSubmit }) => {
   const { success: storeLocationSuccess, error: storeLocationError, updateSettings } = useUpdateSettings()
   const dispatch = useAppDispatch()
   const router = useRouter()
-  const nameCount = isBigWidth ? 10 : isMiddleWidth ? 5 : 3
+  const nameCount = isBigWidth ? 5 : isMiddleWidth ? 3 : 1
   const user = useMemo(() => JSON.parse(localStorage.getItem('user') || null), [])
 
   const {
