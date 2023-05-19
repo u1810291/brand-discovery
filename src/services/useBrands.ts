@@ -9,6 +9,7 @@ import { UserData } from 'src/store/slices/auth/auth.slice'
 
 export const useBrands = () => {
   const [brands, setBrands] = useState<any>([])
+  const [brand, setBrand] = useState<any>()
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>(null)
   const dispatch = useAppDispatch()
@@ -58,17 +59,16 @@ export const useBrands = () => {
         settingsData.distance,
       )
       const userData = userDocs.docs[0].data() as UserData
+
+      // TODO: Fix me, needs to be iteratively fetch not liked data from firestore
+      // https://stackoverflow.com/questions/61354866/is-there-a-workaround-for-the-firebase-query-in-limit-to-10
       const companiesQuery = await query(
         collection(db(), 'brands'),
         orderBy('_id'),
-        where(
-          '_id',
-          'not-in',
-          userData.likes.map((el) => el.company_id),
-        ),
+        where('_id', 'not-in', userData.likes.map((el) => el.company_id).splice(0, 10)),
         orderBy('main_categories'),
         ...settingsData.categories.map((el) => endBefore(el)),
-        limit(25),
+        limit(20),
       )
 
       const companiesData = await getDocs(companiesQuery)
@@ -105,31 +105,77 @@ export const useBrands = () => {
   const fetchOneBrand = useCallback(async (id) => {
     setLoading(true)
     try {
-      const companiesQuery = await query(collection(db(), 'companies'), where('_id', '==', id))
+      const companiesQuery = await query(collection(db(), 'brands'), where('_id', '==', id))
       const companiesData = await getDocs(companiesQuery)
       const companiesDoc = companiesData.docs[0].data()
-      setBrands({
+      const username = companiesDoc?.instagram_url?.split('/')
+
+      setBrand({
         company: {
-          title: companiesDoc.data()?.profile_name,
-          location: 'San Francisco',
-          image: companiesDoc.data()?.profile_image_url,
-          followers: companiesDoc.data()?.combined_followers,
-          tags: [...companiesDoc.data().categories?.split('/').filter(Boolean), companiesDoc.data()?.main_categories],
-          id: companiesDoc.data()._id,
+          title: username[username.length - 1],
+          location: companiesDoc?.city || companiesDoc?.loc_label || companiesDoc?.loc_locality,
+          image:
+            companiesDoc?.profile_image_url ||
+            'https://firebasestorage.googleapis.com/v0/b/brand-discovery-2a140.appspot.com/o/images%2Fadidas%2F2022-08-29_17-29-57_UTC_profile_pic.jpg?alt=media&token=c769ae9f-27d7-4b03-a937-229c5d73fac7',
+          followers: companiesDoc?.combined_followers,
+          tags: [companiesDoc?.categories?.split('/')?.filter(Boolean), companiesDoc?.main_categories].flatMap(
+            (el) => el,
+          ),
+          id: companiesDoc?._id,
         },
-        images: [
-          companiesDoc.data().picture_1,
-          companiesDoc.data().picture_2,
-          companiesDoc.data().picture_3,
-          companiesDoc.data().picture_4,
-          companiesDoc.data().picture_5,
-        ],
+        images: [],
       })
+      setLoading(false)
     } catch (error) {
-      setError(error?.message)
+      setLoading(false)
+      setError(error)
+      console.error(error)
     }
-    setLoading(false)
   }, [])
 
-  return { brands, loading, error, fetchOneBrand, fetchAllBrands }
+  const fetchLikedBrands = useCallback(async (user: UserData) => {
+    setLoading(true)
+    try {
+      const userRef = collection(db(), 'users')
+      const userQuery = query(userRef, where('uid', '==', user.uid))
+      const userDocs = await getDocs(userQuery)
+
+      if (userDocs.docs.length === 0) {
+        throw new Error(`No user found with uid: ${user.uid}`)
+      }
+
+      const userData = userDocs.docs[0].data() as UserData
+      const filterLiked = userData.likes.filter((el) => el.liked === true).map((el) => el.company_id)
+      const companiesQuery = await query(collection(db(), 'brands'), where('_id', 'in', filterLiked))
+
+      const companiesData = await getDocs(companiesQuery)
+      const brand = []
+      companiesData.forEach(async (doc) => {
+        const username = doc.data()?.instagram_url?.split('/')
+        brand.push({
+          company: {
+            title: username[username.length - 1],
+            location: doc.data()?.city || doc.data()?.loc_label || doc.data()?.loc_locality,
+            image:
+              doc.data()?.profile_image_url ||
+              'https://firebasestorage.googleapis.com/v0/b/brand-discovery-2a140.appspot.com/o/images%2Fadidas%2F2022-08-29_17-29-57_UTC_profile_pic.jpg?alt=media&token=c769ae9f-27d7-4b03-a937-229c5d73fac7',
+            followers: doc.data()?.combined_followers,
+            tags: [doc?.data()?.categories?.split('/')?.filter(Boolean), doc.data()?.main_categories].flatMap(
+              (el) => el,
+            ),
+            id: doc.data()._id,
+          },
+          images: [],
+        })
+        // }
+      })
+      setBrands(brand)
+      setLoading(false)
+    } catch (error) {
+      console.error(error)
+      setError(error?.message)
+      setLoading(false)
+    }
+  }, [])
+  return { brands, brand, loading, error, fetchOneBrand, fetchAllBrands, fetchLikedBrands }
 }

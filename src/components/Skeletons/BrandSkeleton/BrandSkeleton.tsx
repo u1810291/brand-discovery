@@ -22,7 +22,11 @@ export const BrandSkeleton = () => {
         <Skeleton variant="text" width="100%" />
         <Skeleton width="100%" sx={{ height: { xs: '216px', sm: '450px' } }} />
       </Stack>
-      <Container>{count.fill(<Skeleton sx={{ height: { xs: '102px', sm: '202px' } }} />)}</Container>
+      <Container>
+        {count.fill('').map((_, index) => (
+          <Skeleton key={index} sx={{ height: { xs: '102px', sm: '202px' } }} />
+        ))}
+      </Container>
     </Root>
   )
 }
