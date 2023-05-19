@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+
 const admin = require('firebase-admin')
 const puppeteer = require('puppeteer-extra')
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
