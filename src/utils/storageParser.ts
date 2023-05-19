@@ -6,7 +6,7 @@ export const getSavedData = useCallback((key: string) => {
     try {
       data = JSON.parse(data)
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
     return data
   }

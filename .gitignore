@@ -13,9 +13,11 @@ script.ts
 # next.js
 /.next/
 /out/
-
+data.json
 # production
 /build
+
+.gcloud_creds.json
 
 # misc
 .DS_Store

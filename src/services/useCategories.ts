@@ -28,7 +28,7 @@ export const useGetCategories = () => {
         await updateDoc(userRef, { categories: [] })
         setError('Created empty categories field in user document')
       }
-      dispatch(setSettings({ categories: userData?.categories || [] }))
+      dispatch(setSettings({ categories: userData?.categories?.sort() || [] }))
       setSelected(userData?.categories || [])
     } catch (err) {
       console.error(err)
@@ -47,7 +47,7 @@ export const useGetCategories = () => {
           const data = docSnap.data()
           categoriesData = data.categories || []
         }
-        setCategories(categoriesData)
+        setCategories(categoriesData.sort())
       } catch (error) {
         setError(error?.message)
       }

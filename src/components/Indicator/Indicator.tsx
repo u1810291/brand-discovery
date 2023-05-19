@@ -4,15 +4,16 @@ import { FC } from 'react'
 type IndicatorProps = {
   activeIndex: number
   count: number
+  hasBorder?: boolean
 } & StackProps
-export const Indicator: FC<IndicatorProps> = ({ activeIndex, count, ...props }) => {
+export const Indicator: FC<IndicatorProps> = ({ activeIndex, count, hasBorder, ...props }) => {
   const blockArray = Array(count).fill('')
 
   return (
     <Stack
       direction="row"
       gap={{ xs: '4px', sm: '20px' }}
-      height="4px"
+      height={hasBorder ? '5px' : '4px'}
       width="calc(100% - 32px)"
       position="absolute"
       left=" 16px"
@@ -28,6 +29,7 @@ export const Indicator: FC<IndicatorProps> = ({ activeIndex, count, ...props }) 
           borderRadius="4px"
           width="100%"
           height="100%"
+          border={hasBorder && '0.1px solid'}
         />
       ))}
     </Stack>

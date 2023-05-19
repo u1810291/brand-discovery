@@ -1,17 +1,17 @@
 import Stack from '@mui/material/Stack'
-import { styled } from '@mui/material/styles'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import ReactPlayer from 'react-player'
 import { GallerySwiper } from 'src/UI/GallerySwiper'
+import { Indicator } from 'src/components/Indicator'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { Swiper as SwiperCommon } from 'swiper'
 
-const data = [
-  { title: 'Brands', subtitle: 'Lorem Ipsum Dolor Sit Amet', image: '/images/step1.png' },
-  { title: 'Liked Brands', subtitle: 'Lorem Ipsum Dolor Sit Amet', image: '/images/step2.png' },
-  { title: 'Settings', subtitle: 'Lorem Ipsum Dolor Sit Amet', image: '/images/step3.png' },
+const videos = [
+  { src: '/videos/HomeScreen.mp4' },
+  { src: '/videos/LikedScreen.mp4' },
+  { src: '/videos/SettingsScreen.mp4' },
 ]
 
 export const WalkThrough = () => {
@@ -21,10 +21,11 @@ export const WalkThrough = () => {
   const router = useRouter()
 
   const getNextSlide = () => {
-    if (activeIndex < data.length - 1) {
+    if (activeIndex < videos.length - 1) {
       swiper?.slideNext()
       setActiveIndex((prev) => prev + 1)
     } else {
+      alert('end')
       localStorage.setItem('walkthroughCompleted', true.toString())
       router.push(ROUTES.signIn)
     }
@@ -38,62 +39,19 @@ export const WalkThrough = () => {
 
   return (
     <MainLayout position="relative" padding={0}>
-      {/* <Indicator count={data.length} activeIndex={activeIndex} top="35px" /> */}
+      <Stack position="absolute" zIndex={2} top="35px" left="16px" width="calc(100% - 32px)">
+        <Indicator hasBorder count={videos.length} activeIndex={activeIndex} position={'initial'} width="100%" />
+      </Stack>
       <Stack height="100%" width="40%" onClick={getPrevSlide} position="absolute" top={0} left={0} zIndex={2} />
       <Stack height="100%" width="40%" onClick={getNextSlide} position="absolute" top={0} right={0} zIndex={2} />
       <GallerySwiper
-        data={data}
+        data={videos}
         swiperOptions={{ spaceBetween: 0, slidesPerView: 1 }}
         setSwiper={setSwiper}
         renderElement={(item) => (
-          <>
-            <ImageContainer width="100%" height="100%">
-              <Image
-                placeholder="blur"
-                blurDataURL={`${item}`}
-                unoptimized
-                src={item.image}
-                alt="picture"
-                width={600}
-                height={400}
-              />
-            </ImageContainer>
-            {/* <Wrapper spacing={1}>
-              <Typography fontWeight={700} fontSize={40} lineHeight="55px">
-                {item.title}
-              </Typography>
-              <Typography fontWeight={700} fontSize={18} lineHeight="25px">
-                {item.subtitle}
-              </Typography>
-            </Wrapper> */}
-          </>
+          <ReactPlayer width="100%" height="100%" muted playing loop onEnded={getNextSlide} url={item.src} />
         )}
       />
     </MainLayout>
   )
 }
-
-const ImageContainer = styled(Stack)`
-  align-items: center;
-  img {
-    height: 100%;
-    object-fit: cover;
-
-    @media (min-width: 450px) {
-      max-width: 470px;
-      border: 1px solid lightgray;
-      object-fit: fill;
-    }
-  }
-`
-
-// const Wrapper = styled(Stack)`
-//   position: absolute;
-//   width: 100%;
-//   bottom: 120px;
-//   z-index: 2;
-//   left: 50%;
-//   transform: translateX(-50%);
-//   color: #fff;
-//   text-align: center;
-// `

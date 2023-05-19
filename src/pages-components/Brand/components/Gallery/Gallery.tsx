@@ -1,15 +1,9 @@
 'use client'
 
 import { Stack, styled } from '@mui/material'
-import { useRouter } from 'next/router'
 import { FullScreenImage } from 'src/components/FullScreenImage'
-import { companies } from 'src/pages-components/Home/mock'
 
-export const Gallery = () => {
-  const router = useRouter()
-  const { id } = router.query
-  const currentCompany = companies.find((item) => item.company.id === id)
-  const images = currentCompany?.images
+export const Gallery = ({ currentCompany, images }) => {
   const firstImage = images?.[0]
   const otherImages = images?.slice(1, images?.length)
   return (
@@ -17,7 +11,7 @@ export const Gallery = () => {
       <FirstImageContainer>
         <FullScreenImage
           image={{ src: firstImage, alt: 'Gallery image', height: 216, width: 323 }}
-          company={currentCompany?.company}
+          company={currentCompany}
         />
       </FirstImageContainer>
       <Container>
@@ -25,7 +19,7 @@ export const Gallery = () => {
           <ImageContainer key={`${item}-${index}`}>
             <FullScreenImage
               image={{ src: item, alt: 'Gallery image', height: 102, width: 102 }}
-              company={currentCompany?.company}
+              company={currentCompany}
             />
           </ImageContainer>
         ))}

@@ -13,33 +13,37 @@ import { useBrands } from 'src/services/useBrands'
 export const Brand = () => {
   const router = useRouter()
   const { id } = router.query
-  const { brands, fetchOneBrand } = useBrands()
+  const { brand, fetchOneBrand, loading } = useBrands()
 
   useEffect(() => {
     fetchOneBrand(id)
   }, [])
 
-  const isLoading = false
   return (
     <MainLayout showBackButton>
-      {isLoading ? (
+      {loading && !brand?.company ? (
         <BrandSkeleton />
       ) : (
-        <Stack spacing={3}>
-          <CompanyCard data={brands?.company} />
-          <Stack spacing={1}>
-            <Typography fontWeight={700} fontSize={'14px'} lineHeight={'20px'}>
-              Categories
-            </Typography>
-            <ChipsList data={brands?.company?.tags} totalCount={brands?.company?.tags?.length} />
+        brand?.company && (
+          <Stack spacing={3}>
+            <CompanyCard data={brand?.company} />
+            <Stack spacing={1}>
+              <Typography fontWeight={700} fontSize={'14px'} lineHeight={'20px'}>
+                Categories
+              </Typography>
+              <ChipsList
+                data={brand?.company?.tags.filter((el) => el && el !== 'undefined')}
+                totalCount={brand?.company?.tags?.length}
+              />
+            </Stack>
+            <Stack spacing={1}>
+              <Typography fontWeight={700} fontSize={'14px'} lineHeight={'20px'}>
+                {brand?.images?.filter(Boolean).length} Gallery Photos
+              </Typography>
+              <Gallery currentCompany={brand?.company} images={brand?.images?.filter(Boolean)} />
+            </Stack>
           </Stack>
-          <Stack spacing={1}>
-            <Typography fontWeight={700} fontSize={'14px'} lineHeight={'20px'}>
-              {brands?.images?.filter(Boolean).length} Gallery Photos
-            </Typography>
-            <Gallery />
-          </Stack>
-        </Stack>
+        )
       )}
     </MainLayout>
   )
