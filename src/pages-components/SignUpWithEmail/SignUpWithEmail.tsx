@@ -45,7 +45,7 @@ const setCategories = async (uid: string) => {
     await setDoc(newDocRef, updatedData)
     console.log(`Document written with ID: ${newDocRef.id}`)
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 

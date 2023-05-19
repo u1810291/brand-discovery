@@ -8,74 +8,74 @@ import { styled } from '@mui/material/styles'
 import { animated, interpolate } from '@react-spring/web'
 import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore'
 import Link from 'next/link'
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useMemo } from 'react'
 import { CompanyCardSkeleton } from 'src/components/Skeletons'
 import { ROUTES } from 'src/constants/routes'
 import { db } from 'src/services/firebase'
 import { useBrands } from 'src/services/useBrands'
-import { useAppDispatch } from 'src/store'
+import { useAppDispatch, useAppSelector } from 'src/store'
 import { openModal } from 'src/store/slices/modal'
 import { Card, CompanyCard } from './components'
 import { useHomePageAnim } from './hooks'
+import { brandsSelector } from 'src/store/slices/brands'
+import { useEffectOnce } from 'src/hooks/useEffectOnce'
 
 type ContentProps = {
-  data: any[]
   likeAction: (id: string) => void | Promise<void>
   dislikeAction: (id: string) => void | Promise<void>
   finishAction: () => void | Promise<void>
-}
-
-interface likeData {
-  name: string
-  company_id: string
-  time: Date
-  liked: boolean
 }
 
 async function handleActionClick(uid: string, cid: string, liked: boolean) {
   try {
     const uq = query(collection(db(), 'users'), where('uid', '==', uid))
     const udocs = await getDocs(uq)
-    const cq = query(collection(db(), 'companies'), where('_id', '==', cid))
+    const cq = query(collection(db(), 'brands'), where('_id', '==', cid))
     const cdocs = await getDocs(cq)
     const companyData = cdocs.docs[0].data()
 
+    const username = companyData.instagram_url.split('/')
     const updateData = {
-      name: companyData.profile_name,
+      name: username[username.length - 1],
       company_id: cid,
       time: new Date(),
       liked,
     }
     const userData = udocs.docs[0].data()
+
     if (userData.likes && userData.likes.some((like) => like.company_id === cid)) {
-      // Company ID already exists in likes array
       return
-    } else if (userData.likes) {
-      // Add the new like to the existing array
+    } else if (userData?.likes?.length) {
       const updatedUserLikes = [...userData.likes, updateData]
-      await updateDoc(doc(db(), 'users', udocs.docs[0].id), { likes: updatedUserLikes })
+      await updateDoc(doc(db(), 'users', userData.email), { likes: updatedUserLikes })
       return
     } else {
-      // Create a new likes array with the first like
-      await updateDoc(doc(db(), 'users', udocs.docs[0].id), { likes: [updateData] })
+      await updateDoc(doc(db(), 'users', userData.email), { likes: [updateData] })
       return
     }
   } catch (err) {
+    console.error(err)
     alert(err)
   }
 }
 
-export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAction, finishAction }) => {
+export const HomePageContent: FC<ContentProps> = ({ likeAction, dislikeAction, finishAction }) => {
+  const { brands } = useAppSelector(brandsSelector)
+  const { fetchAllBrands, loading: brandsLoading } = useBrands()
+  const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
+
+  useEffectOnce(() => {
+    fetchAllBrands(user)
+  })
+
   const { animArray, isLike, isShowLabel, onDislikeClick, onLikeClick, currentIndex, trans, bind, likesLeft } =
     useHomePageAnim({
-      data,
+      data: brands,
       likeAction,
       dislikeAction,
       finishAction,
     })
   const { loading } = useBrands()
-
-  const user = JSON.parse(localStorage.getItem('user') || null)
 
   const dispatch = useAppDispatch()
 
@@ -94,19 +94,19 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
   }, [likesLeft])
 
   const handleLike = () => {
-    handleActionClick(user.uid, data[currentIndex].company.id, true)
+    handleActionClick(user.uid, brands[currentIndex].company.id, true)
     onLikeClick()
   }
 
   const handleDislike = () => {
-    handleActionClick(user.uid, data[currentIndex].company.id, false)
+    handleActionClick(user.uid, brands[currentIndex].company.id, false)
     onDislikeClick()
   }
 
   return (
     <Stack flex={1} position="relative" marginX={3} marginTop={5} marginBottom={4}>
       <Stack flex={1}>
-        {loading ? (
+        {loading || brandsLoading ? (
           <Skeleton variant="rectangular" sx={{ flex: 1, opacity: 0.7 }} />
         ) : (
           animArray.map(({ x, y, rot, scale }, i) => (
@@ -114,7 +114,7 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
               <Card
                 isLike={isLike}
                 isShowLabel={i === currentIndex && isShowLabel}
-                images={data[i]?.images?.slice(0, 5) || []}
+                images={brands[i]?.images?.slice(0, 5) || []}
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 //@ts-ignore
                 {...bind(i)}
@@ -129,15 +129,15 @@ export const HomePageContent: FC<ContentProps> = ({ data, likeAction, dislikeAct
 
       {currentIndex >= 0 && (
         <Wrapper>
-          {loading ? (
+          {loading || brandsLoading ? (
             <CompanyCardSkeleton />
           ) : (
-            <LinkContainer href={`${ROUTES.brand}/${data[currentIndex].company.id}`}>
-              <CompanyCard data={data[currentIndex].company} />
+            <LinkContainer href={`${ROUTES.brand}/${brands[currentIndex].company.id}`}>
+              <CompanyCard data={brands[currentIndex].company} />
             </LinkContainer>
           )}
           <Stack direction="row" justifyContent="space-between" width="100%" paddingX={9}>
-            {loading ? (
+            {loading || brandsLoading ? (
               <>
                 <Skeleton variant="circular" width={40} height={40} />
                 <Skeleton variant="circular" width={40} height={40} />

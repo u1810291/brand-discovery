@@ -62,7 +62,7 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
         } else return '-'
       }
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 

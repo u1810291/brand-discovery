@@ -24,7 +24,7 @@ export const FullScreenImage: FC<FullScreenImageProps> = memo(function FullScree
               {company?.title}
             </Typography>
           </Stack>
-          <IconButton onClick={close} sx={{ width: 'fit-content', color: '#fff' }}>
+          <IconButton onClick={close} sx={{ width: 'fit-content', color: '#fff', zIndex: 4 }}>
             <Close />
           </IconButton>
         </Stack>
