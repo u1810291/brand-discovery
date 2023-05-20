@@ -1,7 +1,7 @@
 import Stack from '@mui/material/Stack'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import ReactPlayer from 'react-player'
+import ReactPlayer from 'react-player/file'
 import { GallerySwiper } from 'src/UI/GallerySwiper'
 import { Indicator } from 'src/components/Indicator'
 import { ROUTES } from 'src/constants/routes'
@@ -25,7 +25,6 @@ export const WalkThrough = () => {
       swiper?.slideNext()
       setActiveIndex((prev) => prev + 1)
     } else {
-      alert('end')
       localStorage.setItem('walkthroughCompleted', true.toString())
       router.push(ROUTES.signIn)
     }
@@ -49,7 +48,16 @@ export const WalkThrough = () => {
         swiperOptions={{ spaceBetween: 0, slidesPerView: 1 }}
         setSwiper={setSwiper}
         renderElement={(item) => (
-          <ReactPlayer width="100%" height="100%" muted playing loop onEnded={getNextSlide} url={item.src} />
+          <ReactPlayer
+            width="100%"
+            height="100%"
+            muted
+            playsinline
+            playing
+            loop
+            onEnded={getNextSlide}
+            url={item.src}
+          />
         )}
       />
     </MainLayout>

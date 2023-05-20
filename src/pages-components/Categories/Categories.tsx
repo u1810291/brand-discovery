@@ -131,18 +131,6 @@ export const Categories = () => {
   )
 }
 
-const TypographyStyled = styled(Typography)(({ theme }) =>
-  theme.unstable_sx({
-    color: 'primary.main',
-    alignItems: 'center',
-    verticalAlign: 'middle',
-    display: 'table-cell',
-    textAlign: 'center',
-    flexGrow: 1,
-    lineHeight: '32px',
-  }),
-)
-
 const RegularTypographyStyled = styled(Typography)`
   font-family: 'Manrope';
   font-style: normal;
