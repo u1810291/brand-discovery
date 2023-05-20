@@ -65,7 +65,7 @@ export const HomePageContent: FC<ContentProps> = ({ likeAction, dislikeAction, f
   const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
 
   useEffectOnce(() => {
-    fetchAllBrands(user)
+    fetchAllBrands(user, finishAction)
   })
 
   const { animArray, isLike, isShowLabel, onDislikeClick, onLikeClick, currentIndex, trans, bind, likesLeft } =

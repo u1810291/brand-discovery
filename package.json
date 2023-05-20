@@ -26,6 +26,7 @@
     "emailjs-com": "^3.2.0",
     "firebase": "^9.19.1",
     "firebase-admin": "^11.8.0",
+    "firesql": "^2.0.2",
     "next": "13.2.4",
     "next-pwa": "^5.6.0",
     "react": "^18.2.0",

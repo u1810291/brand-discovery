@@ -43,6 +43,9 @@ dependencies:
   firebase-admin:
     specifier: ^11.8.0
     version: 11.8.0
+  firesql:
+    specifier: ^2.0.2
+    version: 2.0.2(firebase@9.19.1)(rxfire@6.0.3)(rxjs@7.8.0)
   next:
     specifier: 13.2.4
     version: 13.2.4(@babel/core@7.21.3)(react-dom@18.2.0)(react@18.2.0)
@@ -4258,6 +4261,11 @@ packages:
       browserslist: 4.21.5
     dev: false
 
+  /core-js@3.30.2:
+    resolution: {integrity: sha512-uBJiDmwqsbJCWHAwjrx3cvjbMXP7xD72Dmsn5LOJpiRmE3WbBbN5rCqQ2Qh6Ek6/eOrjlWngEynBWo4VxerQhg==}
+    requiresBuild: true
+    dev: false
+
   /core-util-is@1.0.2:
     resolution: {integrity: sha512-3lqz5YjWTYnW6dlDa5TLaTCcShfar1e40rmcJVwCBJC6mWlFuj0eCHIElmG1g5kyuJ/GD+8Wn4FFCcz4gJPfaQ==}
     dev: true
@@ -5511,6 +5519,20 @@ packages:
       '@firebase/util': 1.9.3
     transitivePeerDependencies:
       - encoding
+    dev: false
+
+  /firesql@2.0.2(firebase@9.19.1)(rxfire@6.0.3)(rxjs@7.8.0):
+    resolution: {integrity: sha512-3HipSyyJlVTIESHt5OQ0YhCvclm1FV4J2zcPg9I9xpJGjrTn7Gi7tZFniKbgeg1kYS5k5htDvxEQbPfHiHMWBg==}
+    engines: {node: '>=8.0.0'}
+    peerDependencies:
+      firebase: '*'
+      rxfire: '*'
+      rxjs: '*'
+    dependencies:
+      core-js: 3.30.2
+      firebase: 9.19.1
+      rxfire: 6.0.3(firebase@9.19.1)(rxjs@7.8.0)
+      rxjs: 7.8.0
     dev: false
 
   /flat-cache@3.0.4:
@@ -8620,11 +8642,21 @@ packages:
     dependencies:
       queue-microtask: 1.2.3
 
+  /rxfire@6.0.3(firebase@9.19.1)(rxjs@7.8.0):
+    resolution: {integrity: sha512-77nkyffHh7jgfi1YA/N9RI+kWxYpgKk6GRML1lyersvaqbJt4hkvWwk1rWib9Rb5Lr5mT+Ha45lu7nM79sJCZA==}
+    peerDependencies:
+      firebase: ^9.0.0
+      rxjs: ^6.0.0 || ^7.0.0
+    dependencies:
+      firebase: 9.19.1
+      rxjs: 7.8.0
+      tslib: 1.14.1
+    dev: false
+
   /rxjs@7.8.0:
     resolution: {integrity: sha512-F2+gxDshqmIub1KdvZkaEfGDwLNpPvk9Fs6LD/MyQxNgMds/WH9OdDDXOmxUZpME+iSK3rQCctkL0DYyytUqMg==}
     dependencies:
       tslib: 2.5.0
-    dev: true
 
   /safe-buffer@5.1.2:
     resolution: {integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==}
@@ -9372,7 +9404,6 @@ packages:
 
   /tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
-    dev: true
 
   /tslib@2.5.0:
     resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}

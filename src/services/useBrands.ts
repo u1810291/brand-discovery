@@ -1,6 +1,8 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useCallback } from 'react'
-import { collection, getDocs, limit, query, where, startAfter, orderBy } from 'firebase/firestore'
+import { collection, getDocs, limit, query, where, startAt, orderBy, getFirestore, doc, or, and, endAt, endBefore, startAfter } from 'firebase/firestore'
 import { db } from './firebase'
 import { useAppDispatch } from 'src/store'
 import { setAllBrands } from 'src/store/slices/brands'
@@ -9,8 +11,10 @@ import { UserData } from 'src/store/slices/auth/auth.slice'
 import defaultLogo from '../../public/images/default_logo.svg'
 import defaultPicture from '../../public/images/default_brand_image.png'
 
+
+
 export const useBrands = () => {
-  const [brands, setBrands] = useState<any>([])
+  const [brands, setBrands] = useState<any>()
   const [brand, setBrand] = useState<any>()
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>(null)
@@ -36,7 +40,7 @@ export const useBrands = () => {
     return [nwLat, nwLon, seLat, seLon]
   }
 
-  const fetchAllBrands = useCallback(async (user: UserData) => {
+  const fetchAllBrands = useCallback(async (user: UserData, callBack: () => void) => {
     setLoading(true)
     try {
       const settingsRef = collection(db(), 'settings')
@@ -44,7 +48,7 @@ export const useBrands = () => {
       const settingsDocs = await getDocs(settingsQuery)
 
       if (settingsDocs.docs.length === 0) {
-        throw new Error(`No user found with uid: ${user.uid}`)
+        console.error(`No user found with uid: ${user.uid}`)
       }
 
       const userRef = collection(db(), 'users')
@@ -52,47 +56,59 @@ export const useBrands = () => {
       const userDocs = await getDocs(userQuery)
 
       if (userDocs.docs.length === 0) {
-        throw new Error(`No user found with uid: ${user.uid}`)
+        console.error(`No user found with uid: ${user.uid}`)
       }
       const settingsData = settingsDocs.docs[0].data() as SettingsType
       const [northLat, northLon, southLat, southLon] = calculateBoundingBox(
-        settingsData.location.latitude,
-        settingsData.location.longitude,
-        settingsData.distance,
+        settingsData?.location?.latitude,
+        settingsData?.location?.longitude,
+        settingsData?.distance,
       )
       const userData = userDocs.docs[0].data() as UserData
-      const userLimit = (userData.likesLeft || 10) * 3
+      const userLimit = (userData.likesLeft < 10 ? 10 : userData.likesLeft) * 2
 
-      // TODO: Fix me, needs to be iteratively fetch not liked data from firestore
-      // https://stackoverflow.com/questions/61354866/is-there-a-workaround-for-the-firebase-query-in-limit-to-10
-      const companiesQuery = await query(
-        collection(db(), 'brands'),
+      console.error(...settingsData?.categories?.map((el) => endBefore(el)))
+      const companiesQuery = query(collection(db(), 'brands'),
         orderBy('main_categories'),
-        ...settingsData.categories.map((el) => startAfter(el)),
-        limit(userLimit),
-      )
+        ...settingsData?.categories?.map((el) => startAfter(el)),
+        limit(5))
 
       const companiesData = await getDocs(companiesQuery)
       const brand = []
       companiesData.forEach(async (doc) => {
-        if (!userData.likes.map((el) => el.company_id).includes(doc.data()._id)) {
+        const username = doc?.data()?.instagram_url?.split('/')
+        if (!userData?.likes?.map((el) => el?.company_id)?.includes(doc?.data()?._id)) {
           if (
-            doc.data().loc_latitude <= northLat &&
-            doc.data().loc_latitude >= southLat &&
-            doc.data().loc_longitude >= northLon &&
-            doc.data().loc_longitude <= southLon
+            settingsData.filterByDistance &&
+            doc?.data()?.loc_latitude <= northLat &&
+            doc?.data()?.loc_latitude >= southLat &&
+            doc?.data()?.loc_longitude >= northLon &&
+            doc?.data()?.loc_longitude <= southLon
           ) {
-            const username = doc.data()?.instagram_url?.split('/')
             brand.push({
               company: {
                 title: username[username.length - 1],
                 location: doc.data()?.city || doc.data()?.loc_label || doc.data()?.loc_locality,
                 image: doc.data()?.profile_image_url || defaultLogo,
                 followers: doc.data()?.combined_followers,
-                tags: [doc.data()?.categories?.split('/')?.filter(Boolean), doc.data()?.main_categories].flatMap(
+                tags: [doc.data()?.categories?.split('/')?.filter(Boolean), doc.data()?.main_categories]?.flatMap(
                   (el) => el,
-                ),
-                id: doc.data()._id,
+                ).filter(Boolean),
+                id: doc.data()?._id,
+              },
+              images: [defaultPicture],
+            })
+          } else if (!settingsData.filterByDistance) {
+            brand.push({
+              company: {
+                title: username[username.length - 1],
+                location: doc.data()?.city || doc.data()?.loc_label || doc.data()?.loc_locality,
+                image: doc.data()?.profile_image_url || defaultLogo,
+                followers: doc.data()?.combined_followers,
+                tags: [doc.data()?.categories?.split('/')?.filter(Boolean), doc.data()?.main_categories]?.flatMap(
+                  (el) => el,
+                ).filter(Boolean),
+                id: doc.data()?._id,
               },
               images: [defaultPicture],
             })
@@ -102,6 +118,7 @@ export const useBrands = () => {
       setBrands(brand)
       dispatch(setAllBrands(brand))
       setLoading(false)
+      return !brand.length ? callBack() : null
     } catch (error) {
       console.error(error)
       setError(error?.message)
