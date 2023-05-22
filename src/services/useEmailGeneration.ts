@@ -33,7 +33,10 @@ export const useEmailGeneration = () => {
                Landlord ${userData.firstName} ${userData.lastName} 
                ${userData.email} wants to get connected to the following brands:
                brand Id's
-               ${userData.likes.filter((el) => el.liked).map((el) => `[${el.name} ${el.company_id}]\n`).join('')}`,
+               ${userData.likes
+                 .filter((el) => el.liked)
+                 .map((el) => `[${el.name} ${el.company_id}]\n`)
+                 .join('')}`,
         to: 'sg@popupshops.com',
       })
       dispatch(
