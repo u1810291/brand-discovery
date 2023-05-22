@@ -11,7 +11,7 @@ interface CheckCompanyPayload {
   companyCategories: Array<string>
 }
 
-export const useCompaniesFilter = () => {
+export const useCategoriesFilter = () => {
   const getUserCategories = useCallback(async (user: UserData): Promise<Array<string>> => {
     try {
       const q = query(collection(db(), 'settings'), where('uid', '==', user.uid))

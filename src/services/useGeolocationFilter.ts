@@ -35,7 +35,7 @@ interface CheckCompanyPayload {
   companyCoordinates: Coordinates
 }
 
-export const UseGeolocationFilter = () => {
+export const useGeolocationFilter = () => {
   const getUserLocation = useCallback(async (user: UserData): Promise<Coordinates> => {
     try {
       const q = query(collection(db(), 'settings'), where('uid', '==', user.uid))
