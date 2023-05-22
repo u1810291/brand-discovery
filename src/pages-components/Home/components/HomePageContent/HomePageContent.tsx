@@ -68,24 +68,46 @@ export const HomePageContent: FC<ContentProps> = ({ likeAction, dislikeAction, f
     fetchAllBrands(user, finishAction)
   })
 
-  const { animArray, isLike, isShowLabel, onDislikeClick, onLikeClick, currentIndex, trans, bind, likesLeft } =
-    useHomePageAnim({
-      data: brands,
-      likeAction,
-      dislikeAction,
-      finishAction,
-    })
+  const {
+    animArray,
+    isLike,
+    isShowLabel,
+    onDislikeClick,
+    onLikeClick,
+    currentIndex,
+    trans,
+    bind,
+    likesLeft,
+    dailyLikesGranted,
+  } = useHomePageAnim({
+    data: brands,
+    likeAction,
+    dislikeAction,
+    finishAction,
+  })
   const { loading } = useBrands()
 
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    if (likesLeft <= 0) {
+    if (likesLeft <= 0 && !dailyLikesGranted) {
+      dispatch(
+        openModal({
+          title: `You’re all out of like.`,
+          subTitle: `You have only 50 likes at this moment.
+    More likes are coming soon.
+     Our manager will contact you soon. `,
+          open: true,
+          children: <></>,
+        }),
+      )
+    }
+    if (likesLeft <= 0 && dailyLikesGranted) {
       dispatch(
         openModal({
           title: `You’re all out of like.`,
           subTitle: `You are only have 100 likes per day.
-    More likes are coming soon. `,
+  More likes are coming soon. `,
           open: true,
           children: <></>,
         }),
@@ -93,14 +115,18 @@ export const HomePageContent: FC<ContentProps> = ({ likeAction, dislikeAction, f
     }
   }, [likesLeft])
 
-  const handleLike = () => {
-    handleActionClick(user.uid, brands[currentIndex].company.id, true)
-    onLikeClick()
+  const handleLike = async () => {
+    const likeResult = await onLikeClick()
+    if (likeResult != -1) {
+      handleActionClick(user.uid, brands[currentIndex].company.id, true)
+    }
   }
 
-  const handleDislike = () => {
-    handleActionClick(user.uid, brands[currentIndex].company.id, false)
-    onDislikeClick()
+  const handleDislike = async () => {
+    const dislikeResult = await onDislikeClick()
+    if (dislikeResult != -1) {
+      handleActionClick(user.uid, brands[currentIndex].company.id, false)
+    }
   }
 
   return (
