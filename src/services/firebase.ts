@@ -9,14 +9,15 @@ import { useSetCategory } from './init'
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
 export const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASURMENT_ID,
+  apiKey: 'AIzaSyAVcxZF5D_PEV3ea-UhJl7lYnFs7CLduPw',
+  authDomain: 'brand-discovery-2a140.firebaseapp.com',
+  projectId: 'brand-discovery-2a140',
+  storageBucket: 'brand-discovery-2a140.appspot.com',
+  messagingSenderId: '222991896408',
+  appId: '1:222991896408:web:0538ed529a3d09588c1f2d',
+  measurementId: 'G-QPMT89B9EV',
 }
 let singleton = null,
   database = null
