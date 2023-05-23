@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'
-import { animated, interpolate } from '@react-spring/web'
+import { animated, to } from '@react-spring/web'
 import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore'
 import Link from 'next/link'
 import { FC, useEffect, useMemo } from 'react'
@@ -14,11 +14,10 @@ import { ROUTES } from 'src/constants/routes'
 import { db } from 'src/services/firebase'
 import { useBrands } from 'src/services/useBrands'
 import { useAppDispatch, useAppSelector } from 'src/store'
+import { brandsSelector } from 'src/store/slices/brands'
 import { openModal } from 'src/store/slices/modal'
 import { Card, CompanyCard } from './components'
 import { useHomePageAnim } from './hooks'
-import { brandsSelector } from 'src/store/slices/brands'
-import { useEffectOnce } from 'src/hooks/useEffectOnce'
 
 type ContentProps = {
   likeAction: (id: string) => void | Promise<void>
@@ -64,9 +63,9 @@ export const HomePageContent: FC<ContentProps> = ({ likeAction, dislikeAction, f
   const { fetchAllBrands, loading: brandsLoading } = useBrands()
   const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
 
-  useEffectOnce(() => {
+  useEffect(() => {
     fetchAllBrands(user, finishAction)
-  })
+  }, [])
 
   const {
     animArray,
@@ -129,27 +128,32 @@ export const HomePageContent: FC<ContentProps> = ({ likeAction, dislikeAction, f
     }
   }
 
+  const showingElementsIndex = currentIndex - 3
+
   return (
     <Stack flex={1} position="relative" marginX={3} marginTop={5} marginBottom={4}>
       <Stack flex={1}>
         {loading || brandsLoading ? (
           <Skeleton variant="rectangular" sx={{ flex: 1, opacity: 0.7 }} />
         ) : (
-          animArray.map(({ x, y, rot, scale }, i) => (
-            <Animated key={i} style={{ x, y }}>
-              <Card
-                isLike={isLike}
-                isShowLabel={i === currentIndex && isShowLabel}
-                images={brands[i]?.images?.slice(0, 5) || []}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                //@ts-ignore
-                {...bind(i)}
-                style={{
-                  transform: interpolate([rot, scale], trans),
-                }}
-              />
-            </Animated>
-          ))
+          animArray.map(
+            ({ x, y, rot, scale }, i) =>
+              i > showingElementsIndex && (
+                <Animated key={i} style={{ x, y }}>
+                  <Card
+                    isLike={isLike}
+                    isShowLabel={i === currentIndex && isShowLabel}
+                    images={brands[currentIndex]?.images?.slice(0, 5) || []}
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    //@ts-ignore
+                    {...bind(i)}
+                    style={{
+                      transform: to([rot, scale], trans),
+                    }}
+                  />
+                </Animated>
+              ),
+          )
         )}
       </Stack>
 

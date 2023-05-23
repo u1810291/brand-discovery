@@ -15,6 +15,8 @@ const to = (i: number) => ({
 })
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const from = (_i: number) => ({ x: 0, rot: 0, scale: 1, y: 0 })
+const trans = (r: number, s: number) => `rotateX(0deg) rotateY(${r}deg) rotateZ(${r}deg) scale(${s})`
+const user: UserData = JSON.parse(localStorage.getItem('user') || null)
 
 type UseHomePageAnimParams = {
   data: CompanyType[]
@@ -26,8 +28,6 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
   const [isLike, setIsLike] = useState<boolean | null>(null)
   const [isShowLabel, setIsShowLabel] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
-  const trans = (r: number, s: number) => `rotateX(0deg) rotateY(${r}deg) rotateZ(${r}deg) scale(${s})`
-  const user: UserData = JSON.parse(localStorage.getItem('user') || null)
   const [likesLeft, setLikesLeft] = useState(user.dailyLikesGranted ? user.dailyLikesLeft : user.likesLeft)
   const [dailyLikesGranted, setDailyLikesGranted] = useState(user.dailyLikesGranted)
   async function dailyLikesAdd(): Promise<string> {
@@ -168,11 +168,13 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
         config: { friction: 50, tension: 800, duration: 400 },
       }
     })
+
     setActiveIndex((prev) => prev + 1)
     if (gone.size === data.length) {
       setTimeout(() => finishAction(), 300)
     }
   }
+
   const getDragResult = async (direction: number) => {
     if (direction > 0) {
       await handleLikeAction()
@@ -202,16 +204,19 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
 
   const bind = useDrag(({ args: [index], active, movement: [mx], direction: [xDir], velocity: [vx] }) => {
     const trigger = vx > 0.1
+    if (likesLeft <= 0) return
 
-    // if (likesLeft >= 0) return
-    if (xDir > 0) {
+    if (xDir > 0 && !isLike) {
       setIsLike(true)
       setIsShowLabel(true)
-    } else if (xDir < 0) {
+    } else if (xDir < 0 && (isLike || typeof isLike === 'object')) {
       setIsLike(false)
       setIsShowLabel(true)
-    } else {
+    }
+
+    if (!active) {
       setIsShowLabel(false)
+      setIsLike(null)
     }
 
     if (!active && trigger) {
@@ -220,7 +225,7 @@ export const useHomePageAnim = ({ data, likeAction, dislikeAction, finishAction 
       setIsShowLabel(false)
       getDragResult(xDir)
       if (gone.size === data.length) {
-        setTimeout(() => finishAction(), 300)
+        setTimeout(() => finishAction(), 400)
       }
     }
 
