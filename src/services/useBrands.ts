@@ -91,7 +91,7 @@ export const useBrands = () => {
         settingsData?.distance,
       )
 
-      const companiesQuery = query(collection(db(), 'brands'), orderBy('main_categories'), limit(25))
+      const companiesQuery = query(collection(db(), 'brands'), orderBy('main_categories'), limit(50))
       const companiesData = await getDocs(companiesQuery)
 
       const lastFetchedCompany = companiesData.docs[companiesData.docs.length - 1]
@@ -194,7 +194,7 @@ export const useBrands = () => {
         const additionalCompaniesSnapshot = await getDocs(additionalCompaniesQuery)
 
         if (!additionalCompaniesSnapshot.empty) {
-          const additionalBrandPromises = Array.from(additionalCompaniesSnapshot.docs).map(async (doc) => {
+          const additionalBrandPromises = additionalCompaniesSnapshot.docs.map(async (doc) => {
             const username = doc?.data()?.instagram_url?.split('/')
             if (!user?.likes?.map((el) => el?.company_id)?.includes(doc?.data()?._id)) {
               const userCategories = await getUserCategories(user)
@@ -241,7 +241,6 @@ export const useBrands = () => {
     },
     [brands],
   )
-
   const fetchOneBrand = useCallback(async (id) => {
     setLoading(true)
     try {
