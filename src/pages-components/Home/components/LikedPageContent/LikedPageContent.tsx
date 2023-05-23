@@ -45,7 +45,7 @@ export const LikedPageContent: FC<LikedPageContentProps> = ({ data }) => {
                brand Id's`,
         to: 'accountmanagement@spacewise.net',
       })
-      console.error(result)
+      console.log(result)
     } catch (error) {
       console.error(error)
     }

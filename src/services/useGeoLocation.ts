@@ -59,23 +59,19 @@ export const useStoreGeoLocation = () => {
 
 export const useOneLocation = (uid) => {
   const [data, setData] = useState<any>()
-  const [error, setError] = useState()
-  const [loading, setLoading] = useState<boolean>()
+  const [error, setError] = useState();
   const fetchLocation = useCallback(async () => {
     try {
-      setLoading(true)
       if (uid) {
         const q = await getDoc(doc(collection(db(), 'settings'), uid))
         setData(q.data())
-        setLoading(false)
       }
     } catch (err) {
       console.error(err)
       setError(err.message)
-      setLoading(false)
     }
   }, [])
-  return [fetchLocation, data, loading, error] as const
+  return [fetchLocation, data, error] as const
 }
 
 export async function getLocations(query) {

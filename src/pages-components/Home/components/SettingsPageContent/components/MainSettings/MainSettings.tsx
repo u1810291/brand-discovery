@@ -10,12 +10,12 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 import Skeleton from '@mui/material/Skeleton'
+import Slider from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
+import Switch from '@mui/material/Switch'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { LocationIcon } from 'src/assets/icons/location'
-import { SliderField } from 'src/components/SliderField'
-import { SwitchField } from 'src/components/SwitchField'
 import { ROUTES } from 'src/constants/routes'
 import { useEffectOnce } from 'src/hooks/useEffectOnce'
 import { useGeoLocation } from 'src/hooks/useGeoLocation'
@@ -26,15 +26,14 @@ import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { setLocation } from 'src/store/slices/user'
 
-export const MainSettings = ({ control, values }) => {
-  const { getLocation, location, error } = useGeoLocation()
-  const [distance, setDistance] = useState(50)
+export const MainSettings = ({ setValue, values }) => {
+  const { getLocation, location, error, loading } = useGeoLocation()
   const [setUserGeoPosition, , , , storeLocationLoading, storeLocationSuccess, storeLocationError] =
     useStoreGeoLocation()
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const [fetchLocation, data, loading, errorFetching] = useOneLocation(
+  const [fetchLocation, data, errorFetching] = useOneLocation(
     localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid,
   )
 
@@ -90,6 +89,8 @@ export const MainSettings = ({ control, values }) => {
       }),
     )
   }
+  // TODO: CHANGE TO LOADING DATA FROM API
+  const isLoading = true
   return (
     <List
       sx={{ width: '100%', bgcolor: 'white', paddingBottom: 0 }}
@@ -100,7 +101,7 @@ export const MainSettings = ({ control, values }) => {
       <ListItemButton onClick={() => router.push(ROUTES.categories)}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Categories" color="primary" sx={{ width: 'auto' }} />
-          {loading ? (
+          {isLoading ? (
             <Skeleton variant="text" width={200} />
           ) : (
             <TypographyStyled>Sport, Health, +4 more</TypographyStyled>
@@ -112,7 +113,11 @@ export const MainSettings = ({ control, values }) => {
       <ListItemButton onClick={handleLocation}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Location" color="primary" sx={{ width: 'auto' }} />
-          {loading ? <Skeleton variant="text" width={200} /> : <TypographyStyled>{data && data.name}</TypographyStyled>}
+          {isLoading ? (
+            <Skeleton variant="text" width={200} />
+          ) : (
+            <TypographyStyled>{data && data.name}</TypographyStyled>
+          )}
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
       </ListItemButton>
@@ -121,19 +126,33 @@ export const MainSettings = ({ control, values }) => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <ListItemTextStyled primary="Distance preference" sx={{ textAlign: 'start' }} color="primary" />
 
-          {loading ? <Skeleton variant="text" width={50} /> : <TypographyStyled>{distance} km</TypographyStyled>}
+          {isLoading ? (
+            <Skeleton variant="text" width={50} />
+          ) : (
+            <TypographyStyled>{values('distance')} km</TypographyStyled>
+          )}
         </Box>
-        <SliderField
+        <Slider
+          value={values('distance')}
           aria-label="Default"
           name="distance"
+          defaultValue={values('distance')}
           valueLabelDisplay="auto"
-          control={control}
-          handleChange={setDistance}
+          onChange={(e: any) => setValue(e.target.value)}
         />
       </ListItemButton>
       <ListItemButton>
         <ListItemTextStyled primary="Only show brands in this range" />
-        {loading ? <Skeleton width={50} height={32} /> : <SwitchField name="filterByDistance" control={control} />}
+
+        {isLoading ? (
+          <Skeleton width={50} height={32} />
+        ) : (
+          <Switch
+            name="filterByDistance"
+            value={values('filterByDistance')}
+            onChange={() => setValue((prev) => !prev)}
+          />
+        )}
       </ListItemButton>
     </List>
   )
