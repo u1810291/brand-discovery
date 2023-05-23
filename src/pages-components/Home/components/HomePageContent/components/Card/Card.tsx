@@ -3,7 +3,7 @@ import { Typography, styled } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { animated } from '@react-spring/web'
 import Image from 'next/image'
-import { FC, useState } from 'react'
+import { FC, memo, useState } from 'react'
 import { GallerySwiper } from 'src/UI/GallerySwiper'
 import { Indicator } from 'src/components/Indicator'
 import { Swiper as SwiperCommon } from 'swiper'
@@ -13,7 +13,7 @@ type CardProps = {
   isLike: boolean | null
   isShowLabel: boolean
 }
-export const Card: FC<CardProps> = ({ images, isShowLabel, isLike, ...props }) => {
+const Card: FC<CardProps> = ({ images, isShowLabel, isLike, ...props }) => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [swiper, setSwiper] = useState<SwiperCommon>()
 
@@ -92,6 +92,9 @@ export const Card: FC<CardProps> = ({ images, isShowLabel, isLike, ...props }) =
     </Container>
   )
 }
+
+export default memo(Card)
+
 const Container = styled(animated.div)`
   will-change: transform;
   height: 100%;
