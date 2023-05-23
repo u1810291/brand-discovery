@@ -18,7 +18,6 @@ import { openModal } from 'src/store/slices/modal'
 import { Card, CompanyCard } from './components'
 import { useHomePageAnim } from './hooks'
 import { brandsSelector } from 'src/store/slices/brands'
-import { useEffectOnce } from 'src/hooks/useEffectOnce'
 
 type ContentProps = {
   likeAction: (id: string) => void | Promise<void>
@@ -64,9 +63,9 @@ export const HomePageContent: FC<ContentProps> = ({ likeAction, dislikeAction, f
   const { fetchAllBrands, loading: brandsLoading } = useBrands()
   const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
 
-  useEffectOnce(() => {
+  useEffect(() => {
     fetchAllBrands(user, finishAction)
-  })
+  }, [])
 
   const {
     animArray,
