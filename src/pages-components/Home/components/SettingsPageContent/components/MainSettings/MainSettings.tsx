@@ -1,7 +1,7 @@
 'use client'
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import { CircularProgress, Typography, styled } from '@mui/material'
+import { Typography, styled, useMediaQuery } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -12,58 +12,70 @@ import ListSubheader from '@mui/material/ListSubheader'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { LocationIcon } from 'src/assets/icons/location'
 import { SliderField } from 'src/components/SliderField'
 import { SwitchField } from 'src/components/SwitchField'
 import { ROUTES } from 'src/constants/routes'
 import { useEffectOnce } from 'src/hooks/useEffectOnce'
 import { useGeoLocation } from 'src/hooks/useGeoLocation'
-import { useOneLocation, useStoreGeoLocation } from 'src/services/useGeoLocation'
-import { useDispatch } from 'src/store'
+import { useOneLocation, useUpdateSettings } from 'src/services/useSettings'
+import { useAppDispatch, useAppSelector } from 'src/store'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
-import { setLocation } from 'src/store/slices/user'
+import { setSettings, settingsSelector } from 'src/store/slices/settings'
+import { NameList } from '../NameList'
 
-export const MainSettings = ({ control, values }) => {
-  const { getLocation, location, error } = useGeoLocation()
-  const [distance, setDistance] = useState(50)
-  const [setUserGeoPosition, , , , storeLocationLoading, storeLocationSuccess, storeLocationError] =
-    useStoreGeoLocation()
-  const dispatch = useDispatch()
+export const MainSettings = ({ control, onSubmit }) => {
+  const { getLocation, location, error, loading: locationLoading } = useGeoLocation()
+  const isMiddleWidth = useMediaQuery('(min-width:550px)')
+  const isBigWidth = useMediaQuery('(min-width:800px)')
+  const settings = useAppSelector(settingsSelector)
+  const { success: storeLocationSuccess, error: storeLocationError, updateSettings } = useUpdateSettings()
+  const dispatch = useAppDispatch()
   const router = useRouter()
+  const nameCount = isBigWidth ? 5 : isMiddleWidth ? 3 : 1
+  const user = useMemo(() => JSON.parse(localStorage.getItem('user') || null), [])
 
-  const [fetchLocation, data, loading, errorFetching] = useOneLocation(
-    localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid,
-  )
+  const {
+    fetchLocation,
+    loading,
+    error: errorFetching,
+  } = useOneLocation(localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid)
 
   useEffect(() => {
     if (!!location) {
-      const userId = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).uid
-      dispatch(setLocation({ location: location }))
-      setUserGeoPosition({
-        uid: userId,
-        latitude: location.latitude,
-        longitude: location.longitude,
+      const locationUpdated = {
         name: location.name,
+        latitude: Number(location.latitude),
+        longitude: Number(location.longitude),
+        placeId: null,
+      }
+      dispatch(
+        setSettings({
+          location: locationUpdated,
+        }),
+      )
+      updateSettings({
+        uid: user?.uid,
+        location: locationUpdated,
       })
     }
-    dispatch(
-      notify({
-        type: error || errorFetching ? Type.error : Type.success,
-        message: storeLocationError || errorFetching || storeLocationSuccess,
-      }),
-    )
-
-    if (storeLocationSuccess) {
-      dispatch(closeModal())
+    if (error || errorFetching) {
+      dispatch(
+        notify({
+          type: Type.error,
+          message: storeLocationError || errorFetching,
+        }),
+      )
     }
   }, [error, location, storeLocationSuccess, errorFetching])
 
   useEffectOnce(() => {
     fetchLocation()
   })
+
   const handleLocation = () => {
     dispatch(
       openModal({
@@ -72,8 +84,14 @@ export const MainSettings = ({ control, values }) => {
         subTitle: `You’ll need to enable your location in to use Spacewise`,
         children: (
           <Stack display="flex" flexDirection="column" gap={2} width="100%">
-            <Button variant="contained" onClick={getLocation}>
-              {storeLocationLoading || loading ? <CircularProgress /> : `Allow Location`}
+            <Button
+              variant="contained"
+              onClick={() => {
+                getLocation()
+                dispatch(closeModal())
+              }}
+            >
+              Allow Location
             </Button>
             <Button
               variant="outlined"
@@ -90,6 +108,15 @@ export const MainSettings = ({ control, values }) => {
       }),
     )
   }
+  const handleChange = useCallback((e) => {
+    setTimeout(() => onSubmit({ [e.name]: e.value }), 1000)
+    dispatch(
+      setSettings({
+        [e.name]: typeof e.value === 'number' ? e.value : e.value,
+      }),
+    )
+  }, [])
+
   return (
     <List
       sx={{ width: '100%', bgcolor: 'white', paddingBottom: 0 }}
@@ -103,7 +130,7 @@ export const MainSettings = ({ control, values }) => {
           {loading ? (
             <Skeleton variant="text" width={200} />
           ) : (
-            <TypographyStyled>Sport, Health, +4 more</TypographyStyled>
+            <NameList data={settings?.categories} totalCount={nameCount} />
           )}
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
@@ -112,7 +139,11 @@ export const MainSettings = ({ control, values }) => {
       <ListItemButton onClick={handleLocation}>
         <Box sx={{ display: 'flex', width: '100%' }}>
           <ListItemTextStyled primary="Location" color="primary" sx={{ width: 'auto' }} />
-          {loading ? <Skeleton variant="text" width={200} /> : <TypographyStyled>{data && data.name}</TypographyStyled>}
+          {loading || locationLoading ? (
+            <Skeleton variant="text" width={200} />
+          ) : (
+            <TypographyStyled>{settings && settings?.location?.name}</TypographyStyled>
+          )}
         </Box>
         <ArrowForwardIosIcon fontSize="small" sx={{ color: '#9AA09E' }} />
       </ListItemButton>
@@ -120,20 +151,27 @@ export const MainSettings = ({ control, values }) => {
       <ListItemButton sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <ListItemTextStyled primary="Distance preference" sx={{ textAlign: 'start' }} color="primary" />
-
-          {loading ? <Skeleton variant="text" width={50} /> : <TypographyStyled>{distance} km</TypographyStyled>}
+          {loading ? (
+            <Skeleton variant="text" width={50} />
+          ) : (
+            <TypographyStyled>{settings?.distance} mi</TypographyStyled>
+          )}
         </Box>
         <SliderField
+          handleChange={handleChange}
           aria-label="Default"
           name="distance"
           valueLabelDisplay="auto"
           control={control}
-          handleChange={setDistance}
         />
       </ListItemButton>
       <ListItemButton>
         <ListItemTextStyled primary="Only show brands in this range" />
-        {loading ? <Skeleton width={50} height={32} /> : <SwitchField name="filterByDistance" control={control} />}
+        {loading ? (
+          <Skeleton width={50} height={32} />
+        ) : (
+          <SwitchField handleChange={handleChange} name="filterByDistance" control={control} />
+        )}
       </ListItemButton>
     </List>
   )
@@ -183,7 +221,6 @@ const TypographyStyled = styled(Typography)(({ theme }) =>
     verticalAlign: 'middle',
     display: 'table-cell',
     textAlign: 'center',
-    flexGrow: 1,
     lineHeight: '32px',
   }),
 )

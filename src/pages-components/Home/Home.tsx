@@ -15,11 +15,10 @@ import { ROUTES } from 'src/constants/routes'
 import { useToggle } from 'src/hooks'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp, { db } from 'src/services/firebase'
-import { useDispatch } from 'src/store'
+import { useAppDispatch } from 'src/store'
 import { UserData } from 'src/store/slices/auth/auth.slice'
 import { closeModal, openModal } from 'src/store/slices/modal'
 import { EmptyState, HomePageContent, InfoPageContent, LikedPageContent, SettingsPageContent } from './components'
-import { companies } from './mock'
 
 const auth = getAuth(firebaseApp())
 
@@ -27,7 +26,7 @@ export const Home = () => {
   const router = useRouter()
   const [success, setSuccess] = useState('')
   const [signOut, loading, errorMessage] = useSignOut(auth)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const user: UserData = JSON.parse(localStorage.getItem('user') || null)
   const { isOpen: isShowEmptyContent, open: showEmptyContent } = useToggle(false)
 
@@ -111,7 +110,6 @@ export const Home = () => {
         />
       ) : (
         <HomePageContent
-          data={companies}
           likeAction={() => {
             return
           }}
@@ -122,7 +120,7 @@ export const Home = () => {
         />
       ),
     },
-    { name: 'liked', icon: <FavoriteBorderIcon />, content: <LikedPageContent data={companies} /> },
+    { name: 'liked', icon: <FavoriteBorderIcon />, content: <LikedPageContent /> },
     { name: 'info', icon: <InfoIcon />, content: <InfoPageContent /> },
     {
       name: 'settings',

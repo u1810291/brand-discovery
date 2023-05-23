@@ -6,37 +6,44 @@ import { ChipsList } from 'src/UI/ChipList'
 
 import { BrandSkeleton } from 'src/components/Skeletons'
 import { MainLayout } from 'src/layouts/MainLayout'
-import { companies } from '../Home/mock'
 import { CompanyCard, Gallery } from './components'
-
-const galleryCount = 123
+import { useEffect } from 'react'
+import { useBrands } from 'src/services/useBrands'
 
 export const Brand = () => {
   const router = useRouter()
   const { id } = router.query
-  const currentCompany = companies.find((item) => item.company.id === id)
-  // TODO: CHANGE TO LOADING DATA FROM API
-  const isLoading = false
+  const { brand, fetchOneBrand, loading } = useBrands()
+
+  useEffect(() => {
+    fetchOneBrand(id)
+  }, [])
+
   return (
     <MainLayout showBackButton>
-      {isLoading ? (
+      {loading && !brand?.company ? (
         <BrandSkeleton />
       ) : (
-        <Stack spacing={3}>
-          <CompanyCard data={currentCompany?.company} />
-          <Stack spacing={1}>
-            <Typography fontWeight={700} fontSize={'14px'} lineHeight={'20px'}>
-              Categories
-            </Typography>
-            <ChipsList data={currentCompany?.company.tags} totalCount={currentCompany?.company.tags.length} />
+        brand?.company && (
+          <Stack spacing={3}>
+            <CompanyCard data={brand?.company} />
+            <Stack spacing={1}>
+              <Typography fontWeight={700} fontSize={'14px'} lineHeight={'20px'}>
+                Categories
+              </Typography>
+              <ChipsList
+                data={brand?.company?.tags.filter((el) => el && el !== 'undefined')}
+                totalCount={brand?.company?.tags?.length}
+              />
+            </Stack>
+            <Stack spacing={1}>
+              <Typography fontWeight={700} fontSize={'14px'} lineHeight={'20px'}>
+                {brand?.images?.filter(Boolean).length} Gallery Photos
+              </Typography>
+              <Gallery currentCompany={brand?.company} images={brand?.images?.filter(Boolean)} />
+            </Stack>
           </Stack>
-          <Stack spacing={1}>
-            <Typography fontWeight={700} fontSize={'14px'} lineHeight={'20px'}>
-              {galleryCount} Gallery Photos
-            </Typography>
-            <Gallery />
-          </Stack>
-        </Stack>
+        )
       )}
     </MainLayout>
   )

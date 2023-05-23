@@ -1,3 +1,4 @@
+'use client'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 
@@ -36,10 +37,10 @@ export const InfoPageContent = () => {
             leasing process.
           </Typography>
           <Stack spacing={2} direction="row" width="100%">
-            <Button variant="contained" size="large" fullWidth>
+            <Button variant="contained" size="large" href="https://www.spacewise.net/demo/" fullWidth>
               Book A Demo
             </Button>
-            <Button variant="contained" size="large" fullWidth>
+            <Button variant="contained" size="large" href="https://www.spacewise.net/about-us/" fullWidth>
               Contact Us
             </Button>
           </Stack>

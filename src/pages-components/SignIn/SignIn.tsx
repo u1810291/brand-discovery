@@ -20,16 +20,17 @@ import { PasswordInput } from 'src/components/PasswordInput'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import firebaseApp from 'src/services/firebase'
-import { AppDispatch, useDispatch } from 'src/store'
+import { useAppDispatch } from 'src/store'
 import { login } from 'src/store/slices/auth'
 import { notify } from 'src/store/slices/notify'
 import { Type } from 'src/store/slices/notify/notify.slice'
 import { SingInFormType, schema } from './helper'
+import { formattedMessage } from 'src/utils/formatErrors'
 
 const auth = getAuth(firebaseApp())
 
 export const SignIn = () => {
-  const dispatch: AppDispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { palette } = useTheme()
   const router = useRouter()
 
@@ -59,7 +60,7 @@ export const SignIn = () => {
       dispatch(
         notify({
           type: Type.error,
-          message: error?.message,
+          message: formattedMessage(error?.message),
         }),
       )
     }
@@ -118,7 +119,7 @@ export const SignIn = () => {
               </Button>
             </Stack>
             <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
-              {loading ? <CircularProgress color="success" /> : 'Login'}
+              {loading ? <CircularProgress color="success" size={24} /> : 'Login'}
             </Button>
           </Stack>
           <StyledDivider sx={{ marginBlock: { xs: 4, sm: 6 } }}>OR</StyledDivider>

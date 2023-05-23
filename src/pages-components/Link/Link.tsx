@@ -15,13 +15,21 @@ export const Link = () => {
   useEffect(() => {
     if (router.query.mode === 'verifyEmail') {
       if (router?.query?.oobCode) {
+        const params = new URL(router?.query?.continueUrl.toString())
+
         verifyEmail(router?.query?.oobCode)
-        router.replace(ROUTES.signIn)
+        router.replace(ROUTES.root, {
+          query: {
+            email: params.searchParams.get('email'),
+            password: params.searchParams.get('password'),
+          },
+        })
       }
     }
     if (router.query.mode === 'resetPassword') {
       router.push(`${ROUTES.newPassword}${window.location.search}`)
     }
   }, [router.query.mode])
+
   return null
 }

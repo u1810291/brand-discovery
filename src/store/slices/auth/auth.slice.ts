@@ -7,12 +7,14 @@ export type UserData = {
   createdAt: number
   lastLoginAt: number
   isLoggedIn: boolean
+  likes: Array<any>
   uid: string
   likesUpdated: Date
   likesLeft: number
   dailyLikesLeft: number
   dailyLikesGranted: boolean
   modalShown: boolean
+  categories?: Array<string>
 }
 
 type AuthType = {
@@ -26,6 +28,7 @@ type AuthType = {
     createdAt: number
     lastLoginAt: number
     likesUpdated: Date
+    likes: Array<any>
     likesLeft: number
     dailyLikesLeft: number
     dailyLikesGranted: boolean
@@ -35,6 +38,7 @@ type AuthType = {
 const initialState = {
   user: {
     uid: null,
+    likes: null,
     isLoggedIn: null,
     expiresIn: 0,
     createdAt: 0,
@@ -56,6 +60,7 @@ export const authSlice = createSlice({
     login: (state, { payload }: { payload: AuthType }) => {
       const userData: UserData = {
         uid: payload.user.uid,
+        likes: payload.user.likes,
         refreshToken: payload._tokenResponse.refreshToken,
         expiresIn: payload._tokenResponse.expiresIn,
         emailVerified: payload.user.emailVerified,
@@ -81,6 +86,7 @@ export const authSlice = createSlice({
         lastLoginAt: payload.user.lastLoginAt,
         likesUpdated: new Date(),
         likesLeft: 50,
+        likes: payload.user.likes,
         dailyLikesGranted: false,
         dailyLikesLeft: null,
         isLoggedIn: false,

@@ -16,7 +16,7 @@ export const useVerifyEmail = (auth: Auth) => {
       .catch((error) => {
         console.error(error)
         setLoading(false)
-        setError(error)
+        setError(error?.message)
       })
   }, [])
   return [verifyEmail, success, loading, error] as const

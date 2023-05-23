@@ -1,3 +1,4 @@
+'use client'
 import { Typography, styled } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { animated } from '@react-spring/web'
@@ -71,19 +72,19 @@ export const Card: FC<CardProps> = ({ images, isShowLabel, isLike, ...props }) =
           </Stack>
         ))}
       <GallerySwiper
-        data={images}
-        swiperOptions={{ spaceBetween: 0, slidesPerView: 1 }}
+        data={images.filter(Boolean)}
         setSwiper={setSwiper}
+        swiperOptions={{ spaceBetween: 0, slidesPerView: 1 }}
         renderElement={(item) => (
           <ImageContainer>
             <Image
-              placeholder="blur"
-              blurDataURL={`${item}`}
-              unoptimized
               src={item}
-              alt="picture"
+              unoptimized
               width={600}
               height={400}
+              alt="picture"
+              // placeholder="blur"
+              // blurDataURL={`${item}`}
             />
           </ImageContainer>
         )}
@@ -124,6 +125,6 @@ const Background = styled(Stack)`
     rgba(0, 0, 0, 0) 90%,
     rgba(0, 0, 0, 1) 100%
   );
-  box-shadow: 0px 16px 64px rgba(179, 180, 174, 0.25);
+  box-shadow: 0px 1px 1px rgba(179, 180, 174, 0.25);
   border-radius: 16px;
 `
