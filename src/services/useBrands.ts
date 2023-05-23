@@ -35,7 +35,6 @@ export const useBrands = () => {
   const [brand, setBrand] = useState<any>()
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>(null)
-  const [unfilteredBrands, setUnfilteredBrands] = useState(null)
   const dispatch = useAppDispatch()
   const { getUserLocation } = useGeolocationFilter()
   const { getUserCategories, getCompanyCategory, companySuitsCategory } = useCategoriesFilter()
@@ -91,88 +90,138 @@ export const useBrands = () => {
         settingsData?.distance,
       )
 
-      const companiesQuery = query(collection(db(), 'brands'), orderBy('main_categories'), limit(50))
-      const companiesData = await getDocs(companiesQuery)
+      const companiesQuery = query(collection(db(), 'brands'), orderBy('main_categories'), limit(25))
 
-      const lastFetchedCompany = companiesData.docs[companiesData.docs.length - 1]
-      // You can access the properties of the last fetched company here
+      if (!brands || brands.length === 0) {
+        // You can access the properties of the last fetched company here
 
-      // Use the last fetched company data as needed
-      const userCategories = await getUserCategories(user)
+        // Use the last fetched company data as needed
+        const userCategories = await getUserCategories(user)
 
-      const brandPromises = Array.from(companiesData.docs).map(async (doc) => {
-        const username = doc?.data()?.instagram_url?.split('/')
-        if (!userData?.likes?.map((el) => el?.company_id)?.includes(doc?.data()?._id)) {
-          const companyCategories = await getCompanyCategory(doc?.data()._id)
-          const ifCompanySuits = await companySuitsCategory({ userCategories, companyCategories })
+        const companiesData = await getDocs(companiesQuery)
+        const lastFetchedCompany = companiesData.docs[companiesData.docs.length - 1]
+        const brandPromises = Array.from(companiesData.docs).map(async (doc) => {
+          const username = doc?.data()?.instagram_url?.split('/')
+          if (!userData?.likes?.map((el) => el?.company_id)?.includes(doc?.data()?._id)) {
+            const companyCategories = await getCompanyCategory(doc?.data()._id)
+            const ifCompanySuits = await companySuitsCategory({ userCategories, companyCategories })
 
-          if (
-            settingsData.filterByDistance &&
-            doc?.data()?.loc_latitude <= northLat &&
-            doc?.data()?.loc_latitude >= southLat &&
-            doc?.data()?.loc_longitude >= northLon &&
-            doc?.data()?.loc_longitude <= southLon &&
-            ifCompanySuits
-          ) {
-            return {
-              company: {
-                title: username[username.length - 1],
-                location: doc.data()?.city || doc.data()?.loc_label || doc.data()?.loc_locality,
-                image: doc.data()?.profile_image_url || defaultLogo,
-                followers: doc.data()?.combined_followers,
-                tags: [doc.data()?.categories?.split('/')?.filter(Boolean), doc.data()?.main_categories]
-                  ?.flatMap((el) => el)
-                  .filter(Boolean),
-                id: doc.data()?._id,
-              },
-              images: [defaultPicture],
+            if (
+              settingsData.filterByDistance &&
+              doc?.data()?.loc_latitude <= northLat &&
+              doc?.data()?.loc_latitude >= southLat &&
+              doc?.data()?.loc_longitude >= northLon &&
+              doc?.data()?.loc_longitude <= southLon &&
+              ifCompanySuits
+            ) {
+              return {
+                company: {
+                  title: username[username.length - 1],
+                  location: doc.data()?.city || doc.data()?.loc_label || doc.data()?.loc_locality,
+                  image: doc.data()?.profile_image_url || defaultLogo,
+                  followers: doc.data()?.combined_followers,
+                  tags: [doc.data()?.categories?.split('/')?.filter(Boolean), doc.data()?.main_categories]
+                    ?.flatMap((el) => el)
+                    .filter(Boolean),
+                  id: doc.data()?._id,
+                },
+                images: [defaultPicture],
+              }
+            } else if (!settingsData.filterByDistance && ifCompanySuits) {
+              return {
+                company: {
+                  title: username[username.length - 1],
+                  location: doc.data()?.city || doc.data()?.loc_label || doc.data()?.loc_locality,
+                  image: doc.data()?.profile_image_url || defaultLogo,
+                  followers: doc.data()?.combined_followers,
+                  tags: [doc.data()?.categories?.split('/')?.filter(Boolean), doc.data()?.main_categories]
+                    ?.flatMap((el) => el)
+                    .filter(Boolean),
+                  id: doc.data()?._id,
+                },
+                images: [defaultPicture],
+              }
             }
-          } else if (!settingsData.filterByDistance && ifCompanySuits) {
-            return {
-              company: {
-                title: username[username.length - 1],
-                location: doc.data()?.city || doc.data()?.loc_label || doc.data()?.loc_locality,
-                image: doc.data()?.profile_image_url || defaultLogo,
-                followers: doc.data()?.combined_followers,
-                tags: [doc.data()?.categories?.split('/')?.filter(Boolean), doc.data()?.main_categories]
-                  ?.flatMap((el) => el)
-                  .filter(Boolean),
-                id: doc.data()?._id,
-              },
-              images: [defaultPicture],
-            }
           }
-        }
-        return null
-      })
+          return null
+        })
 
-      const resolvedBrands = await Promise.all(brandPromises)
-      const filteredBrands = resolvedBrands.filter(Boolean)
-      if (filteredBrands.length === 0) {
-        // Fetch another 100 brands
-        fetchAdditionalBrands(lastFetchedCompany, user, 50)
+        const resolvedBrands = await Promise.all(brandPromises)
+        const filteredBrands = resolvedBrands.filter(Boolean)
+
         if (filteredBrands.length === 0) {
-          fetchAdditionalBrands(lastFetchedCompany, user, 100)
-          if (filteredBrands.length === 0) {
-            fetchAdditionalBrands(lastFetchedCompany, user, 500)
-          }
-        }
-      }
-      setBrands(filteredBrands)
-      //@ts-expect-error correct types
-      dispatch(setAllBrands(filteredBrands))
+          const fetchMore = async (lastCompanies: any) => {
+            // Fetch another 100 brands
+            setLoading(true)
+            const additionalCompaniesQuery = query(
+              collection(db(), 'brands'),
+              orderBy('main_categories'),
+              startAfter(lastCompanies),
+              limit(100),
+            )
+            const userCategories = await getUserCategories(user)
+            const companyData = await getDocs(additionalCompaniesQuery)
+            const brandsPromises = Array.from(companyData.docs).map(async (doc) => {
+              const username = doc?.data()?.instagram_url?.split('/')
+              if (!userData?.likes?.map((el) => el?.company_id)?.includes(doc?.data()?._id)) {
+                const companyCategories = await getCompanyCategory(doc?.data()._id)
+                const ifCompanySuits = await companySuitsCategory({ userCategories, companyCategories })
 
-      setLoading(false)
-
-      if (filteredBrands.length === 0 && callBack) {
-        fetchAdditionalBrands(lastFetchedCompany, user, 50)
-        if (filteredBrands.length === 0) {
-          fetchAdditionalBrands(lastFetchedCompany, user, 100)
-          if (filteredBrands.length === 0) {
-            fetchAdditionalBrands(lastFetchedCompany, user, 500)
+                if (
+                  settingsData.filterByDistance &&
+                  doc?.data()?.loc_latitude <= northLat &&
+                  doc?.data()?.loc_latitude >= southLat &&
+                  doc?.data()?.loc_longitude >= northLon &&
+                  doc?.data()?.loc_longitude <= southLon &&
+                  ifCompanySuits
+                ) {
+                  return {
+                    company: {
+                      title: username[username.length - 1],
+                      location: doc.data()?.city || doc.data()?.loc_label || doc.data()?.loc_locality,
+                      image: doc.data()?.profile_image_url || defaultLogo,
+                      followers: doc.data()?.combined_followers,
+                      tags: [doc.data()?.categories?.split('/')?.filter(Boolean), doc.data()?.main_categories]
+                        ?.flatMap((el) => el)
+                        .filter(Boolean),
+                      id: doc.data()?._id,
+                    },
+                    images: [defaultPicture],
+                  }
+                } else if (!settingsData.filterByDistance && ifCompanySuits) {
+                  return {
+                    company: {
+                      title: username[username.length - 1],
+                      location: doc.data()?.city || doc.data()?.loc_label || doc.data()?.loc_locality,
+                      image: doc.data()?.profile_image_url || defaultLogo,
+                      followers: doc.data()?.combined_followers,
+                      tags: [doc.data()?.categories?.split('/')?.filter(Boolean), doc.data()?.main_categories]
+                        ?.flatMap((el) => el)
+                        .filter(Boolean),
+                      id: doc.data()?._id,
+                    },
+                    images: [defaultPicture],
+                  }
+                }
+              }
+              return null
+            })
+            const lastCompany = companiesData.docs[companiesData.docs.length - 1]
+            const resolvedBrand = await Promise.all(brandsPromises)
+            const filteredBrands = resolvedBrand.filter(Boolean)
+            if (filteredBrands.length === 0) return fetchMore(lastCompany)
+            await setBrands(filteredBrands)
+            //@ts-expect-error correct types
+            dispatch(await setAllBrands(filteredBrands))
+            setLoading(false)
+            return
           }
+          fetchMore(lastFetchedCompany)
         }
-        callBack()
+        await setBrands(filteredBrands)
+        //@ts-expect-error correct types
+        dispatch(await setAllBrands(filteredBrands))
+        setLoading(false)
       }
     } catch (error) {
       console.error('Error fetching brands:', error)
@@ -180,9 +229,10 @@ export const useBrands = () => {
       setError(error?.message)
     }
   }, [])
-
+  /*
   const fetchAdditionalBrands = useCallback(async (lastDocument: any, user: UserData, limited?: number) => {
     try {
+      setLoading(true)
       const additionalCompaniesQuery = query(
         collection(db(), 'brands'),
         orderBy('main_categories'),
@@ -190,17 +240,49 @@ export const useBrands = () => {
         limit(limited ?? 100),
       )
 
+      const settingsRef = collection(db(), 'settings')
+      const settingsQuery = query(settingsRef, where('uid', '==', user.uid))
+      const settingsDocs = await getDocs(settingsQuery)
+
+      const settingsData = settingsDocs.docs[0].data() as SettingsType
+
       const additionalCompaniesSnapshot = await getDocs(additionalCompaniesQuery)
 
+      const [northLat, northLon, southLat, southLon] = calculateBoundingBox(
+        settingsData?.location?.latitude,
+        settingsData?.location?.longitude,
+        settingsData?.distance,
+      )
+
       if (!additionalCompaniesSnapshot.empty) {
-        const additionalBrandPromises = additionalCompaniesSnapshot.docs.map(async (doc) => {
+        const additionalBrandPromises = Array.from(additionalCompaniesSnapshot.docs).map(async (doc) => {
           const username = doc?.data()?.instagram_url?.split('/')
           if (!user?.likes?.map((el) => el?.company_id)?.includes(doc?.data()?._id)) {
             const userCategories = await getUserCategories(user)
             const companyCategories = await getCompanyCategory(doc?.data()._id)
             const ifCompanySuits = await companySuitsCategory({ userCategories, companyCategories })
-
-            if (ifCompanySuits) {
+            if (
+              settingsData.filterByDistance &&
+              doc?.data()?.loc_latitude <= northLat &&
+              doc?.data()?.loc_latitude >= southLat &&
+              doc?.data()?.loc_longitude >= northLon &&
+              doc?.data()?.loc_longitude <= southLon &&
+              ifCompanySuits
+            ) {
+              return {
+                company: {
+                  title: username[username.length - 1],
+                  location: doc.data()?.city || doc.data()?.loc_label || doc.data()?.loc_locality,
+                  image: doc.data()?.profile_image_url || defaultLogo,
+                  followers: doc.data()?.combined_followers,
+                  tags: [doc.data()?.categories?.split('/')?.filter(Boolean), doc.data()?.main_categories]
+                    ?.flatMap((el) => el)
+                    .filter(Boolean),
+                  id: doc.data()?._id,
+                },
+                images: [defaultPicture],
+              }
+            } else if (!settingsData.filterByDistance && ifCompanySuits) {
               return {
                 company: {
                   title: username[username.length - 1],
@@ -222,8 +304,12 @@ export const useBrands = () => {
         const resolvedAdditionalBrands = await Promise.all(additionalBrandPromises)
         const filteredAdditionalBrands = resolvedAdditionalBrands.filter(Boolean)
 
-        // Update the brands state correctly
-        setBrands((prevBrands) => [...prevBrands, ...filteredAdditionalBrands])
+        // Concatenate the additional brands with the existing brands
+        const updatedBrands = brands ? [...brands, ...filteredAdditionalBrands] : filteredAdditionalBrands
+
+        if (!updatedBrands) return
+        await setBrands(updatedBrands)
+        dispatch(await setAllBrands(updatedBrands))
         setLoading(false)
       } else {
         // No additional brands available
@@ -234,7 +320,8 @@ export const useBrands = () => {
       setLoading(false)
       setError(error?.message)
     }
-  }, [])
+  }, []) 
+  */
 
   const fetchOneBrand = useCallback(async (id) => {
     setLoading(true)
