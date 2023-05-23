@@ -1,0 +1,27 @@
+refresh сделать
+запрос 9 мб 
+поиск по локации + определение локации
+
+найс ту хев
+
+ФАЙРСТОР
+ТАБЛИЦА
+ЛОГИН АФТЕР КОФИРМЕЙШЕН
+))))
+ПАГИНАЦИЯ УСКОРЕНИЕ ЗАГРУЗКИ)
+категории дублируются
+изменить поведение, когда заканчиваются бренды фетч (реквест некст чанк, когда закончились компании)
+минимум 10 компаний должно быть)
+
+
+
+
+export const firebaseConfig = {
+  apiKey: 'AIzaSyAVcxZF5D_PEV3ea-UhJl7lYnFs7CLduPw',
+  authDomain: 'brand-discovery-2a140.firebaseapp.com',
+  projectId: 'brand-discovery-2a140',
+  storageBucket: 'brand-discovery-2a140.appspot.com',
+  messagingSenderId: '222991896408',
+  appId: '1:222991896408:web:0538ed529a3d09588c1f2d',
+  measurementId: 'G-QPMT89B9EV',
+}

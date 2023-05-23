@@ -17,6 +17,7 @@ const videos = [
 export const WalkThrough = () => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [swiper, setSwiper] = useState<SwiperCommon>()
+  const [errorCount, setErrorCount] = useState(0)
 
   const router = useRouter()
 
@@ -33,6 +34,16 @@ export const WalkThrough = () => {
     if (activeIndex > 0) {
       swiper?.slidePrev()
       setActiveIndex((prev) => prev - 1)
+    }
+  }
+  const handlePlayerError = () => {
+    setErrorCount((count) => count + 1)
+    if (errorCount >= 1) {
+      // If the user encountered an error twice, handle the fallback behavior
+      localStorage.setItem('walkthroughCompleted', true.toString())
+      router.push(ROUTES.signIn)
+    } else {
+      getNextSlide()
     }
   }
 
@@ -54,6 +65,7 @@ export const WalkThrough = () => {
             muted
             playsinline
             playing
+            onError={handlePlayerError}
             loop
             onEnded={getNextSlide}
             url={item.src}
