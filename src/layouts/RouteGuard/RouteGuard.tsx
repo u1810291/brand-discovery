@@ -52,9 +52,9 @@ function RouteGuard({ children }) {
         query: {
           attemptUrl: router.asPath,
           returnUrl:
-            localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).isLoggedIn
+            localStorage?.getItem('user') && JSON.parse(localStorage?.getItem('user')).isLoggedIn
               ? ROUTES.home
-              : ROUTES.walkThrough,
+              : ROUTES.signIn,
         },
       })
     } else if (matchRoute(path, privatePaths, 'loggedIn')) {

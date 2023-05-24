@@ -37,7 +37,7 @@ export const Initial = () => {
     if (!!localStorage.getItem('user')) {
       router.replace(ROUTES.home)
     } else if(whiteListRoutes.includes(router.query.mode as string)) {
-      router.replace(`/link${window.location.search}`)
+      router.replace(`/link${window?.location.search}`)
     }
     if (params.searchParams.get('email') && params.searchParams.get('password')) {
       signIn(params.searchParams.get('email'), params.searchParams.get('password')).catch((err) => console.error(err))

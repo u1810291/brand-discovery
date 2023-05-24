@@ -29,20 +29,20 @@ export const WalkThrough = () => {
   const isIos = /iphone|ipad|ipod/.test(userAgent)
 
   if (!videoSupport) {
-    localStorage.setItem('walkthroughCompleted', true.toString())
+    localStorage?.setItem('walkthroughCompleted', true.toString())
     router.push(ROUTES.signIn)
     setHasError(true)
   }
 
   if (isIos) {
-    localStorage.setItem('walkthroughCompleted', true.toString())
+    localStorage?.setItem('walkthroughCompleted', true.toString())
     router.push(ROUTES.signIn)
     setHasError(true)
   }
 
   useEffect(() => {
     if (hasError) {
-      localStorage.setItem('walkthroughCompleted', true.toString())
+      localStorage?.setItem('walkthroughCompleted', true.toString())
       router.push(ROUTES.signIn)
     }
   }, [hasError, router])
@@ -52,7 +52,7 @@ export const WalkThrough = () => {
       swiper?.slideNext()
       setActiveIndex((prev) => prev + 1)
     } else {
-      localStorage.setItem('walkthroughCompleted', true.toString())
+      localStorage?.setItem('walkthroughCompleted', true.toString())
       router.push(ROUTES.signIn)
     }
   }
@@ -63,11 +63,11 @@ export const WalkThrough = () => {
     }
   }
   const handlePlayerError = () => {
-    localStorage.setItem('walkthroughCompleted', true.toString())
+    localStorage?.setItem('walkthroughCompleted', true.toString())
     router.push(ROUTES.signIn)
     setHasError(true)
     if (hasError) {
-      localStorage.setItem('walkthroughCompleted', true.toString())
+      localStorage?.setItem('walkthroughCompleted', true.toString())
       router.push(ROUTES.signIn)
     } else {
       getNextSlide()
@@ -76,7 +76,7 @@ export const WalkThrough = () => {
 
   const handleComponentError = () => {
     setHasError(true)
-    localStorage.setItem('walkthroughCompleted', true.toString())
+    localStorage?.setItem('walkthroughCompleted', true.toString())
     router.push(ROUTES.signIn)
   }
   try {
@@ -109,7 +109,7 @@ export const WalkThrough = () => {
     )
   } catch (err) {
     setHasError(true)
-    localStorage.setItem('walkthroughCompleted', true.toString())
+    localStorage?.setItem('walkthroughCompleted', true.toString())
     router.push(ROUTES.signIn)
   }
 }
