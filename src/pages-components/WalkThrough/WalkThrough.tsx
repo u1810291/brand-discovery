@@ -7,7 +7,6 @@ import { Indicator } from 'src/components/Indicator'
 import { ROUTES } from 'src/constants/routes'
 import { MainLayout } from 'src/layouts/MainLayout'
 import { Swiper as SwiperCommon } from 'swiper'
-import { useEffect } from 'react'
 
 const videos = [
   { src: '/videos/HomeScreen.mp4' },
@@ -18,41 +17,15 @@ const videos = [
 export const WalkThrough = () => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [swiper, setSwiper] = useState<SwiperCommon>()
-  const [hasError, setHasError] = useState(false)
 
   const router = useRouter()
-
-  const videoElement = document.createElement('video')
-  const videoSupport = typeof videoElement.play === 'function'
-
-  const userAgent = navigator.userAgent.toLowerCase()
-  const isIos = /iphone|ipad|ipod/.test(userAgent)
-
-  if (!videoSupport) {
-    localStorage?.setItem('walkthroughCompleted', true.toString())
-    router.push(ROUTES.signIn)
-    setHasError(true)
-  }
-
-  if (isIos) {
-    localStorage?.setItem('walkthroughCompleted', true.toString())
-    router.push(ROUTES.signIn)
-    setHasError(true)
-  }
-
-  useEffect(() => {
-    if (hasError) {
-      localStorage?.setItem('walkthroughCompleted', true.toString())
-      router.push(ROUTES.signIn)
-    }
-  }, [hasError, router])
 
   const getNextSlide = () => {
     if (activeIndex < videos.length - 1) {
       swiper?.slideNext()
       setActiveIndex((prev) => prev + 1)
     } else {
-      localStorage?.setItem('walkthroughCompleted', true.toString())
+      localStorage.setItem('walkthroughCompleted', true.toString())
       router.push(ROUTES.signIn)
     }
   }
@@ -62,54 +35,31 @@ export const WalkThrough = () => {
       setActiveIndex((prev) => prev - 1)
     }
   }
-  const handlePlayerError = () => {
-    localStorage?.setItem('walkthroughCompleted', true.toString())
-    router.push(ROUTES.signIn)
-    setHasError(true)
-    if (hasError) {
-      localStorage?.setItem('walkthroughCompleted', true.toString())
-      router.push(ROUTES.signIn)
-    } else {
-      getNextSlide()
-    }
-  }
 
-  const handleComponentError = () => {
-    setHasError(true)
-    localStorage?.setItem('walkthroughCompleted', true.toString())
-    router.push(ROUTES.signIn)
-  }
-  try {
-    return (
-      <MainLayout position="relative" padding={0} onError={handleComponentError}>
-        <Stack position="absolute" zIndex={2} top="35px" left="16px" width="calc(100% - 32px)">
-          <Indicator hasBorder count={videos.length} activeIndex={activeIndex} position={'initial'} width="100%" />
-        </Stack>
-        <Stack height="100%" width="40%" onClick={getPrevSlide} position="absolute" top={0} left={0} zIndex={2} />
-        <Stack height="100%" width="40%" onClick={getNextSlide} position="absolute" top={0} right={0} zIndex={2} />
-        <GallerySwiper
-          data={videos}
-          swiperOptions={{ spaceBetween: 0, slidesPerView: 1 }}
-          setSwiper={setSwiper}
-          renderElement={(item) => (
-            <ReactPlayer
-              width="100%"
-              height="100%"
-              muted
-              playsinline
-              playing
-              onError={handlePlayerError}
-              loop
-              onEnded={getNextSlide}
-              url={item.src}
-            />
-          )}
-        />
-      </MainLayout>
-    )
-  } catch (err) {
-    setHasError(true)
-    localStorage?.setItem('walkthroughCompleted', true.toString())
-    router.push(ROUTES.signIn)
-  }
+  return (
+    <MainLayout position="relative" padding={0}>
+      <Stack position="absolute" zIndex={2} top="35px" left="16px" width="calc(100% - 32px)">
+        <Indicator hasBorder count={videos.length} activeIndex={activeIndex} position={'initial'} width="100%" />
+      </Stack>
+      <Stack height="100%" width="40%" onClick={getPrevSlide} position="absolute" top={0} left={0} zIndex={2} />
+      <Stack height="100%" width="40%" onClick={getNextSlide} position="absolute" top={0} right={0} zIndex={2} />
+      <GallerySwiper
+        data={videos}
+        swiperOptions={{ spaceBetween: 0, slidesPerView: 1 }}
+        setSwiper={setSwiper}
+        renderElement={(item) => (
+          <ReactPlayer
+            width="100%"
+            height="100%"
+            muted
+            playsinline
+            playing
+            loop
+            onEnded={getNextSlide}
+            url={item.src}
+          />
+        )}
+      />
+    </MainLayout>
+  )
 }

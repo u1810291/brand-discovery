@@ -32,7 +32,9 @@ export const Brand = () => {
                 Categories
               </Typography>
               <ChipsList
-                data={brand?.company?.tags.filter((el) => el && el !== 'undefined')}
+                data={Array.from(
+                  new Set(brand?.company?.tags.filter((el) => el && el !== 'undefined' && !el.includes(','))),
+                )}
                 totalCount={brand?.company?.tags?.length}
               />
             </Stack>

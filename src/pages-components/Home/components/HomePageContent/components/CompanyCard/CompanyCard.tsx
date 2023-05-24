@@ -44,7 +44,10 @@ export const CompanyCard: FC<CompanyCardProps> = ({ data, ...props }) => {
             Followers
           </Typography>
         </Typography>
-        <ChipsList data={data?.tags} totalCount={chipsCount} />
+        <ChipsList
+          data={Array.from(new Set(data?.tags.filter((el) => el && el !== 'undefined' && !el.includes(','))))}
+          totalCount={chipsCount}
+        />
       </Stack>
     </Root>
   )

@@ -37,6 +37,3 @@ export function db(): Firestore {
   }
   return database
 }
-
-const [categoriesSet] = useSetCategory()
-categoriesSet()

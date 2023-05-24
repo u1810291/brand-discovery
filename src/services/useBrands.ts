@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import {
   collection,
   getDocs,
@@ -29,6 +29,7 @@ import defaultPicture from '../../public/images/default_brand_image.png'
 import { useGeolocationFilter } from './useGeolocationFilter'
 import { useCategoriesFilter } from './useCompaniesFilter'
 import { User } from 'firebase/auth'
+import { useMemo } from 'react'
 
 export const useBrands = () => {
   const [brands, setBrands] = useState<any>()
@@ -38,6 +39,7 @@ export const useBrands = () => {
   const dispatch = useAppDispatch()
   const { getUserLocation } = useGeolocationFilter()
   const { getUserCategories, getCompanyCategory, companySuitsCategory } = useCategoriesFilter()
+  const user = useMemo(() => localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')), [])
 
   function calculateBoundingBox(centerLat, centerLon, size) {
     const radius = 6371
@@ -58,6 +60,11 @@ export const useBrands = () => {
 
     return [nwLat, nwLon, seLat, seLon]
   }
+  /*
+  useEffect(() => {
+    if (!brand || !brands) fetchAllBrands(user, () => {})
+  }, [brand, brands, setAllBrands, setBrands, setBrand])
+  */
 
   const fetchAllBrands = useCallback(async (user: UserData, callBack: () => void) => {
     setLoading(true)
@@ -90,7 +97,7 @@ export const useBrands = () => {
         settingsData?.distance,
       )
 
-      const companiesQuery = query(collection(db(), 'brands'), orderBy('main_categories'), limit(25))
+      const companiesQuery = query(collection(db(), 'brands'), orderBy('main_categories'), limit(100))
 
       if (!brands || brands.length === 0) {
         // You can access the properties of the last fetched company here
@@ -157,7 +164,7 @@ export const useBrands = () => {
               collection(db(), 'brands'),
               orderBy('main_categories'),
               startAfter(lastCompanies),
-              limit(100),
+              limit(200),
             )
             const userCategories = await getUserCategories(user)
             const companyData = await getDocs(additionalCompaniesQuery)
