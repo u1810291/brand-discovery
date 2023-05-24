@@ -54,7 +54,7 @@ function RouteGuard({ children }) {
           returnUrl:
             localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).isLoggedIn
               ? ROUTES.home
-              : ROUTES.signIn,
+              : ROUTES.walkThrough,
         },
       })
     } else if (matchRoute(path, privatePaths, 'loggedIn')) {
