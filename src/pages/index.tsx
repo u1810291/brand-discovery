@@ -8,7 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 export default () => {
   const InitialPage = dynamic(() => import('src/pages-components/Initial').then((component) => component.Initial), {
     suspense: true,
-    ssr: false,
+    ssr: true,
   })
 
   return (

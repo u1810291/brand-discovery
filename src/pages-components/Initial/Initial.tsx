@@ -52,6 +52,8 @@ export const Initial = () => {
         router.push(user?.user?.emailVerified ? ROUTES.home : ROUTES.verifyEmail)
       } else {
         router.replace(ROUTES.signIn)}
+        clearTimeout(timeout)
+        return
       }, 2000)
     return () => {
       clearTimeout(timeout)

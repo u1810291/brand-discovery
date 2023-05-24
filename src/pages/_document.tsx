@@ -13,8 +13,6 @@ function Document() {
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="theme-color" content="#FFFFFF" />
         <meta name="theme-color" content="#fff" />
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/icon.png"></link>
       </Head>
       <body>
         <Main />
