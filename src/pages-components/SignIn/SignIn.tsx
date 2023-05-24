@@ -66,83 +66,85 @@ export const SignIn = () => {
     }
   }, [error])
 
-  return (
-    <MainLayout id="main-layout">
-      <Stack marginY="auto">
-        <Stack alignSelf="center">
-          <Image
-            placeholder="blur"
-            blurDataURL={`${SpacewiseSVG}`}
-            unoptimized
-            src={SpacewiseSVG}
-            alt="Spacewise"
-            width={261}
-            height={37}
-          />
-        </Stack>
-        <Typography component="h3" fontWeight={800} fontSize={24} marginTop={5} marginBottom={4} alignSelf="center">
-          Login with Spacewise ID
-        </Typography>
-        <Stack
-          component="form"
-          autoComplete="off"
-          onSubmit={handleSubmit(onSubmit)}
-          width="100%"
-          spacing={{ xs: 4, sm: 6 }}
-        >
-          <Stack spacing={{ xs: 3, sm: 5 }}>
-            <InputField
-              fullWidth
-              name="email"
-              label="E-mail address"
-              placeholder="Enter your email"
-              control={control}
-              autoComplete="nope"
+  if (!localStorage.getItem('walkthroughCompleted')) router.push(ROUTES.walkThrough)
+  else
+    return (
+      <MainLayout id="main-layout">
+        <Stack marginY="auto">
+          <Stack alignSelf="center">
+            <Image
+              placeholder="blur"
+              blurDataURL={`${SpacewiseSVG}`}
+              unoptimized
+              src={SpacewiseSVG}
+              alt="Spacewise"
+              width={261}
+              height={37}
             />
-            <PasswordInput
-              fullWidth
-              name="password"
-              label="Password"
-              placeholder="Enter your password"
-              control={control}
-              autoComplete="nope"
-            />
-            <Button type="button" variant="text" sx={{ width: 'fit-content' }}>
+          </Stack>
+          <Typography component="h3" fontWeight={800} fontSize={24} marginTop={5} marginBottom={4} alignSelf="center">
+            Login with Spacewise ID
+          </Typography>
+          <Stack
+            component="form"
+            autoComplete="off"
+            onSubmit={handleSubmit(onSubmit)}
+            width="100%"
+            spacing={{ xs: 4, sm: 6 }}
+          >
+            <Stack spacing={{ xs: 3, sm: 5 }}>
+              <InputField
+                fullWidth
+                name="email"
+                label="E-mail address"
+                placeholder="Enter your email"
+                control={control}
+                autoComplete="nope"
+              />
+              <PasswordInput
+                fullWidth
+                name="password"
+                label="Password"
+                placeholder="Enter your password"
+                control={control}
+                autoComplete="nope"
+              />
+              <Button type="button" variant="text" sx={{ width: 'fit-content' }}>
+                <Link
+                  href={ROUTES.resetPassword}
+                  style={{ textDecoration: 'none', width: '100%', height: '100%', color: 'inherit' }}
+                >
+                  Forgot Password?
+                </Link>
+              </Button>
+            </Stack>
+            <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
+              {loading ? <CircularProgress color="success" size={24} /> : 'Login'}
+            </Button>
+          </Stack>
+          <StyledDivider sx={{ marginBlock: { xs: 4, sm: 6 } }}>OR</StyledDivider>
+          <Stack spacing={{ xs: 2, sm: 4 }}>
+            <Typography component="h5" fontWeight={500} fontSize={14} color={palette.grey[600]} alignSelf="center">
+              Are you new to Spacewise?
+            </Typography>
+            <Button fullWidth variant="outlined">
               <Link
-                href={ROUTES.resetPassword}
-                style={{ textDecoration: 'none', width: '100%', height: '100%', color: 'inherit' }}
+                href={ROUTES.signUpWithEmail}
+                style={{
+                  textDecoration: 'none',
+                  width: '100%',
+                  height: '100%',
+                  color: 'inherit',
+                  textAlign: 'center',
+                }}
               >
-                Forgot Password?
+                Create new account
               </Link>
             </Button>
           </Stack>
-          <Button type="submit" variant="contained" disabled={!isDirty || !isValid || isSubmitting}>
-            {loading ? <CircularProgress color="success" size={24} /> : 'Login'}
-          </Button>
         </Stack>
-        <StyledDivider sx={{ marginBlock: { xs: 4, sm: 6 } }}>OR</StyledDivider>
-        <Stack spacing={{ xs: 2, sm: 4 }}>
-          <Typography component="h5" fontWeight={500} fontSize={14} color={palette.grey[600]} alignSelf="center">
-            Are you new to Spacewise?
-          </Typography>
-          <Button fullWidth variant="outlined">
-            <Link
-              href={ROUTES.signUpWithEmail}
-              style={{
-                textDecoration: 'none',
-                width: '100%',
-                height: '100%',
-                color: 'inherit',
-                textAlign: 'center',
-              }}
-            >
-              Create new account
-            </Link>
-          </Button>
-        </Stack>
-      </Stack>
-    </MainLayout>
-  )
+      </MainLayout>
+    )
 }
 
 const StyledDivider = styled(Divider)`
