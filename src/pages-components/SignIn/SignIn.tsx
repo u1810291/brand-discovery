@@ -72,7 +72,7 @@ export const SignIn = () => {
   const userAgent = navigator.userAgent.toLowerCase()
   const isIos = /iphone|ipad|ipod/.test(userAgent)
 
-  if (localStorage.getItem('walkthroughCompleted') || !videoSupport || !isIos) {
+  if (localStorage.getItem('walkthroughCompleted') || !videoSupport || isIos) {
     return (
       <MainLayout id="main-layout">
         <Stack marginY="auto">
