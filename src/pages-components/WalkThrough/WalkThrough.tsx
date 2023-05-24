@@ -29,10 +29,14 @@ export const WalkThrough = () => {
   const isIos = /iphone|ipad|ipod/.test(userAgent)
 
   if (!videoSupport) {
+    localStorage.setItem('walkthroughCompleted', true.toString())
+    router.push(ROUTES.signIn)
     setHasError(true)
   }
 
   if (isIos) {
+    localStorage.setItem('walkthroughCompleted', true.toString())
+    router.push(ROUTES.signIn)
     setHasError(true)
   }
 
