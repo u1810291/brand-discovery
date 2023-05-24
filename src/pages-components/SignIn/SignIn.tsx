@@ -66,8 +66,13 @@ export const SignIn = () => {
     }
   }, [error])
 
-  if (!localStorage.getItem('walkthroughCompleted')) router.push(ROUTES.walkThrough)
-  else
+  const videoElement = document.createElement('video')
+  const videoSupport = typeof videoElement.play === 'function'
+
+  const userAgent = navigator.userAgent.toLowerCase()
+  const isIos = /iphone|ipad|ipod/.test(userAgent)
+
+  if (localStorage.getItem('walkthroughCompleted') || !videoSupport || !isIos) {
     return (
       <MainLayout id="main-layout">
         <Stack marginY="auto">
@@ -145,6 +150,7 @@ export const SignIn = () => {
         </Stack>
       </MainLayout>
     )
+  } else router.push(ROUTES.walkThrough)
 }
 
 const StyledDivider = styled(Divider)`
